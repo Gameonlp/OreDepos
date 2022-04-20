@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "oredepos:item/iron_pickaxe_drill_head"
+  }
+}
