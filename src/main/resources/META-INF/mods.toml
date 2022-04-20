@@ -27,7 +27,7 @@ displayName="Ore Deposits" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://github.com/Gameonlp/OreDepos/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="examplemod.png" #optional
+logoFile="Icon.png" #optional
 # A text field displayed in the mod UI
 credits="Thanks for this mod go to Ajaxo, Lothrazar and Tutorials By Kaupenjoe. Their code inspired a lot of the mod." #optional
 # A text field displayed in the mod UI
