@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.EnumGetMethod;
 import gameonlp.oredepos.blocks.miner.MinerBlock;
 import gameonlp.oredepos.blocks.miner.MinerContainer;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
+import gameonlp.oredepos.blocks.oredeposit.RedstoneOreDepositBlock;
 import gameonlp.oredepos.items.DrillHeadItem;
 import gameonlp.oredepos.items.OreDeposTab;
 import gameonlp.oredepos.blocks.miner.MinerTile;
@@ -20,6 +21,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -33,6 +35,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -70,6 +73,12 @@ public class RegistryManager {
     public static final RegistryObject<Item> SULFURID_ACID_BUCKET = ITEMS.register("sulfuric_acid_bucket",
             () -> new BucketItem(() -> RegistryManager.SULFURIC_ACID_FLUID.get(),
                     new Item.Properties().stacksTo(1).tab(OreDeposTab.ORE_DEPOS_TAB)));
+    @ObjectHolder("oredepos:diamond_pickaxe_drill_head")
+    public static final Item DIAMOND_PICKAXE_DRILL_HEAD = null;
+    @ObjectHolder("oredepos:copper_ingot")
+    public static final Item COPPER_INGOT = null;
+    @ObjectHolder("oredepos:tin_ingot")
+    public static final Item TIN_INGOT = null;
 
     //Blocks
     public static RegistryObject<Block> MINER;
@@ -80,6 +89,24 @@ public class RegistryManager {
     public static RegistryObject<Block> COPPER_BLOCK;
     public static RegistryObject<Block> TIN_ORE;
     public static RegistryObject<Block> TIN_BLOCK;
+    @ObjectHolder("oredepos:coal_ore_deposit")
+    public static final Block COAL_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:iron_ore_deposit")
+    public static final Block IRON_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:gold_ore_deposit")
+    public static final Block GOLD_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:diamond_ore_deposit")
+    public static final Block DIAMOND_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:emerald_ore_deposit")
+    public static final Block EMERALD_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:redstone_ore_deposit")
+    public static final Block REDSTONE_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:lapis_ore_deposit")
+    public static final Block LAPIS_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:tin_ore_deposit")
+    public static final Block TIN_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:copper_ore_deposit")
+    public static final Block COPPER_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -124,13 +151,25 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("minecraft", "gold_ore"));
         depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore"));
         depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore"));
+        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore"));
         depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock));
         depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock));
+
+
+        DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore");
+        Block redstoneOreDepositBlock = new RedstoneOreDepositBlock(AbstractBlock.Properties.copy(redstoneTemplate.block)
+                    .harvestLevel(redstoneTemplate.block.getHarvestLevel(redstoneTemplate.block.defaultBlockState()))
+                    .harvestTool(redstoneTemplate.block.getHarvestTool(redstoneTemplate.block.defaultBlockState()))
+                    .lootFrom(redstoneTemplate.block::getBlock)
+                    .requiresCorrectToolForDrops());
+        registerBlock( redstoneTemplate.name + "_deposit",
+                () -> redstoneOreDepositBlock);
 
         List<Block> deposits = new LinkedList<>();
         for (DepositTemplate depositTemplate : depositTemplates) {
             deposits.add(registerOreDeposit(depositTemplate));
         }
+        deposits.add(redstoneOreDepositBlock);
         ORE_DEPOSIT_TILE = TILE_ENTITIES.register("ore_deposit_tile", () -> TileEntityType.Builder.of(OreDepositTile::new, deposits.toArray(new Block[0])).build(null));
     }
 

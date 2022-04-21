@@ -17,6 +17,6 @@ public class OreDeposTab extends ItemGroup {
 
     @Override
     public ItemStack makeIcon() {
-        return ForgeRegistries.ITEMS.getValue(new ResourceLocation(OreDepos.MODID, "diamond_pickaxe_drill_head")).getDefaultInstance();
+        return RegistryManager.DIAMOND_PICKAXE_DRILL_HEAD.getDefaultInstance();
     }
 }

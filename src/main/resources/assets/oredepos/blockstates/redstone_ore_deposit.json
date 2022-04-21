@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "oredepos:block/redstone_ore_deposit" }
+  }
+}

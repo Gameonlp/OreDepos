@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "111",
+    "111",
+    "111"
+  ],
+  "key": {
+    "1": {
+      "item": "minecraft:diamond_block"
+    }
+  },
+  "result": {
+    "item": "oredepos:miner",
+    "count": 1
+  }
+}

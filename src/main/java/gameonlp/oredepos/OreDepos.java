@@ -2,6 +2,7 @@ package gameonlp.oredepos;
 
 import gameonlp.oredepos.blocks.miner.MinerScreen;
 import gameonlp.oredepos.compat.TOPCompat;
+import gameonlp.oredepos.data.DataGen;
 import gameonlp.oredepos.net.PacketManager;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -30,6 +31,8 @@ public class OreDepos {
 
         modEventBus.addListener(this::doClientStuff);
         modEventBus.addListener(this::enqueueIMC);
+
+        modEventBus.addListener(DataGen::generate);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OreDeposConfig.COMMON_SPEC);
 
         modEventBus.addListener((ModConfig.Loading e) -> OreDeposConfig.onConfigLoad());

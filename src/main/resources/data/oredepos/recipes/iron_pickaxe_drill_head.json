@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "233",
+    "311",
+    "311"
+  ],
+  "key": {
+    "1": {
+      "item": "minecraft:iron_block"
+    },
+    "2": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "3": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "oredepos:iron_pickaxe_drill_head",
+    "count": 1
+  }
+}
