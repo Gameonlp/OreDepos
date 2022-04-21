@@ -1,26 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "131",
+    "111",
     "212",
-    "141"
+    "111"
   ],
   "key": {
     "1": {
-      "item": "oredepos:circuit"
+      "item": "oredepos:wire"
     },
     "2": {
       "item": "minecraft:iron_ingot"
-    },
-    "3": {
-      "item": "minecraft:diamond_block"
-    },
-    "4": {
-      "item": "oredepos:wire"
     }
   },
   "result": {
-    "item": "oredepos:miner",
+    "item": "oredepos:circuit",
     "count": 1
   }
 }

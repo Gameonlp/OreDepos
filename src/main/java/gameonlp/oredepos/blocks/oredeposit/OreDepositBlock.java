@@ -11,8 +11,17 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 public class OreDepositBlock extends Block {
-    public OreDepositBlock(Properties properties) {
+    private Fluid fluid;
+    private Double factor;
+
+    public OreDepositBlock(Properties properties, double factor) {
+        this(properties, null, factor);
+    }
+
+    public OreDepositBlock(Properties properties, Fluid fluid, double factor) {
         super(properties);
+        this.fluid = fluid;
+        this.factor = factor;
     }
 
     @Override
@@ -23,6 +32,6 @@ public class OreDepositBlock extends Block {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new OreDepositTile((Fluid) null);
+        return new OreDepositTile(fluid, factor);
     }
 }

@@ -11,6 +11,8 @@
   "item.oredepos.netherite_pickaxe_drill_head": "Netherite Drill Head (Pickaxe)",
   "item.oredepos.netherite_axe_drill_head": "Netherite Drill Head (Axe)",
   "item.oredepos.netherite_shovel_drill_head": "Netherite Drill Head (Shovel)",
+  "item.oredepos.wire": "Wire",
+  "item.oredepos.circuit": "Circuit",
   "block.oredepos.copper_ore": "Copper Ore",
   "block.oredepos.tin_ore": "Tin Ore",
   "block.oredepos.copper_block": "Copper Block",

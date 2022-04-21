@@ -17,6 +17,7 @@ public class OreDepositTile extends TileEntity {
     private int amount;
     private int maxAmount;
     private Fluid fluid;
+    private Double factor;
 
     protected OreDepositTile(TileEntityType<?> p_i48289_1_) {
         super(p_i48289_1_);
@@ -26,9 +27,10 @@ public class OreDepositTile extends TileEntity {
         this(RegistryManager.ORE_DEPOSIT_TILE.get());
     }
 
-    public OreDepositTile(Fluid fluid){
+    public OreDepositTile(Fluid fluid, double factor){
         this();
         this.fluid = fluid;
+        this.factor = factor;
     }
 
     @Override
@@ -55,6 +57,7 @@ public class OreDepositTile extends TileEntity {
             } else {
                 amount = 1;
             }
+            amount = (int) Math.max(amount * factor, 1);
             maxAmount = amount;
         }
     }

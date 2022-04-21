@@ -46,15 +46,16 @@ public class RegistryManager {
     private static class DepositTemplate {
         private final String name;
         private final Block block;
+        private double factor;
 
-        private DepositTemplate(String location, String name){
-            this.name = name;
-            this.block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name));
+        private DepositTemplate(String location, String name, double factor){
+            this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
         }
 
-        private DepositTemplate(String name, Block block){
+        private DepositTemplate(String name, Block block, double factor){
             this.name = name;
             this.block = block;
+            this.factor = factor;
         }
     }
 
@@ -146,22 +147,22 @@ public class RegistryManager {
                 .requiresCorrectToolForDrops());
         COPPER_ORE = registerBlock("copper_ore", () -> copperOreBlock);
         List<DepositTemplate> depositTemplates = new LinkedList<>();
-        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore"));
-        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore"));
-        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore"));
-        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore"));
-        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore"));
-        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore"));
-        depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock));
-        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock));
+        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coalFactor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Common.ironFactor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Common.goldFactor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Common.diamondFactor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Common.emeraldFactor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Common.lapisFactor.get()));
+        depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Common.copperFactor.get()));
+        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Common.tinFactor.get()));
 
 
-        DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore");
+        DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstoneFactor.get());
         Block redstoneOreDepositBlock = new RedstoneOreDepositBlock(AbstractBlock.Properties.copy(redstoneTemplate.block)
                     .harvestLevel(redstoneTemplate.block.getHarvestLevel(redstoneTemplate.block.defaultBlockState()))
                     .harvestTool(redstoneTemplate.block.getHarvestTool(redstoneTemplate.block.defaultBlockState()))
                     .lootFrom(redstoneTemplate.block::getBlock)
-                    .requiresCorrectToolForDrops());
+                    .requiresCorrectToolForDrops(), redstoneTemplate.factor);
         registerBlock( redstoneTemplate.name + "_deposit",
                 () -> redstoneOreDepositBlock);
 
@@ -181,15 +182,14 @@ public class RegistryManager {
                     .harvestLevel(contained.block.getHarvestLevel(contained.block.defaultBlockState()))
                     .harvestTool(contained.block.getHarvestTool(contained.block.defaultBlockState()))
                     .lootFrom(contained.block::getBlock)
-                    .requiresCorrectToolForDrops());
+                    .requiresCorrectToolForDrops(), contained.factor);
         } else {
             block = new OreDepositBlock(AbstractBlock.Properties.copy(contained.block)
                     .harvestLevel(contained.block.getHarvestLevel(contained.block.defaultBlockState()))
                     .harvestTool(contained.block.getHarvestTool(contained.block.defaultBlockState()))
-                    .lootFrom(contained.block::getBlock));
+                    .lootFrom(contained.block::getBlock), contained.factor);
         }
-        registerBlock( contained.name + "_deposit",
-                () -> block);
+        registerBlock( contained.name + "_deposit",                () -> block);
         return block;
     }
 
@@ -232,6 +232,8 @@ public class RegistryManager {
         ITEMS.register("netherite_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 4, ToolType.AXE));
         ITEMS.register("copper_ingot", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("tin_ingot", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
+        ITEMS.register("wire", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
+        ITEMS.register("circuit", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
 
     private void registerTileEntities(){

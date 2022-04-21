@@ -14,6 +14,15 @@ public class OreDeposConfig {
         public static ForgeConfigSpec.IntValue mostShortDistance;
         public static ForgeConfigSpec.IntValue mostMediumDistance;
         public static ForgeConfigSpec.IntValue mostLongDistance;
+        public static ForgeConfigSpec.DoubleValue coalFactor;
+        public static ForgeConfigSpec.DoubleValue ironFactor;
+        public static ForgeConfigSpec.DoubleValue goldFactor;
+        public static ForgeConfigSpec.DoubleValue diamondFactor;
+        public static ForgeConfigSpec.DoubleValue emeraldFactor;
+        public static ForgeConfigSpec.DoubleValue redstoneFactor;
+        public static ForgeConfigSpec.DoubleValue lapisFactor;
+        public static ForgeConfigSpec.DoubleValue tinFactor;
+        public static ForgeConfigSpec.DoubleValue copperFactor;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("deposits");
@@ -35,6 +44,26 @@ public class OreDeposConfig {
             leastLongDistance = builder.defineInRange("leastLongDistance", 10000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at most in a long distance deposit");
             mostLongDistance = builder.defineInRange("mostLongDistance", 20000, 0, Integer.MAX_VALUE);
+            builder.pop();
+            builder.push("Ore Settings");
+            builder.comment("Factor for coal deposit size");
+            coalFactor = builder.defineInRange("coalFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for iron deposit size");
+            ironFactor = builder.defineInRange("ironFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for gold deposit size");
+            goldFactor = builder.defineInRange("goldFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for diamond deposit size");
+            diamondFactor = builder.defineInRange("diamondFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for emerald deposit size");
+            emeraldFactor = builder.defineInRange("emeraldFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for redstone deposit size");
+            redstoneFactor = builder.defineInRange("redstoneFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for lapis deposit size");
+            lapisFactor = builder.defineInRange("lapisFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for copper deposit size");
+            copperFactor = builder.defineInRange("copperFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Factor for tin deposit size");
+            tinFactor = builder.defineInRange("tinFactor", 1.0, 0.0, Float.MAX_VALUE);
             builder.pop();
         }
     }
