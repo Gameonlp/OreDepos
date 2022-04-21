@@ -24,13 +24,13 @@ public class OreDeposConfig {
             builder.comment("How many blocks are at most in a short distance deposit");
             mostShortDistance = builder.defineInRange("mostShortDistance", 200, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks from spawn is medium distance");
-            mediumDistance = builder.defineInRange("mediumDistance", 1000, 0, Integer.MAX_VALUE);
+            mediumDistance = builder.defineInRange("mediumDistance", 10000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at least in a medium distance deposit");
             leastMediumDistance = builder.defineInRange("leastMediumDistance", 1000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at most in a medium distance deposit");
             mostMediumDistance = builder.defineInRange("mostMediumDistance", 2000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks from spawn is long distance");
-            longDistance = builder.defineInRange("longDistance", 10000, 0, Integer.MAX_VALUE);
+            longDistance = builder.defineInRange("longDistance", 100000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at least in a long distance deposit");
             leastLongDistance = builder.defineInRange("leastLongDistance", 10000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at most in a long distance deposit");
