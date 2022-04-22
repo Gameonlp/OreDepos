@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "oredepos:aluminum_ore"
+  },
+  "result": "oredepos:aluminum_ingot",
+  "experience": 0.7,
+  "cookingtime": 200
+}

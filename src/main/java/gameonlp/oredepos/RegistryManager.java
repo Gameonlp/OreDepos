@@ -84,6 +84,8 @@ public class RegistryManager {
     public static final Item LEAD_INGOT = null;
     @ObjectHolder("oredepos:silver_ingot")
     public static final Item SILVER_INGOT = null;
+    @ObjectHolder("oredepos:aluminum_ingot")
+    public static final Item ALUMINUM_INGOT = null;
 
     //Blocks
     public static RegistryObject<Block> MINER;
@@ -106,6 +108,10 @@ public class RegistryManager {
     public static final Block SILVER_ORE = null;
     @ObjectHolder("oredepos:silver_block")
     public static final Block SILVER_BLOCK = null;
+    @ObjectHolder("oredepos:aluminum_ore")
+    public static final Block ALUMINUM_ORE = null;
+    @ObjectHolder("oredepos:aluminum_block")
+    public static final Block ALUMINUM_BLOCK = null;
     @ObjectHolder("oredepos:coal_ore_deposit")
     public static final Block COAL_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:iron_ore_deposit")
@@ -128,6 +134,8 @@ public class RegistryManager {
     public static final Block LEAD_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:silver_ore_deposit")
     public static final Block SILVER_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:aluminum_ore_deposit")
+    public static final Block ALUMINUM_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -181,6 +189,7 @@ public class RegistryManager {
         Block copperOreBlock = prepareDeposit("copper", Material.STONE, 2, 5, ToolType.PICKAXE, 1);
         Block leadOreBlock = prepareDeposit("lead", Material.STONE, 3, 7, ToolType.PICKAXE, 2);
         Block silverOreBlock = prepareDeposit("silver", Material.STONE, 3, 4, ToolType.PICKAXE, 2);
+        Block aluminumOreBlock = prepareDeposit("aluminum", Material.STONE, 2, 4, ToolType.PICKAXE, 1);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coalFactor.get()));
@@ -193,6 +202,7 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Common.tinFactor.get()));
         depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.leadFactor.get()));
         depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silverFactor.get()));
+        depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Common.aluminumFactor.get()));
 
 
         DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstoneFactor.get());

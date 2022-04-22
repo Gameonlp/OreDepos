@@ -26,6 +26,7 @@ public class OreGen {
         TIN_DEPOSIT(Lazy.of(() -> RegistryManager.TIN_ORE_DEPOSIT), OreDeposConfig.Common.tinEnable::get, 9, 1, 68, 20),
         LEAD_DEPOSIT(Lazy.of(() -> RegistryManager.LEAD_ORE_DEPOSIT), OreDeposConfig.Common.leadEnable::get, 6, 1, 35, 8),
         SILVER_DEPOSIT(Lazy.of(() -> RegistryManager.SILVER_ORE_DEPOSIT), OreDeposConfig.Common.silverEnable::get, 6, 1, 35, 8),
+        ALUMINUM_DEPOSIT(Lazy.of(() -> RegistryManager.ALUMINUM_ORE_DEPOSIT), OreDeposConfig.Common.aluminumEnable::get, 6, 1, 64, 12),
         COPPER_DEPOSIT(Lazy.of(() -> RegistryManager.COPPER_ORE_DEPOSIT), OreDeposConfig.Common.copperEnable::get, 9, 1, 68, 20);
 
         private final Lazy<Block> block;

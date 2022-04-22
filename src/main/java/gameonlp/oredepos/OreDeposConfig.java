@@ -38,6 +38,8 @@ public class OreDeposConfig {
         public static ForgeConfigSpec.BooleanValue leadEnable;
         public static ForgeConfigSpec.DoubleValue silverFactor;
         public static ForgeConfigSpec.BooleanValue silverEnable;
+        public static ForgeConfigSpec.DoubleValue aluminumFactor;
+        public static ForgeConfigSpec.BooleanValue aluminumEnable;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -112,6 +114,10 @@ public class OreDeposConfig {
             silverFactor = builder.defineInRange("silverFactor", 1.0, 0.0, Float.MAX_VALUE);
             builder.comment("Enable the generation of silver deposits");
             silverEnable = builder.define("silverEnable", true);
+            builder.comment("Factor for aluminum deposit size");
+            aluminumFactor = builder.defineInRange("aluminumFactor", 1.0, 0.0, Float.MAX_VALUE);
+            builder.comment("Enable the generation of aluminum deposits");
+            aluminumEnable = builder.define("aluminumEnable", true);
             builder.pop();
             builder.pop();
         }

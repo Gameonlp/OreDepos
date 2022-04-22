@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "oredepos:aluminum_block"
+    }
+  ],
+  "result": {
+    "item": "oredepos:aluminum_ingot",
+    "count": 9
+  }
+}
