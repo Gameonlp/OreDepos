@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "oredepos:silver_block"
+    }
+  ],
+  "result": {
+    "item": "oredepos:silver_ingot",
+    "count": 9
+  }
+}

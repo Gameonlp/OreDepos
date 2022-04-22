@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "111",
+    "111",
+    "111"
+  ],
+  "key": {
+    "1": {
+      "tag": "forge:ingots/lead"
+    }
+  },
+  "result": {
+    "item": "oredepos:lead_block",
+    "count": 1
+  }
+}

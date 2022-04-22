@@ -53,6 +53,9 @@ public class OreDepositTile extends TileEntity {
                     min = OreDeposConfig.Common.leastLongDistance.get();
                     max = OreDeposConfig.Common.mostLongDistance.get();
                     amount = (int) (min + distance / OreDeposConfig.Common.longDistance.get() * (level.getRandom().nextInt(max - min)));
+                    if(!OreDeposConfig.Common.longDistanceIncreasesFurther.get()) {
+                        amount = Math.min(max, amount);
+                    }
                 }
             } else {
                 amount = 1;

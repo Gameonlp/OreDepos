@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "oredepos:block/silver_ore_deposit" }
+  }
+}

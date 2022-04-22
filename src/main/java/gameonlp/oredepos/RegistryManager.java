@@ -80,16 +80,32 @@ public class RegistryManager {
     public static final Item COPPER_INGOT = null;
     @ObjectHolder("oredepos:tin_ingot")
     public static final Item TIN_INGOT = null;
+    @ObjectHolder("oredepos:lead_ingot")
+    public static final Item LEAD_INGOT = null;
+    @ObjectHolder("oredepos:silver_ingot")
+    public static final Item SILVER_INGOT = null;
 
     //Blocks
     public static RegistryObject<Block> MINER;
     public static final RegistryObject<FlowingFluidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
             () -> new FlowingFluidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), AbstractBlock.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
-    public static RegistryObject<Block> COPPER_ORE;
-    public static RegistryObject<Block> COPPER_BLOCK;
-    public static RegistryObject<Block> TIN_ORE;
-    public static RegistryObject<Block> TIN_BLOCK;
+    @ObjectHolder("oredepos:copper_ore")
+    public static final Block COPPER_ORE = null;
+    @ObjectHolder("oredepos:copper_block")
+    public static final Block COPPER_BLOCK = null;
+    @ObjectHolder("oredepos:tin_ore")
+    public static final Block TIN_ORE = null;
+    @ObjectHolder("oredepos:tin_block")
+    public static final Block TIN_BLOCK = null;
+    @ObjectHolder("oredepos:lead_ore")
+    public static final Block LEAD_ORE = null;
+    @ObjectHolder("oredepos:lead_block")
+    public static final Block LEAD_BLOCK = null;
+    @ObjectHolder("oredepos:silver_ore")
+    public static final Block SILVER_ORE = null;
+    @ObjectHolder("oredepos:silver_block")
+    public static final Block SILVER_BLOCK = null;
     @ObjectHolder("oredepos:coal_ore_deposit")
     public static final Block COAL_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:iron_ore_deposit")
@@ -108,6 +124,10 @@ public class RegistryManager {
     public static final Block TIN_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:copper_ore_deposit")
     public static final Block COPPER_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:lead_ore_deposit")
+    public static final Block LEAD_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:silver_ore_deposit")
+    public static final Block SILVER_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -131,21 +151,37 @@ public class RegistryManager {
             .color(0xbffed0d0)).slopeFindDistance(2).levelDecreasePerBlock(2)
             .block(() -> RegistryManager.SULFURIC_ACID_BLOCK.get()).bucket(() -> RegistryManager.SULFURID_ACID_BUCKET.get());
 
+    private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel){
+        return prepareDeposit(name, material, hardness,resistance,tool,harvestLevel,hardness, resistance, true,true);
+    }
+
+    private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel, float blockHardness, float blockResistance, boolean hasIngot, boolean hasBlock){
+        Block oreBlock = new Block(AbstractBlock.Properties.of(material)
+                .strength(hardness, resistance)
+                .harvestTool(tool)
+                .harvestLevel(harvestLevel)
+                .requiresCorrectToolForDrops());
+        registerBlock(name + "_ore", () -> oreBlock);
+        if (hasBlock) {
+            registerBlock(name + "_block", () -> new Block(AbstractBlock.Properties.of(Material.METAL)
+                    .strength(blockHardness, blockResistance)
+                    .harvestTool(tool)
+                    .harvestLevel(harvestLevel)
+                    .requiresCorrectToolForDrops()));
+        }
+        if (hasIngot) {
+            ITEMS.register(name + "_ingot", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
+        }
+        return oreBlock;
+    }
 
 
     private void registerAllDeposits(){
-        Block tinOreBlock = new Block(AbstractBlock.Properties.of(Material.STONE)
-                .strength(2, 5)
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(1)
-                .requiresCorrectToolForDrops());
-        TIN_ORE = registerBlock("tin_ore", () -> tinOreBlock);
-        Block copperOreBlock = new Block(AbstractBlock.Properties.of(Material.STONE)
-                .strength(2, 5)
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(1)
-                .requiresCorrectToolForDrops());
-        COPPER_ORE = registerBlock("copper_ore", () -> copperOreBlock);
+        Block tinOreBlock = prepareDeposit("tin", Material.STONE, 2, 5, ToolType.PICKAXE, 1);
+        Block copperOreBlock = prepareDeposit("copper", Material.STONE, 2, 5, ToolType.PICKAXE, 1);
+        Block leadOreBlock = prepareDeposit("lead", Material.STONE, 3, 7, ToolType.PICKAXE, 2);
+        Block silverOreBlock = prepareDeposit("silver", Material.STONE, 3, 4, ToolType.PICKAXE, 2);
+
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coalFactor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Common.ironFactor.get()));
@@ -155,6 +191,8 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Common.lapisFactor.get()));
         depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Common.copperFactor.get()));
         depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Common.tinFactor.get()));
+        depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.leadFactor.get()));
+        depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silverFactor.get()));
 
 
         DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstoneFactor.get());
@@ -189,7 +227,7 @@ public class RegistryManager {
                     .harvestTool(contained.block.getHarvestTool(contained.block.defaultBlockState()))
                     .lootFrom(contained.block::getBlock), contained.factor);
         }
-        registerBlock( contained.name + "_deposit",                () -> block);
+        registerBlock( contained.name + "_deposit", () -> block);
         return block;
     }
 
@@ -208,16 +246,6 @@ public class RegistryManager {
                 .strength(3, 10)
                 .harvestTool(ToolType.PICKAXE)
                 .requiresCorrectToolForDrops()));
-        COPPER_BLOCK = registerBlock("copper_block", () -> new Block(AbstractBlock.Properties.of(Material.METAL)
-                .strength(2.5f, 5)
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(1)
-                .requiresCorrectToolForDrops()));
-        TIN_BLOCK = registerBlock("tin_block", () -> new Block(AbstractBlock.Properties.of(Material.METAL)
-                .strength(2.5f, 5)
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(1)
-                .requiresCorrectToolForDrops()));
     }
 
     private void registerItems(){
@@ -230,8 +258,6 @@ public class RegistryManager {
         ITEMS.register("iron_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 2, ToolType.AXE));
         ITEMS.register("diamond_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 3, ToolType.AXE));
         ITEMS.register("netherite_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 4, ToolType.AXE));
-        ITEMS.register("copper_ingot", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
-        ITEMS.register("tin_ingot", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("wire", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("circuit", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
