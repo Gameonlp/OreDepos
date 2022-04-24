@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "oredepos:productivity_module_2"
+    },
+    {
+      "item": "oredepos:productivity_module_2"
+    },
+    {
+      "item": "oredepos:productivity_module_2"
+    },
+    {
+      "item": "oredepos:productivity_module_2"
+    },
+    {
+      "item": "oredepos:productivity_module_2"
+    }
+  ],
+  "result": {
+    "item": "oredepos:productivity_module_3",
+    "count": 1
+  }
+}

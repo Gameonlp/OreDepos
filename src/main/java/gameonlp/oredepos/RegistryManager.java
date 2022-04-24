@@ -5,8 +5,7 @@ import gameonlp.oredepos.blocks.miner.MinerContainer;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
 import gameonlp.oredepos.blocks.oredeposit.RedstoneOreDepositBlock;
 import gameonlp.oredepos.config.OreDeposConfig;
-import gameonlp.oredepos.items.DrillHeadItem;
-import gameonlp.oredepos.items.OreDeposTab;
+import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
 import net.minecraft.block.AbstractBlock;
@@ -291,6 +290,15 @@ public class RegistryManager {
         ITEMS.register("netherite_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 4, ToolType.AXE));
         ITEMS.register("wire", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("circuit", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
+        ITEMS.register("speed_module_1", () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.5f, 0.2f));
+        ITEMS.register("speed_module_2", () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, 0.3f));
+        ITEMS.register("speed_module_3", () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.7f, 0.5f));
+        ITEMS.register("efficiency_module_1", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.3f));
+        ITEMS.register("efficiency_module_2", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.4f));
+        ITEMS.register("efficiency_module_3", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.5f));
+        ITEMS.register("productivity_module_1", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.4f, -0.05f, 0.04f));
+        ITEMS.register("productivity_module_2", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, -0.1f, 0.06f));
+        ITEMS.register("productivity_module_3", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, -0.15f, 0.1f));
     }
 
     private void registerFeatures() {

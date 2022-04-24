@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "111",
+    "212",
+    "121"
+  ],
+  "key": {
+    "1": {
+      "item": "oredepos:circuit"
+    },
+    "2": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "oredepos:speed_module_1",
+    "count": 1
+  }
+}

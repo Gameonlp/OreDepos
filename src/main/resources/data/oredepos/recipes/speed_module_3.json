@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "oredepos:speed_module_2"
+    },
+    {
+      "item": "oredepos:speed_module_2"
+    },
+    {
+      "item": "oredepos:speed_module_2"
+    },
+    {
+      "item": "oredepos:speed_module_2"
+    },
+    {
+      "item": "oredepos:speed_module_2"
+    }
+  ],
+  "result": {
+    "item": "oredepos:speed_module_3",
+    "count": 1
+  }
+}

@@ -17,6 +17,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -86,8 +87,8 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> fluidTank);
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
 
-    int progress;
-
+    float progress;
+    float productivity;
 
     protected MinerTile(TileEntityType<?> p_i48289_1_) {
         super(p_i48289_1_);
@@ -147,7 +148,8 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     public CompoundNBT save(CompoundNBT p_189515_1_) {
         CompoundNBT tag = super.save(p_189515_1_);
         tag.putInt("energy", energyCell.getEnergyStored());
-        tag.putInt("progress", progress);
+        tag.putFloat("progress", progress);
+        tag.putFloat("producitivity", productivity);
         tag = fluidTank.writeToNBT(tag);
         tag.put("slots", slots.serializeNBT());
         return tag;
@@ -157,7 +159,8 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     public void load(BlockState p_230337_1_, CompoundNBT p_230337_2_) {
         super.load(p_230337_1_, p_230337_2_);
         energyCell.setEnergy(p_230337_2_.getInt("energy"));
-        progress = p_230337_2_.getInt("progress");
+        progress = p_230337_2_.getFloat("progress");
+        productivity = p_230337_2_.getFloat("productivity");
         FluidStack fluid = FluidStack.loadFluidStackFromNBT(p_230337_2_);
         if (fluid == null){
             fluid = FluidStack.EMPTY;
@@ -179,38 +182,46 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
             }
         }
         List<OreDepositTile> deposits = new LinkedList<>();
-        for (int x = -1; x <= 1; x++) {
-            for (int y = 0; y > -3; y--) {
-                for (int z = -1; z <= 1; z++) {
-                    TileEntity depo = level.getBlockEntity(worldPosition.below().offset(x, y, z));
-                    if (!(depo instanceof OreDepositTile)) {
-                        continue;
-                    }
-                    OreDepositTile oreDepo = (OreDepositTile) depo;
-                    DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
-                    boolean sufficientMiningLevel = depo.getBlockState().getHarvestLevel() <= drillHead.getMiningLevel();
-                    boolean corrrectTool = depo.getBlockState().getHarvestTool() == drillHead.getToolType() && depo.getBlockState().requiresCorrectToolForDrops();
-                    Fluid fluid = oreDepo.fluidNeeded();
-                    boolean correctFluid = fluid == null || fluid.equals(fluidTank.getFluid().getFluid());
-                    boolean enoughFluid = fluid == null || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain ;
-                    if (sufficientMiningLevel && corrrectTool && correctFluid && enoughFluid) {
-                        deposits.add(oreDepo);
-                    }
-                }
-            }
-        }
-        if (deposits.isEmpty()){
+        findSuitableTiles(fluidDrain, deposits);
+        if (deposits.isEmpty()) {
             return;
         }
-        if (energyCell.getEnergyStored() >= energyDrain) {
-            energyCell.setEnergy(energyCell.getEnergyStored() - energyDrain);
-            progress++;
+        List<ModuleItem> modules = new LinkedList<>();
+        ItemStack mod1 = slots.getStackInSlot(7);
+        ItemStack mod2 = slots.getStackInSlot(8);
+        ItemStack mod3 =  slots.getStackInSlot(9);
+        if (!mod1.isEmpty()){
+            modules.add((ModuleItem) mod1.getItem());
+        }
+        if (!mod2.isEmpty()){
+            modules.add((ModuleItem) mod2.getItem());
+        }
+        if (!mod3.isEmpty()){
+            modules.add((ModuleItem) mod3.getItem());
+        }
+        float drain = energyDrain;
+        for (ModuleItem module : modules){
+            drain = module.getEnergyConsumption(drain);
+        }
+        if (energyCell.getEnergyStored() >= drain) {
+            energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
+            float progressIncrease = 1.0f;
+            for (ModuleItem module : modules){
+                progressIncrease = module.getProgress(progressIncrease);
+            }
+            progress += progressIncrease;
             this.setChanged();
         }
-        if (progress == 20) { // TODO make reliant on module and block mined
-            progress = 0;
+        if (progress >= 20) {
+            progress -= 20;
             OreDepositTile depo = deposits.get(level.getRandom().nextInt(deposits.size()));
             List<ItemStack> drops = Block.getDrops(depo.getBlockState(), (ServerWorld) level, worldPosition, depo, null, slots.getStackInSlot(6));
+            if (productivity >= 1){
+                productivity -= 1;
+                for (ItemStack drop : drops) {
+                    drop.setCount(drop.getCount() * 2); // might not work
+                }
+            }
             ItemStack leftover = ItemStack.EMPTY;
             for (ItemStack drop : drops) {
                 for (int i = 0; i <= 5; i++) {
@@ -228,9 +239,38 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                 fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.EXECUTE);
             }
             depo.decrement();
+            float productivityIncrease = 0.0f;
+            for (ModuleItem module : modules) {
+                productivityIncrease = module.getProductivity(productivityIncrease);
+            }
+            productivity += productivityIncrease;
             this.setChanged();
         }
     }
+
+    private void findSuitableTiles(int fluidDrain, List<OreDepositTile> deposits) {
+        for (int x = -1; x <= 1; x++) {
+            for (int y = 0; y > -3; y--) {
+                for (int z = -1; z <= 1; z++) {
+                    TileEntity depo = level.getBlockEntity(worldPosition.below().offset(x, y, z));
+                    if (!(depo instanceof OreDepositTile)) {
+                        continue;
+                    }
+                    OreDepositTile oreDepo = (OreDepositTile) depo;
+                    DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
+                    boolean sufficientMiningLevel = depo.getBlockState().getHarvestLevel() <= drillHead.getMiningLevel();
+                    boolean corrrectTool = depo.getBlockState().getHarvestTool() == drillHead.getToolType() && depo.getBlockState().requiresCorrectToolForDrops();
+                    Fluid fluid = oreDepo.fluidNeeded();
+                    boolean correctFluid = fluid == null || fluid.equals(fluidTank.getFluid().getFluid());
+                    boolean enoughFluid = fluid == null || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
+                    if (sufficientMiningLevel && corrrectTool && correctFluid && enoughFluid) {
+                        deposits.add(oreDepo);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void setEnergy(int energy) {
         this.energyCell.setEnergy(energy);
