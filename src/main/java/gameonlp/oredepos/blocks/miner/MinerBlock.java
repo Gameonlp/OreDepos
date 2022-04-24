@@ -75,6 +75,7 @@ public class MinerBlock extends Block {
         return new MinerTile();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState p_196243_1_, World world, BlockPos blockPos, BlockState p_196243_4_, boolean dropContents) {
         if (!dropContents){

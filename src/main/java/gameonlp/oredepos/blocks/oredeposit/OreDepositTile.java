@@ -1,6 +1,6 @@
 package gameonlp.oredepos.blocks.oredeposit;
 
-import gameonlp.oredepos.OreDeposConfig;
+import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.RegistryManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
@@ -8,10 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
 import net.minecraft.world.storage.IWorldInfo;
-
-import java.util.Random;
 
 public class OreDepositTile extends TileEntity {
     private int amount;

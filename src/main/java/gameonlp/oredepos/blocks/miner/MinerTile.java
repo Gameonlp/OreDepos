@@ -61,7 +61,6 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            System.out.println(slot + " " + stack + " " + simulate);
             if (slot <= 5) {
                 return stack;
             }

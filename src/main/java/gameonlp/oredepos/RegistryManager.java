@@ -1,27 +1,24 @@
 package gameonlp.oredepos;
 
-import com.electronwill.nightconfig.core.EnumGetMethod;
 import gameonlp.oredepos.blocks.miner.MinerBlock;
 import gameonlp.oredepos.blocks.miner.MinerContainer;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
 import gameonlp.oredepos.blocks.oredeposit.RedstoneOreDepositBlock;
+import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.items.DrillHeadItem;
 import gameonlp.oredepos.items.OreDeposTab;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +28,6 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -112,6 +108,20 @@ public class RegistryManager {
     public static final Block ALUMINUM_ORE = null;
     @ObjectHolder("oredepos:aluminum_block")
     public static final Block ALUMINUM_BLOCK = null;
+    @ObjectHolder("minecraft:coal_ore")
+    public static final Block COAL_ORE = null;
+    @ObjectHolder("minecraft:iron_ore")
+    public static final Block IRON_ORE = null;
+    @ObjectHolder("minecraft:gold_ore")
+    public static final Block GOLD_ORE = null;
+    @ObjectHolder("minecraft:diamond_ore")
+    public static final Block DIAMOND_ORE = null;
+    @ObjectHolder("minecraft:emerald_ore")
+    public static final Block EMERALD_ORE = null;
+    @ObjectHolder("minecraft:redstone_ore")
+    public static final Block REDSTONE_ORE = null;
+    @ObjectHolder("minecraft:lapis_ore")
+    public static final Block LAPIS_ORE = null;
     @ObjectHolder("oredepos:coal_ore_deposit")
     public static final Block COAL_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:iron_ore_deposit")
@@ -192,20 +202,20 @@ public class RegistryManager {
         Block aluminumOreBlock = prepareDeposit("aluminum", Material.STONE, 2, 4, ToolType.PICKAXE, 1);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
-        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coalFactor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Common.ironFactor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Common.goldFactor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Common.diamondFactor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Common.emeraldFactor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Common.lapisFactor.get()));
-        depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Common.copperFactor.get()));
-        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Common.tinFactor.get()));
-        depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.leadFactor.get()));
-        depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silverFactor.get()));
-        depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Common.aluminumFactor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coal.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Common.iron.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Common.gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Common.diamond.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Common.emerald.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Common.lapis.factor.get()));
+        depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Common.copper.factor.get()));
+        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Common.tin.factor.get()));
+        depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.lead.factor.get()));
+        depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silver.factor.get()));
+        depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Common.aluminum.factor.get()));
 
 
-        DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstoneFactor.get());
+        DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstone.factor.get());
         Block redstoneOreDepositBlock = new RedstoneOreDepositBlock(AbstractBlock.Properties.copy(redstoneTemplate.block)
                     .harvestLevel(redstoneTemplate.block.getHarvestLevel(redstoneTemplate.block.defaultBlockState()))
                     .harvestTool(redstoneTemplate.block.getHarvestTool(redstoneTemplate.block.defaultBlockState()))
@@ -224,7 +234,6 @@ public class RegistryManager {
 
     private Block registerOreDeposit(DepositTemplate contained){
         Block block;
-        System.out.println(contained.block);
         if (contained.block.defaultBlockState().requiresCorrectToolForDrops()) {
             block = new OreDepositBlock(AbstractBlock.Properties.copy(contained.block)
                     .harvestLevel(contained.block.getHarvestLevel(contained.block.defaultBlockState()))

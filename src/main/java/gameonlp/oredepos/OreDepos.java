@@ -2,6 +2,7 @@ package gameonlp.oredepos;
 
 import gameonlp.oredepos.blocks.miner.MinerScreen;
 import gameonlp.oredepos.compat.TOPCompat;
+import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.data.DataGen;
 import gameonlp.oredepos.net.PacketManager;
 import net.minecraft.client.gui.ScreenManager;
