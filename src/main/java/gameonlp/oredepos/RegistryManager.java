@@ -22,7 +22,12 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.ReplaceBlockConfig;
+import net.minecraft.world.gen.feature.ReplaceBlockFeature;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -35,6 +40,7 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Supplier;
 
 public class RegistryManager {
@@ -61,6 +67,8 @@ public class RegistryManager {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, OreDepos.MODID);
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, OreDepos.MODID);
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, OreDepos.MODID);
+    private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, OreDepos.MODID);
+
     //Resource Locations
     public static final ResourceLocation WATER_STILL_RL = new ResourceLocation("block/water_still");
     public static final ResourceLocation WATER_FLOWING_RL = new ResourceLocation("block/water_flow");
@@ -157,6 +165,10 @@ public class RegistryManager {
         World world = inv.player.getCommandSenderWorld();
         return new MinerContainer(windowId, world, pos, inv, inv.player);
     })));
+
+    //Features
+    @ObjectHolder("oredepos:replace")
+    public static final ReplaceBlockFeature REPLACE_FEATURE = null;
 
     //Fluids
     public static final RegistryObject<FlowingFluid> SULFURIC_ACID_FLUID
@@ -281,6 +293,10 @@ public class RegistryManager {
         ITEMS.register("circuit", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
 
+    private void registerFeatures() {
+        FEATURES.register("replace", () -> new ReplaceBlockFeature(ReplaceBlockConfig.CODEC));
+    }
+
     private void registerTileEntities(){
         MINER_TILE = TILE_ENTITIES.register("miner_tile", () -> TileEntityType.Builder.of(MinerTile::new, MINER.get()).build(null));
     }
@@ -295,6 +311,8 @@ public class RegistryManager {
         registerTileEntities();
         TILE_ENTITIES.register(eventBus);
         CONTAINERS.register(eventBus);
+        registerFeatures();
+        FEATURES.register(eventBus);
 
         FLUIDS.register(eventBus);
     }

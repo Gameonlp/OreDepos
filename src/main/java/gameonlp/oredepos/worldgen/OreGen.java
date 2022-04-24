@@ -19,6 +19,7 @@ import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.placement.*;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -84,10 +85,9 @@ public class OreGen {
 
     private static void replaceOre(BiomeLoadingEvent event, Block block, Block toReplace, Ore ore) {
         ReplaceBlockConfig replace = new ReplaceBlockConfig(toReplace.defaultBlockState(), block.defaultBlockState());
-        ReplaceBlockFeature feature = new ReplaceBlockFeature(ReplaceBlockConfig.CODEC);
         ConfiguredPlacement<?> blocksToCheck = Placement.RANGE.configured(new TopSolidRangeConfig(ore.config.minHeight.get(), ore.config.minHeight.get(), ore.config.maxHeight.get()));
         ConfiguredFeature<?, ?> confFeature = Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, block.getRegistryName(),
-                feature.configured(replace).decorated(blocksToCheck).squared().count(16000 / ore.config.veinSize.get()));//TODO not happy about this might make my own Placement config
+                RegistryManager.REPLACE_FEATURE.configured(replace).decorated(blocksToCheck).squared().count(128).count(128 / ore.config.veinSize.get()));//TODO not happy about this might make my own Placement config
         event.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, confFeature);
     }
 
