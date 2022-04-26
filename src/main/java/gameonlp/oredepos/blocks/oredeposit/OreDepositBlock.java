@@ -9,16 +9,17 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class OreDepositBlock extends Block {
-    private Fluid fluid;
+    private Supplier<Fluid> fluid;
     private Double factor;
 
     public OreDepositBlock(Properties properties, double factor) {
-        this(properties, null, factor);
+        this(properties, () -> null, factor);
     }
 
-    public OreDepositBlock(Properties properties, Fluid fluid, double factor) {
+    public OreDepositBlock(Properties properties, Supplier<Fluid> fluid, double factor) {
         super(properties);
         this.fluid = fluid;
         this.factor = factor;
@@ -32,6 +33,6 @@ public class OreDepositBlock extends Block {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new OreDepositTile(fluid, factor);
+        return new OreDepositTile(fluid.get(), factor);
     }
 }

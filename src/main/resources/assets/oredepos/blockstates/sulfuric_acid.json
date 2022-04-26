@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "level=0": { "model": "oredepos:block/sulfuric_acid"},
+    "level=1": { "model": "oredepos:block/sulfuric_acid"},
+    "level=2": { "model": "oredepos:block/sulfuric_acid"},
+    "level=3": { "model": "oredepos:block/sulfuric_acid"},
+    "level=4": { "model": "oredepos:block/sulfuric_acid"},
+    "level=5": { "model": "oredepos:block/sulfuric_acid"},
+    "level=6": { "model": "oredepos:block/sulfuric_acid"},
+    "level=7": { "model": "oredepos:block/sulfuric_acid"},
+    "level=8": { "model": "oredepos:block/sulfuric_acid"},
+    "level=9": { "model": "oredepos:block/sulfuric_acid"},
+    "level=10": { "model": "oredepos:block/sulfuric_acid"},
+    "level=11": { "model": "oredepos:block/sulfuric_acid"},
+    "level=12": { "model": "oredepos:block/sulfuric_acid"},
+    "level=13": { "model": "oredepos:block/sulfuric_acid"},
+    "level=14": { "model": "oredepos:block/sulfuric_acid"},
+    "level=15": { "model": "oredepos:block/sulfuric_acid"}
+  }
+}

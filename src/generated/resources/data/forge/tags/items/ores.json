@@ -5,6 +5,7 @@
     "#forge:ores/tin",
     "#forge:ores/lead",
     "#forge:ores/silver",
-    "#forge:ores/aluminum"
+    "#forge:ores/aluminum",
+    "#forge:ores/uranium"
   ]
 }

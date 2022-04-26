@@ -7,8 +7,10 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.storage.IWorldInfo;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class OreDepositTile extends TileEntity {
     private int amount;
@@ -33,8 +35,8 @@ public class OreDepositTile extends TileEntity {
     @Override
     public void onLoad() {
         if (amount == 0) {
-            int min = 0;
-            int max = 0;
+            int min;
+            int max;
             if (level != null) {
                 IWorldInfo worldInfo = level.getLevelData();
                 float distance = worldPosition.distManhattan(new Vector3i(worldInfo.getXSpawn(), worldInfo.getYSpawn(), worldInfo.getZSpawn()));
@@ -83,6 +85,7 @@ public class OreDepositTile extends TileEntity {
         CompoundNBT tag = super.save(p_189515_1_);
         tag.putInt("amount", amount);
         tag.putInt("max_amount", maxAmount);
+        tag.putString("fluid", fluid != null ? fluid.getRegistryName().toString() : "");
         return tag;
     }
 
@@ -92,6 +95,10 @@ public class OreDepositTile extends TileEntity {
 
         amount = p_230337_2_.getInt("amount");
         maxAmount = p_230337_2_.getInt("max_amount");
+        String fluidName = p_230337_2_.getString("fluid");
+        if (fluidName != "") {
+            fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
+        }
     }
 
     public int getAmount() {

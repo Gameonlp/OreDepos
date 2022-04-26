@@ -29,6 +29,7 @@ public class OreDeposConfig {
         public static OreConfig lead;
         public static OreConfig silver;
         public static OreConfig aluminum;
+        public static OreConfig uranium;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -71,6 +72,7 @@ public class OreDeposConfig {
             lead = new OreConfig(builder, "lead", true, true, false, 1.0f, 6, 1, 35, 8);
             silver = new OreConfig(builder, "silver", true, true, false, 1.0f, 6, 1, 35, 8);
             aluminum = new OreConfig(builder, "aluminum", true, true, false, 1.0f, 6, 1, 64, 12);
+            uranium = new OreConfig(builder, "uranium", true, true, false, 1.0f, 2, 1, 64, 4);
             builder.pop();
             builder.pop();
         }

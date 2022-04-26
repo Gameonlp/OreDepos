@@ -8,7 +8,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 
 public class RedstoneOreDepositBlock extends OreDepositBlock{
     public RedstoneOreDepositBlock(Properties properties, double factor) {
-        super(properties, null, factor);
+        super(properties, factor);
     }
 
     @Override

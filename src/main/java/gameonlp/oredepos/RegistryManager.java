@@ -21,9 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.ReplaceBlockConfig;
 import net.minecraft.world.gen.feature.ReplaceBlockFeature;
@@ -39,7 +37,6 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class RegistryManager {
@@ -47,15 +44,24 @@ public class RegistryManager {
     private static class DepositTemplate {
         private final String name;
         private final Block block;
+        private Supplier<Fluid> needed;
         private double factor;
 
+        private DepositTemplate(String location, String name, Supplier<Fluid> needed, double factor){
+            this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), needed, factor);
+        }
         private DepositTemplate(String location, String name, double factor){
             this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
         }
 
         private DepositTemplate(String name, Block block, double factor){
+            this(name, block, () -> null, factor);
+        }
+
+        private DepositTemplate(String name, Block block, Supplier<Fluid> needed, double factor){
             this.name = name;
             this.block = block;
+            this.needed = needed;
             this.factor = factor;
         }
     }
@@ -89,6 +95,8 @@ public class RegistryManager {
     public static final Item SILVER_INGOT = null;
     @ObjectHolder("oredepos:aluminum_ingot")
     public static final Item ALUMINUM_INGOT = null;
+    @ObjectHolder("oredepos:uranium_ingot")
+    public static final Item URANIUM_INGOT = null;
 
     //Blocks
     public static RegistryObject<Block> MINER;
@@ -115,6 +123,10 @@ public class RegistryManager {
     public static final Block ALUMINUM_ORE = null;
     @ObjectHolder("oredepos:aluminum_block")
     public static final Block ALUMINUM_BLOCK = null;
+    @ObjectHolder("oredepos:uranium_ore")
+    public static final Block URANIUM_ORE = null;
+    @ObjectHolder("oredepos:uranium_block")
+    public static final Block URANIUM_BLOCK = null;
     @ObjectHolder("minecraft:coal_ore")
     public static final Block COAL_ORE = null;
     @ObjectHolder("minecraft:iron_ore")
@@ -153,6 +165,8 @@ public class RegistryManager {
     public static final Block SILVER_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:aluminum_ore_deposit")
     public static final Block ALUMINUM_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:uranium_ore_deposit")
+    public static final Block URANIUM_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -181,7 +195,11 @@ public class RegistryManager {
             .block(() -> RegistryManager.SULFURIC_ACID_BLOCK.get()).bucket(() -> RegistryManager.SULFURID_ACID_BUCKET.get());
 
     private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel){
-        return prepareDeposit(name, material, hardness,resistance,tool,harvestLevel,hardness, resistance, true,true);
+        return prepareDeposit(name, material, hardness,resistance,tool,harvestLevel, true,true);
+    }
+
+    private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel, boolean hasIngot, boolean hasBlock){
+        return prepareDeposit(name, material, hardness,resistance,tool,harvestLevel,hardness, resistance, hasIngot, hasBlock);
     }
 
     private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel, float blockHardness, float blockResistance, boolean hasIngot, boolean hasBlock){
@@ -211,6 +229,7 @@ public class RegistryManager {
         Block leadOreBlock = prepareDeposit("lead", Material.STONE, 3, 7, ToolType.PICKAXE, 2);
         Block silverOreBlock = prepareDeposit("silver", Material.STONE, 3, 4, ToolType.PICKAXE, 2);
         Block aluminumOreBlock = prepareDeposit("aluminum", Material.STONE, 2, 4, ToolType.PICKAXE, 1);
+        Block uraniumOreBlock = prepareDeposit("uranium", Material.STONE, 10, 5, ToolType.PICKAXE, 4);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coal.factor.get()));
@@ -224,6 +243,7 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.lead.factor.get()));
         depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silver.factor.get()));
         depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Common.aluminum.factor.get()));
+        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Common.uranium.factor.get()));
 
 
         DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstone.factor.get());
@@ -250,12 +270,12 @@ public class RegistryManager {
                     .harvestLevel(contained.block.getHarvestLevel(contained.block.defaultBlockState()))
                     .harvestTool(contained.block.getHarvestTool(contained.block.defaultBlockState()))
                     .lootFrom(contained.block::getBlock)
-                    .requiresCorrectToolForDrops(), contained.factor);
+                    .requiresCorrectToolForDrops(), contained.needed, contained.factor);
         } else {
             block = new OreDepositBlock(AbstractBlock.Properties.copy(contained.block)
                     .harvestLevel(contained.block.getHarvestLevel(contained.block.defaultBlockState()))
                     .harvestTool(contained.block.getHarvestTool(contained.block.defaultBlockState()))
-                    .lootFrom(contained.block::getBlock), contained.factor);
+                    .lootFrom(contained.block::getBlock), contained.needed, contained.factor);
         }
         registerBlock( contained.name + "_deposit", () -> block);
         return block;
