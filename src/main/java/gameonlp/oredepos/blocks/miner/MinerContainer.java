@@ -3,10 +3,7 @@ package gameonlp.oredepos.blocks.miner;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.items.DrillHeadItem;
 import gameonlp.oredepos.items.ModuleItem;
-import gameonlp.oredepos.net.PacketEnergySync;
-import gameonlp.oredepos.net.PacketFluidSync;
-import gameonlp.oredepos.net.PacketManager;
-import net.minecraft.client.Minecraft;
+import gameonlp.oredepos.net.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -41,6 +38,8 @@ public class MinerContainer extends Container {
         if (tileEntity.getLevel() != null && !tileEntity.getLevel().isClientSide() && tileEntity instanceof MinerTile){
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((MinerTile)tileEntity).fluidTank.getFluid()));
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((MinerTile)tileEntity).energyCell.getEnergyStored()));
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).progress));
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).productivity));
         }
         this.player = player;
         this.playerInventory = new InvWrapper(playerInventory);

@@ -30,6 +30,8 @@ public class OreDeposConfig {
         public static OreConfig silver;
         public static OreConfig aluminum;
         public static OreConfig uranium;
+        public static OreConfig nickel;
+        public static OreConfig zinc;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -73,6 +75,8 @@ public class OreDeposConfig {
             silver = new OreConfig(builder, "silver", true, true, false, 1.0f, 6, 1, 35, 8);
             aluminum = new OreConfig(builder, "aluminum", true, true, false, 1.0f, 6, 1, 64, 12);
             uranium = new OreConfig(builder, "uranium", true, true, false, 1.0f, 2, 1, 64, 4);
+            nickel = new OreConfig(builder, "nickel", true, true, false, 1.0f, 5, 1, 20, 5);
+            zinc = new OreConfig(builder, "zinc", true, true, false, 1.0f, 14, 15, 70, 4);
             builder.pop();
             builder.pop();
         }

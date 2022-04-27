@@ -1,6 +1,11 @@
 package gameonlp.oredepos.blocks.miner;
 
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.net.PacketManager;
+import gameonlp.oredepos.net.PacketProductivitySync;
+import gameonlp.oredepos.net.PacketProgressSync;
+import gameonlp.oredepos.net.PacketTooltipSync;
+import gameonlp.oredepos.tile.ModuleAcceptorTile;
 import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.items.DrillHeadItem;
 import gameonlp.oredepos.items.ModuleItem;
@@ -17,7 +22,8 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -27,15 +33,18 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MinerTile extends TileEntity implements ITickableTileEntity, EnergyHandlerTile, FluidHandlerTile {
+public class MinerTile extends TileEntity implements ITickableTileEntity, EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
     ItemStackHandler slots = createItemHandler();
@@ -88,7 +97,11 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
 
     float progress;
+    float maxProgress = 30;
     float productivity;
+
+    List<ITextComponent> reason = Collections.emptyList();
+    boolean hadReason;
 
     protected MinerTile(TileEntityType<?> p_i48289_1_) {
         super(p_i48289_1_);
@@ -173,19 +186,44 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     public void tick() {
         int energyDrain = 100; // TODO add config
         int fluidDrain = 100;
-        if (level == null || level.isClientSide() || slots.getStackInSlot(6).equals(ItemStack.EMPTY)){
+        if (level == null || level.isClientSide()){
             return;
         }
+        if (slots.getStackInSlot(6).equals(ItemStack.EMPTY)){
+            if (!hadReason || level.getGameTime() % 20 == 0) {
+                this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.missing_drill"));
+                hadReason = true;
+                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
+            }
+            return;
+        }
+        clearReason();
         for (int slot = 0; slot <= 5; slot++) {
             if (slots.getStackInSlot(slot).getCount() != 0){
+                if (!hadReason || level.getGameTime() % 20 == 0) {
+                    this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.output_full"));
+                    hadReason = true;
+                    PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
+                }
                 return;
             }
         }
+        clearReason();
         List<OreDepositTile> deposits = new LinkedList<>();
-        findSuitableTiles(fluidDrain, deposits);
+        int lengthPriorReason = this.reason.size();
+        this.reason = findSuitableTiles(fluidDrain, deposits);
         if (deposits.isEmpty()) {
+            if (hadReason && lengthPriorReason == this.reason.size() && level.getGameTime() % 20 != 0){
+                return;
+            }
+            if (this.reason.size() == 0){
+                this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.no_deposits"));
+            }
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
+            hadReason = true;
             return;
         }
+        clearReason();
         List<ModuleItem> modules = new LinkedList<>();
         ItemStack mod1 = slots.getStackInSlot(7);
         ItemStack mod2 = slots.getStackInSlot(8);
@@ -210,14 +248,17 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                 progressIncrease = module.getProgress(progressIncrease);
             }
             progress += progressIncrease;
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             this.setChanged();
         }
-        if (progress >= 20) {
-            progress -= 20;
+        if (progress >= maxProgress) {
+            progress -= maxProgress;
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             OreDepositTile depo = deposits.get(level.getRandom().nextInt(deposits.size()));
             List<ItemStack> drops = Block.getDrops(depo.getBlockState(), (ServerWorld) level, worldPosition, depo, null, slots.getStackInSlot(6));
             if (productivity >= 1){
                 productivity -= 1;
+                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
                 for (ItemStack drop : drops) {
                     drop.setCount(drop.getCount() * 2); // might not work
                 }
@@ -244,11 +285,21 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                 productivityIncrease = module.getProductivity(productivityIncrease);
             }
             productivity += productivityIncrease;
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
             this.setChanged();
         }
     }
 
-    private void findSuitableTiles(int fluidDrain, List<OreDepositTile> deposits) {
+    private void clearReason() {
+        if (hadReason){
+            this.reason = Collections.emptyList();
+            hadReason = false;
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
+        }
+    }
+
+    private List<ITextComponent> findSuitableTiles(int fluidDrain, List<OreDepositTile> deposits) {
+        List<List<ITextComponent>> reasons = new LinkedList<>();
         for (int x = -1; x <= 1; x++) {
             for (int y = 0; y > -3; y--) {
                 for (int z = -1; z <= 1; z++) {
@@ -259,16 +310,29 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                     OreDepositTile oreDepo = (OreDepositTile) depo;
                     DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
                     boolean sufficientMiningLevel = depo.getBlockState().getHarvestLevel() <= drillHead.getMiningLevel();
-                    boolean corrrectTool = depo.getBlockState().getHarvestTool() == drillHead.getToolType() && depo.getBlockState().requiresCorrectToolForDrops();
+                    boolean correctTool = depo.getBlockState().getHarvestTool() == drillHead.getToolType() && depo.getBlockState().requiresCorrectToolForDrops();
                     Fluid fluid = oreDepo.fluidNeeded();
                     boolean correctFluid = fluid == null || fluid.equals(fluidTank.getFluid().getFluid());
                     boolean enoughFluid = fluid == null || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
-                    if (sufficientMiningLevel && corrrectTool && correctFluid && enoughFluid) {
+                    if (sufficientMiningLevel && correctTool && correctFluid && enoughFluid) {
                         deposits.add(oreDepo);
+                    } else {
+                        List<ITextComponent> currentReason = new LinkedList<>();
+                        if (!sufficientMiningLevel)
+                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_level").append(": ").append(String.valueOf(depo.getBlockState().getHarvestLevel())));
+                        if (!correctTool)
+                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_tool").append(": ").append(depo.getBlockState().getHarvestTool().getName()));
+                        if (!correctFluid)
+                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid, 1000).getDisplayName()));
+                        if (!enoughFluid)
+                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
+                        reasons.add(currentReason);
                     }
                 }
             }
         }
+        reasons.sort(Comparator.comparingInt(List::size));
+        return reasons.size() > 0 ? reasons.get(0) : Collections.emptyList();
     }
 
     @Override
@@ -279,5 +343,17 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     @Override
     public void setFluid(FluidStack fluid) {
         this.fluidTank.setFluid(fluid);
+    }
+
+    @Override
+    public void setProgress(float progress) {
+        this.progress = progress;
+    }
+    @Override
+    public void setProductivity(float productivity) {
+        this.productivity = productivity;
+    }
+    public void setReason(List<ITextComponent> reason) {
+        this.reason = reason;
     }
 }

@@ -97,6 +97,10 @@ public class RegistryManager {
     public static final Item ALUMINUM_INGOT = null;
     @ObjectHolder("oredepos:uranium_ingot")
     public static final Item URANIUM_INGOT = null;
+    @ObjectHolder("oredepos:nickel_ingot")
+    public static final Item NICKEL_INGOT = null;
+    @ObjectHolder("oredepos:zinc_ingot")
+    public static final Item ZINC_INGOT = null;
 
     //Blocks
     public static RegistryObject<Block> MINER;
@@ -127,6 +131,14 @@ public class RegistryManager {
     public static final Block URANIUM_ORE = null;
     @ObjectHolder("oredepos:uranium_block")
     public static final Block URANIUM_BLOCK = null;
+    @ObjectHolder("oredepos:nickel_ore")
+    public static final Block NICKEL_ORE = null;
+    @ObjectHolder("oredepos:nickel_block")
+    public static final Block NICKEL_BLOCK = null;
+    @ObjectHolder("oredepos:zinc_ore")
+    public static final Block ZINC_ORE = null;
+    @ObjectHolder("oredepos:zinc_block")
+    public static final Block ZINC_BLOCK = null;
     @ObjectHolder("minecraft:coal_ore")
     public static final Block COAL_ORE = null;
     @ObjectHolder("minecraft:iron_ore")
@@ -167,6 +179,10 @@ public class RegistryManager {
     public static final Block ALUMINUM_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:uranium_ore_deposit")
     public static final Block URANIUM_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:nickel_ore_deposit")
+    public static final Block NICKEL_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:zinc_ore_deposit")
+    public static final Block ZINC_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -230,6 +246,8 @@ public class RegistryManager {
         Block silverOreBlock = prepareDeposit("silver", Material.STONE, 3, 4, ToolType.PICKAXE, 2);
         Block aluminumOreBlock = prepareDeposit("aluminum", Material.STONE, 2, 4, ToolType.PICKAXE, 1);
         Block uraniumOreBlock = prepareDeposit("uranium", Material.STONE, 10, 5, ToolType.PICKAXE, 4);
+        Block nickelOreBlock = prepareDeposit("nickel", Material.STONE, 3, 5, ToolType.PICKAXE, 2);
+        Block zincOreBlock = prepareDeposit("zinc", Material.STONE, 2, 5, ToolType.PICKAXE, 1);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coal.factor.get()));
@@ -244,6 +262,8 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silver.factor.get()));
         depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Common.aluminum.factor.get()));
         depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Common.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, OreDeposConfig.Common.nickel.factor.get()));
+        depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Common.zinc.factor.get()));
 
 
         DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstone.factor.get());

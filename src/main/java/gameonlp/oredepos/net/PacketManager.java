@@ -18,5 +18,8 @@ public class PacketManager {
         int id = 0;
         INSTANCE.registerMessage(id++, PacketEnergySync.class, PacketEnergySync::encode, PacketEnergySync::decode, PacketEnergySync::handle);
         INSTANCE.registerMessage(id++, PacketFluidSync.class, PacketFluidSync::encode, PacketFluidSync::decode, PacketFluidSync::handle);
+        INSTANCE.registerMessage(id++, PacketProgressSync.class, PacketProgressSync::encode, PacketProgressSync::decode, PacketProgressSync::handle);
+        INSTANCE.registerMessage(id++, PacketProductivitySync.class, PacketProductivitySync::encode, PacketProductivitySync::decode, PacketProductivitySync::handle);
+        INSTANCE.registerMessage(id++, PacketTooltipSync.class, PacketTooltipSync::encode, PacketTooltipSync::decode, PacketTooltipSync::handle);
     }
 }
