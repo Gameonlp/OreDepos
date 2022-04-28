@@ -48,7 +48,39 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
     ItemStackHandler slots = createItemHandler();
-    ItemStackHandler outputs = new ItemStackHandler(10){
+    ItemStackHandler outputs = new ItemStackHandler(6){
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return slots.isItemValid(slot, stack);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return slots.getSlotLimit(slot);
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            return slots.getStackInSlot(slot);
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+            setChanged();
+            slots.setStackInSlot(slot, stack);
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return slots.extractItem(slot, amount, simulate);
+        }
+    };
+    ItemStackHandler allSlots = new ItemStackHandler(10){
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
             return slots.isItemValid(slot, stack);
@@ -87,12 +119,13 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return slots.extractItem(slot, amount, simulate);
         }
-    };
+    }; //TODO find a better structure to handle input and output slots
 
     int fluidCapacity = 4000;
     FluidTank fluidTank = new CustomFluidTank(this, fluidCapacity);
 
-    LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> outputs);
+    LazyOptional<ItemStackHandler> outputHandler = LazyOptional.of(() -> outputs);
+    LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> allSlots);
     LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> fluidTank);
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
 
@@ -135,9 +168,14 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (side != Direction.DOWN) {
+        if (side == null){
             if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)) {
                 return itemHandler.cast();
+            }
+        }
+        if (side != Direction.DOWN) {
+            if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)) {
+                return outputHandler.cast();
             }
             if (CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.equals(cap)){
                 return fluidHandler.cast();
@@ -308,6 +346,9 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                         continue;
                     }
                     OreDepositTile oreDepo = (OreDepositTile) depo;
+                    if (!(slots.getStackInSlot(6).getItem() instanceof DrillHeadItem)){
+                        continue;
+                    }
                     DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
                     boolean sufficientMiningLevel = depo.getBlockState().getHarvestLevel() <= drillHead.getMiningLevel();
                     boolean correctTool = depo.getBlockState().getHarvestTool() == drillHead.getToolType() && depo.getBlockState().requiresCorrectToolForDrops();
