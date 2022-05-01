@@ -200,11 +200,9 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
         fluidInventory.setItem(1, slots.getStackInSlot(2));
         fluidInventory.setFluid(0, primaryInputTank.getFluid());
         fluidInventory.setFluid(1, secondaryInputTank.getFluid());
-        if (level.getGameTime() % 20 == 0) {
+        if (currentRecipe == null) {
             Optional<ChemicalPlantRecipe> recipe = level.getRecipeManager().getRecipeFor(RegistryManager.CHEMICAL_PLANT_RECIPE_TYPE, fluidInventory, level);
             recipe.ifPresent(chemicalPlantRecipe -> currentRecipe = chemicalPlantRecipe);
-        }
-        if (currentRecipe == null) {
         }
         if (currentRecipe != null){
             if (!currentRecipe.matches(fluidInventory, level)){
