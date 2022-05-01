@@ -13,6 +13,7 @@ import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.FluidHandlerTile;
 import gameonlp.oredepos.util.EnergyCell;
+import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
@@ -25,6 +26,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -48,84 +50,13 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
     ItemStackHandler slots = createItemHandler();
-    ItemStackHandler outputs = new ItemStackHandler(6){
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return slots.isItemValid(slot, stack);
-        }
 
-        @Override
-        public int getSlotLimit(int slot) {
-            return slots.getSlotLimit(slot);
-        }
-
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return slots.getStackInSlot(slot);
-        }
-
-        @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            setChanged();
-            slots.setStackInSlot(slot, stack);
-        }
-
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return slots.extractItem(slot, amount, simulate);
-        }
-    };
-    ItemStackHandler allSlots = new ItemStackHandler(10){
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return slots.isItemValid(slot, stack);
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return slots.getSlotLimit(slot);
-        }
-
-        @Override
-        public int getSlots() {
-            return slots.getSlots();
-        }
-
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return slots.getStackInSlot(slot);
-        }
-
-        @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (slot <= 5) {
-                return stack;
-            }
-            return slots.insertItem(slot, stack, simulate);
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            setChanged();
-            slots.setStackInSlot(slot, stack);
-        }
-
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return slots.extractItem(slot, amount, simulate);
-        }
-    }; //TODO find a better structure to handle input and output slots
-
+    PlayerInOutStackHandler handler = new PlayerInOutStackHandler(this, slots, 6);
     int fluidCapacity = 4000;
-    FluidTank fluidTank = new CustomFluidTank(this, fluidCapacity);
+    FluidTank fluidTank = new CustomFluidTank(this, fluidCapacity, 0);
 
-    LazyOptional<ItemStackHandler> outputHandler = LazyOptional.of(() -> outputs);
-    LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> allSlots);
+    LazyOptional<ItemStackHandler> outputHandler = LazyOptional.of(() -> handler.getMachineAccessible());
+    LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> handler.getPlayerAccessible());
     LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> fluidTank);
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
 
@@ -200,7 +131,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         CompoundNBT tag = super.save(p_189515_1_);
         tag.putInt("energy", energyCell.getEnergyStored());
         tag.putFloat("progress", progress);
-        tag.putFloat("producitivity", productivity);
+        tag.putFloat("productivity", productivity);
         tag = fluidTank.writeToNBT(tag);
         tag.put("slots", slots.serializeNBT());
         return tag;
@@ -341,6 +272,9 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         for (int x = -1; x <= 1; x++) {
             for (int y = 0; y > -3; y--) {
                 for (int z = -1; z <= 1; z++) {
+                    if (level == null){
+                        continue;
+                    }
                     TileEntity depo = level.getBlockEntity(worldPosition.below().offset(x, y, z));
                     if (!(depo instanceof OreDepositTile)) {
                         continue;
@@ -350,8 +284,9 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                         continue;
                     }
                     DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
-                    boolean sufficientMiningLevel = depo.getBlockState().getHarvestLevel() <= drillHead.getMiningLevel();
-                    boolean correctTool = depo.getBlockState().getHarvestTool() == drillHead.getToolType() && depo.getBlockState().requiresCorrectToolForDrops();
+                    BlockState depoBlock = depo.getBlockState();
+                    boolean sufficientMiningLevel = depoBlock.getHarvestLevel() <= drillHead.getMiningLevel();
+                    boolean correctTool = depoBlock.getHarvestTool() == drillHead.getToolType() || !depoBlock.requiresCorrectToolForDrops();
                     Fluid fluid = oreDepo.fluidNeeded();
                     boolean correctFluid = fluid == null || fluid.equals(fluidTank.getFluid().getFluid());
                     boolean enoughFluid = fluid == null || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
@@ -359,14 +294,21 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                         deposits.add(oreDepo);
                     } else {
                         List<ITextComponent> currentReason = new LinkedList<>();
-                        if (!sufficientMiningLevel)
-                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_level").append(": ").append(String.valueOf(depo.getBlockState().getHarvestLevel())));
-                        if (!correctTool)
-                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_tool").append(": ").append(depo.getBlockState().getHarvestTool().getName()));
-                        if (!correctFluid)
+                        if (!sufficientMiningLevel) {
+                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_level").append(": ").append(String.valueOf(depoBlock.getHarvestLevel())));
+                        }
+                        if (!correctTool) {
+                            ToolType correctType = depoBlock.getHarvestTool();
+                            if (correctType != null) {
+                                currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_tool").append(": ").append(correctType.getName()));
+                            }
+                        }
+                        if (!correctFluid) {
                             currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid, 1000).getDisplayName()));
-                        if (!enoughFluid)
+                        }
+                        if (!enoughFluid) {
                             currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
+                        }
                         reasons.add(currentReason);
                     }
                 }
@@ -382,7 +324,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     }
 
     @Override
-    public void setFluid(FluidStack fluid) {
+    public void setFluid(FluidStack fluid, int tank) {
         this.fluidTank.setFluid(fluid);
     }
 

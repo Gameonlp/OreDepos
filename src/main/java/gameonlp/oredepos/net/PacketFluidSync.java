@@ -18,10 +18,12 @@ public class PacketFluidSync {
 
     private BlockPos pos;
     private FluidStack fluid;
+    private int tank;
 
-    public PacketFluidSync(BlockPos pos, FluidStack fluid){
+    public PacketFluidSync(BlockPos pos, FluidStack fluid, int tank){
         this.pos = pos;
         this.fluid = fluid;
+        this.tank = tank;
     }
 
     public static void handle(PacketFluidSync msg, Supplier<NetworkEvent.Context> ctx) {
@@ -34,16 +36,17 @@ public class PacketFluidSync {
     public static void sync(PacketFluidSync msg){
         TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof EnergyHandlerTile){
-            ((FluidHandlerTile) tile).setFluid(msg.fluid);
+            ((FluidHandlerTile) tile).setFluid(msg.fluid, msg.tank);
         }
     }
 
     public static void encode(PacketFluidSync msg, PacketBuffer buffer){
         buffer.writeBlockPos(msg.pos);
         buffer.writeFluidStack(msg.fluid);
+        buffer.writeInt(msg.tank);
     }
 
     public static PacketFluidSync decode(PacketBuffer buf){
-        return new PacketFluidSync(buf.readBlockPos(), buf.readFluidStack());
+        return new PacketFluidSync(buf.readBlockPos(), buf.readFluidStack(), buf.readInt());
     }
 }

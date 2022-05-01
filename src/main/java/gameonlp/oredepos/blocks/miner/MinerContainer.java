@@ -36,7 +36,7 @@ public class MinerContainer extends Container {
         super(RegistryManager.MINER_CONTAINER.get(), windowId);
         this.tileEntity = world.getBlockEntity(pos);
         if (tileEntity.getLevel() != null && !tileEntity.getLevel().isClientSide() && tileEntity instanceof MinerTile){
-            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((MinerTile)tileEntity).fluidTank.getFluid()));
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((MinerTile)tileEntity).fluidTank.getFluid(), 0));
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((MinerTile)tileEntity).energyCell.getEnergyStored()));
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).progress));
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).productivity));

@@ -35,15 +35,12 @@ public class MinerBlock extends Block {
                                 PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if(!worldIn.isClientSide()) {
             TileEntity tileEntity = worldIn.getBlockEntity(pos);
+            if(tileEntity instanceof MinerTile) {
+                INamedContainerProvider containerProvider = createContainerProvider(worldIn, pos);
 
-            if(!player.isCrouching()) {
-                if(tileEntity instanceof MinerTile) {
-                    INamedContainerProvider containerProvider = createContainerProvider(worldIn, pos);
-
-                    NetworkHooks.openGui(((ServerPlayerEntity)player), containerProvider, tileEntity.getBlockPos());
-                } else {
-                    throw new IllegalStateException("Our Container provider is missing!");
-                }
+                NetworkHooks.openGui(((ServerPlayerEntity)player), containerProvider, tileEntity.getBlockPos());
+            } else {
+                throw new IllegalStateException("Our Container provider is missing!");
             }
         }
         return ActionResultType.SUCCESS;
