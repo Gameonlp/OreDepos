@@ -43,20 +43,20 @@ public class MinerContainer extends Container {
         }
         this.player = player;
         this.playerInventory = new InvWrapper(playerInventory);
-        layoutPlayerInventorySlots(8, 86);
+        layoutPlayerInventorySlots(8, 84);
 
         if(tileEntity != null) {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, 0, 8, 18));
-                addSlot(new SlotItemHandler(h, 1, 26, 18));
-                addSlot(new SlotItemHandler(h, 2, 8, 36));
-                addSlot(new SlotItemHandler(h, 3, 26, 36));
-                addSlot(new SlotItemHandler(h, 4, 8, 54));
-                addSlot(new SlotItemHandler(h, 5, 26, 54));
-                addSlot(new SlotItemHandler(h, 6, 80, 36));
-                addSlot(new SlotItemHandler(h, 7, 116, 54));
-                addSlot(new SlotItemHandler(h, 8, 134, 54));
-                addSlot(new SlotItemHandler(h, 9, 152, 54));
+                addSlot(new SlotItemHandler(h, 0, 8, 16));
+                addSlot(new SlotItemHandler(h, 1, 26, 16));
+                addSlot(new SlotItemHandler(h, 2, 8, 34));
+                addSlot(new SlotItemHandler(h, 3, 26, 34));
+                addSlot(new SlotItemHandler(h, 4, 8, 52));
+                addSlot(new SlotItemHandler(h, 5, 26, 52));
+                addSlot(new SlotItemHandler(h, 6, 80, 34));
+                addSlot(new SlotItemHandler(h, 7, 116, 52));
+                addSlot(new SlotItemHandler(h, 8, 134, 52));
+                addSlot(new SlotItemHandler(h, 9, 152, 52));
             });
         }
     }

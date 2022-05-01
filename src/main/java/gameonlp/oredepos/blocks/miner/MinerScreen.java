@@ -40,7 +40,7 @@ public class MinerScreen extends ContainerScreen<MinerContainer> {
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         this.minecraft.getTextureManager().bind(GUI);
         int i = this.leftPos;
-        int j = this.topPos + 2;
+        int j = this.topPos;
         this.blit(matrixStack, i, j, 0, 0, 175, 164);
         float currentEnergy = tile.energyCell.getEnergyStored();
         int maxEnergy = tile.energyCell.getMaxEnergyStored();
@@ -55,15 +55,15 @@ public class MinerScreen extends ContainerScreen<MinerContainer> {
             this.minecraft.getTextureManager().bind(GUI);
             this.blit(matrixStack, i + 115, j + 4, 176, 0, 18, 45);
         }
-        RenderHelper.renderBar(matrixStack, i + 53, j + 22, 6, 42, tile.progress / tile.maxProgress, 0xFF29D825);
-        RenderHelper.renderBar(matrixStack, i + 61, j + 22, 6, 42, tile.productivity, 0xFFBB18BB);
+        RenderHelper.renderBar(matrixStack, i + 53, j + 21, 6, 43, tile.progress / tile.maxProgress, 0xFF29D825);
+        RenderHelper.renderBar(matrixStack, i + 61, j + 21, 6, 43, tile.productivity, 0xFFBB18BB);
     }
 
     @Override
     protected void renderTooltip(MatrixStack matrixStack, int x, int y) {
         super.renderTooltip(matrixStack, x, y);
         int i = this.leftPos;
-        int j = this.topPos + 2;
+        int j = this.topPos;
         MinerTile tile = (MinerTile) menu.getTileEntity();
         if (x >= i + 53 && x <= i + 67 && y >= j + 24 && y <= j + 66) {
             renderComponentTooltip(matrixStack, tile.reason, x, y);

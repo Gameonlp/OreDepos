@@ -117,6 +117,11 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
         return energy;
     }
 
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
     public int getTicks() {
         return ticks;
     }
@@ -153,6 +158,9 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
             if (results.has("result_item")) {
                 itemStack = ShapedRecipe.itemFromJson(results.getAsJsonObject("result_item"));
             }
+            if (itemStack == null && fluidStack == null){
+                throw new JsonParseException("No outputs");
+            }
             NonNullList<Ingredient> ingredients = NonNullList.create();
             JsonArray inputs = json.getAsJsonArray("inputs");
             for (JsonElement input : inputs) {
@@ -170,15 +178,18 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
             JsonArray fluidInputs = json.getAsJsonArray("fluid_inputs");
             for (JsonElement input : fluidInputs) {
                 JsonObject inputObject = input.getAsJsonObject();
-                ResourceLocation location = new ResourceLocation(inputObject.get("name").getAsString());
-                if (!inputObject.has("nbt")) {
-                    fluidIngredients.add(new FluidIngredient(FluidTags.getAllTags().getTag(location), inputObject.get("amount").getAsInt(), null));
-                } else {
-                    try {
-                        CompoundNBT nbt = JsonToNBT.parseTag(inputObject.get("nbt").getAsString());
-                        fluidIngredients.add(new FluidIngredient(FluidTags.getAllTags().getTag(location), inputObject.get("amount").getAsInt(), nbt));
-                    } catch (CommandSyntaxException e) {
-                        throw new JsonParseException(e);
+                if (results.has("fluid")) {
+                    JsonObject fluid = inputObject.getAsJsonObject("fluid");
+                    ResourceLocation location = new ResourceLocation(fluid.get("tag").getAsString());
+                    if (!fluid.has("nbt")) {
+                        fluidIngredients.add(new FluidIngredient(location, fluid.get("amount").getAsInt(), null));
+                    } else {
+                        try {
+                            CompoundNBT nbt = JsonToNBT.parseTag(fluid.get("nbt").getAsString());
+                            fluidIngredients.add(new FluidIngredient(location, fluid.get("amount").getAsInt(), nbt));
+                        } catch (CommandSyntaxException e) {
+                            throw new JsonParseException(e);
+                        }
                     }
                 }
             }
@@ -194,7 +205,6 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
         @Nullable
         @Override
         public ChemicalPlantRecipe fromNetwork(ResourceLocation p_199426_1_, PacketBuffer buffer) {
-            ResourceLocation id = buffer.readResourceLocation();
             ItemStack outStack = buffer.readItem();
             FluidStack outFluid = FluidStack.loadFluidStackFromNBT(buffer.readNbt());
             NonNullList<Ingredient> ingredients = NonNullList.create();
@@ -205,12 +215,11 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
             while (buffer.readBoolean()){
                 fluidIngredients.add(FluidIngredient.fromNetwork(buffer));
             }
-            return new ChemicalPlantRecipe(id, ingredients, fluidIngredients, outFluid, outStack, buffer.readInt(), buffer.readInt());
+            return new ChemicalPlantRecipe(p_199426_1_, ingredients, fluidIngredients, outFluid, outStack, buffer.readInt(), buffer.readInt());
         }
 
         @Override
         public void toNetwork(PacketBuffer buffer, ChemicalPlantRecipe recipe) {
-            buffer.writeResourceLocation(recipe.id);
             buffer.writeItemStack(recipe.outItem, true);
             CompoundNBT fluid = new CompoundNBT();
             fluid = recipe.outFluid.writeToNBT(fluid);

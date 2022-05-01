@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "131",
+    "212",
+    "141"
+  ],
+  "key": {
+    "1": {
+      "item": "oredepos:circuit"
+    },
+    "2": {
+      "item": "minecraft:iron_ingot"
+    },
+    "3": {
+      "item": "minecraft:bucket"
+    },
+    "4": {
+      "item": "oredepos:wire"
+    }
+  },
+  "result": {
+    "item": "oredepos:chemical_plant",
+    "count": 1
+  }
+}

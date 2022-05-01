@@ -1,5 +1,8 @@
 package gameonlp.oredepos;
 
+import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantBlock;
+import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantContainer;
+import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantTile;
 import gameonlp.oredepos.blocks.miner.MinerBlock;
 import gameonlp.oredepos.blocks.miner.MinerContainer;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
@@ -109,6 +112,7 @@ public class RegistryManager {
 
     //Blocks
     public static RegistryObject<Block> MINER;
+    public static RegistryObject<Block> CHEMICAL_PLANT;
     public static final RegistryObject<FlowingFluidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
             () -> new FlowingFluidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), AbstractBlock.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
@@ -192,12 +196,18 @@ public class RegistryManager {
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
     public static RegistryObject<TileEntityType<MinerTile>> MINER_TILE;
+    public static RegistryObject<TileEntityType<ChemicalPlantTile>> CHEMICAL_PLANT_TILE;
 
     //Containers
     public static RegistryObject<ContainerType<MinerContainer>> MINER_CONTAINER = CONTAINERS.register("miner_container", () -> IForgeContainerType.create(((windowId, inv, data) -> {
         BlockPos pos = data.readBlockPos();
         World world = inv.player.getCommandSenderWorld();
         return new MinerContainer(windowId, world, pos, inv, inv.player);
+    })));
+    public static RegistryObject<ContainerType<ChemicalPlantContainer>> CHEMICAL_PLANT_CONTAINER = CONTAINERS.register("chemical_plant_container", () -> IForgeContainerType.create(((windowId, inv, data) -> {
+        BlockPos pos = data.readBlockPos();
+        World world = inv.player.getCommandSenderWorld();
+        return new ChemicalPlantContainer(windowId, world, pos, inv, inv.player);
     })));
 
     //Features
@@ -216,7 +226,7 @@ public class RegistryManager {
             .block(() -> RegistryManager.SULFURIC_ACID_BLOCK.get()).bucket(() -> RegistryManager.SULFURID_ACID_BUCKET.get());
 
     //Recipe Serializers
-    @ObjectHolder("oredepos:chemical_platn_recipe_serializer")
+    @ObjectHolder("oredepos:chemical_plant_recipe")
     public static final IRecipeSerializer<ChemicalPlantRecipe> CHEMICAL_PLANT_RECIPE_SERIALIZER = null;
 
     //Recipe Types
@@ -329,6 +339,10 @@ public class RegistryManager {
                 .strength(3, 10)
                 .harvestTool(ToolType.PICKAXE)
                 .requiresCorrectToolForDrops()));
+        CHEMICAL_PLANT = registerBlock("chemical_plant", () -> new ChemicalPlantBlock(AbstractBlock.Properties.of(Material.METAL)
+                .strength(3, 10)
+                .harvestTool(ToolType.PICKAXE)
+                .requiresCorrectToolForDrops()));
     }
 
     private void registerItems(){
@@ -360,10 +374,11 @@ public class RegistryManager {
 
     private void registerTileEntities(){
         MINER_TILE = TILE_ENTITIES.register("miner_tile", () -> TileEntityType.Builder.of(MinerTile::new, MINER.get()).build(null));
+        CHEMICAL_PLANT_TILE = TILE_ENTITIES.register("chemical_plant_tile", () -> TileEntityType.Builder.of(ChemicalPlantTile::new, CHEMICAL_PLANT.get()).build(null));
     }
 
     private void registerSerializers(){
-        RECIPE_SERIALIZERS.register("chemical_plant_recipe_serializer", ChemicalPlantRecipe.Serializer::new);
+        RECIPE_SERIALIZERS.register("chemical_plant_recipe", ChemicalPlantRecipe.Serializer::new);
         Registry.register(Registry.RECIPE_TYPE, ChemicalPlantRecipe.TYPE, CHEMICAL_PLANT_RECIPE_TYPE);
     }
 

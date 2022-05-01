@@ -6,18 +6,19 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.function.Predicate;
 
 public class FluidIngredient implements Predicate<FluidStack> {
-    private final ITag<Fluid> fluidTag;
+    private final ResourceLocation fluidTag;
     private final int amount;
     //Users may want to only do something with nbt data, we should support that
     private final CompoundNBT nbt;
 
-    public FluidIngredient(ITag<Fluid> fluidTag, int amount, CompoundNBT nbt) {
+    public FluidIngredient(ResourceLocation fluidTag, int amount, CompoundNBT nbt) {
         this.fluidTag = fluidTag;
         this.amount = amount;
         this.nbt = nbt;
@@ -28,26 +29,44 @@ public class FluidIngredient implements Predicate<FluidStack> {
         if (fluidStack == null){
             return false;
         }
-        if (!fluidTag.contains(fluidStack.getFluid())){
+        if (!FluidTags.getAllTags().getTag(fluidTag).contains(fluidStack.getFluid())){
             return false;
         }
-        if (nbt != null && !fluidStack.hasTag() || !fluidStack.getTag().equals(nbt)) {
+        if (nbt != null && (!fluidStack.hasTag() || !fluidStack.getTag().equals(nbt))) {
             return false;
         }
-        return fluidStack.getAmount() < this.amount;
+        return fluidStack.getAmount() >= this.amount;
     }
 
     public void toNetwork(PacketBuffer buffer) {
-        buffer.writeResourceLocation(FluidTags.getAllTags().getIdOrThrow(fluidTag));
+        buffer.writeResourceLocation(fluidTag);
         buffer.writeInt(amount);
         buffer.writeNbt(nbt);
     }
 
     public static FluidIngredient fromNetwork(PacketBuffer buffer) {
-        return new FluidIngredient(FluidTags.getAllTags().getTag(buffer.readResourceLocation()), buffer.readInt(), buffer.readNbt());
+        return new FluidIngredient(buffer.readResourceLocation(), buffer.readInt(), buffer.readNbt());
+    }
+
+    public ResourceLocation getFluidTag() {
+        return fluidTag;
+    }
+
+    public CompoundNBT getNbt() {
+        return nbt;
     }
 
     public int getAmount() {
         return amount;
+    }
+
+    @Override
+    public String toString() {
+        FluidTags.getAllTags().getTag(fluidTag).getValues().forEach(System.out::println);
+        return "FluidIngredient{" +
+                "fluidTag=" + fluidTag +
+                ", amount=" + amount +
+                ", nbt=" + nbt +
+                '}';
     }
 }

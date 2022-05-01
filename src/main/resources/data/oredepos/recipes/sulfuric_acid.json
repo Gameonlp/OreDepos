@@ -1,0 +1,24 @@
+{
+  "type": "oredepos:chemical_plant_recipe",
+  "results": {
+    "fluid": {
+      "name": "oredepos:sulfuric_acid_fluid",
+      "amount": 50
+    }
+  },
+  "inputs": [
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": {
+        "tag": "minecraft:water",
+        "amount": 100
+      }
+    }
+  ],
+  "energy": 100,
+  "ticks": 20
+}

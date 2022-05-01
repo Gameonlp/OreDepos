@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures":
+  {
+    "particle": "oredepos:block/miner",
+    "up": "oredepos:block/miner",
+    "down": "oredepos:block/miner",
+    "north": "oredepos:block/chemical_plant_left",
+    "south": "oredepos:block/chemical_plant_right",
+    "east": "oredepos:block/chemical_plant_front",
+    "west": "oredepos:block/miner"
+  }
+}

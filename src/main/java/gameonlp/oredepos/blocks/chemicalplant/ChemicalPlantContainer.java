@@ -33,7 +33,7 @@ public class ChemicalPlantContainer extends Container {
 
     public ChemicalPlantContainer(int windowId, World world, BlockPos pos,
                           PlayerInventory playerInventory, PlayerEntity player) {
-        super(RegistryManager.MINER_CONTAINER.get(), windowId);
+        super(RegistryManager.CHEMICAL_PLANT_CONTAINER.get(), windowId);
         this.tileEntity = world.getBlockEntity(pos);
         if (tileEntity.getLevel() != null && !tileEntity.getLevel().isClientSide() && tileEntity instanceof ChemicalPlantTile){
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((ChemicalPlantTile)tileEntity).fluidTank.getFluid(), 0));
@@ -45,26 +45,22 @@ public class ChemicalPlantContainer extends Container {
         }
         this.player = player;
         this.playerInventory = new InvWrapper(playerInventory);
-        layoutPlayerInventorySlots(8, 86);
+        layoutPlayerInventorySlots(8, 84);
 
         if(tileEntity != null) {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, 0, 8, 18));
-                addSlot(new SlotItemHandler(h, 1, 26, 18));
-                addSlot(new SlotItemHandler(h, 2, 8, 36));
-                addSlot(new SlotItemHandler(h, 3, 26, 36));
-                addSlot(new SlotItemHandler(h, 4, 8, 54));
-                addSlot(new SlotItemHandler(h, 5, 26, 54));
-                addSlot(new SlotItemHandler(h, 6, 80, 36));
-                addSlot(new SlotItemHandler(h, 7, 116, 54));
-                addSlot(new SlotItemHandler(h, 8, 134, 54));
-                addSlot(new SlotItemHandler(h, 9, 152, 54));
+                addSlot(new SlotItemHandler(h, 0, 96, 52));
+                addSlot(new SlotItemHandler(h, 1, 50, 23));
+                addSlot(new SlotItemHandler(h, 2, 50, 41));
+                addSlot(new SlotItemHandler(h, 3, 116, 52));
+                addSlot(new SlotItemHandler(h, 4, 134, 52));
+                addSlot(new SlotItemHandler(h, 5, 152, 52));
             });
         }
     }
     @Override
     public boolean stillValid(PlayerEntity p_75145_1_) {
-        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.MINER.get());
+        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.CHEMICAL_PLANT.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
@@ -98,19 +94,19 @@ public class ChemicalPlantContainer extends Container {
         int playerStart = 0;
         int playerEnd = 36;
         int tileStart = playerEnd + 1;
-        int tileEnd = playerEnd + 11;
+        int tileEnd = playerEnd + 6;
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
             if (index < playerEnd) {
-                if (slot.getItem().getItem() instanceof DrillHeadItem){
-                    if (!this.moveItemStackTo(stack, tileStart + 5, tileEnd, false)) {
+                if (slot.getItem().getItem() instanceof ModuleItem) {
+                    if (!this.moveItemStackTo(stack, tileStart + 2, tileEnd, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (slot.getItem().getItem() instanceof ModuleItem) {
-                    if (!this.moveItemStackTo(stack, tileStart + 5, tileEnd, false)) {
+                } else {
+                    if (!this.moveItemStackTo(stack, tileStart, tileEnd, false)) {
                         return ItemStack.EMPTY;
                     }
                 }

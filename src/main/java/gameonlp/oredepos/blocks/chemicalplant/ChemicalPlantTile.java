@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -78,7 +79,7 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
     }
 
     public ChemicalPlantTile() {
-        this(RegistryManager.MINER_TILE.get());
+        this(RegistryManager.CHEMICAL_PLANT_TILE.get());
     }
 
     private ItemStackHandler createItemHandler() {
@@ -87,6 +88,14 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
                 setChanged();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (slot > 2) {
+                    return stack.getItem() instanceof ModuleItem;
+                }
+                return super.isItemValid(slot, stack);
             }
         };
     }
@@ -179,12 +188,17 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
         fluidInventory.setItem(1, slots.getStackInSlot(2));
         fluidInventory.setFluid(0, primaryInputTank.getFluid());
         fluidInventory.setFluid(1, secondaryInputTank.getFluid());
-        if (currentRecipe == null) {
+        if (level.getGameTime() % 20 == 0) {
             Optional<ChemicalPlantRecipe> recipe = level.getRecipeManager().getRecipeFor(RegistryManager.CHEMICAL_PLANT_RECIPE_TYPE, fluidInventory, level);
             recipe.ifPresent(chemicalPlantRecipe -> currentRecipe = chemicalPlantRecipe);
-        } else {
+        }
+        if (currentRecipe == null) {
+        }
+        if (currentRecipe != null){
             if (!currentRecipe.matches(fluidInventory, level)){
+                progress = 0;
                 currentRecipe = null;
+                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 return;
             }
             if (slots.insertItem(0, currentRecipe.getResultItem(), true) != ItemStack.EMPTY){
@@ -194,9 +208,9 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
                 return;
             }
             List<ModuleItem> modules = new LinkedList<>();
-            ItemStack mod1 = slots.getStackInSlot(7);
-            ItemStack mod2 = slots.getStackInSlot(8);
-            ItemStack mod3 =  slots.getStackInSlot(9);
+            ItemStack mod1 = slots.getStackInSlot(3);
+            ItemStack mod2 = slots.getStackInSlot(4);
+            ItemStack mod3 =  slots.getStackInSlot(5);
             if (!mod1.isEmpty()){
                 modules.add((ModuleItem) mod1.getItem());
             }
@@ -225,10 +239,11 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 NonNullList<Ingredient> ingredients = currentRecipe.getIngredients();
                 for (Ingredient ingredient : ingredients) {
-                    if (ingredient.test(slots.getStackInSlot(1)))
+                    if (ingredient.test(slots.getStackInSlot(1))) {
                         slots.extractItem(1, 1, false);
-                    else if (ingredient.test(slots.getStackInSlot(2)))
+                    } else if (ingredient.test(slots.getStackInSlot(2))) {
                         slots.extractItem(2, 1, false);
+                    }
                 }
                 NonNullList<FluidIngredient> fluidIngredients = currentRecipe.getFluidIngredients();
                 if (fluidIngredients.size() == 1){

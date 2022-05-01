@@ -1,5 +1,6 @@
 package gameonlp.oredepos;
 
+import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantScreen;
 import gameonlp.oredepos.blocks.miner.MinerScreen;
 import gameonlp.oredepos.compat.TOPCompat;
 import gameonlp.oredepos.config.OreDeposConfig;
@@ -50,6 +51,8 @@ public class OreDepos {
         event.enqueueWork(() -> {
             ScreenManager.register(RegistryManager.MINER_CONTAINER.get(),
                     MinerScreen::new);
+            ScreenManager.register(RegistryManager.CHEMICAL_PLANT_CONTAINER.get(),
+                    ChemicalPlantScreen::new);
         });
     }
     @SubscribeEvent
