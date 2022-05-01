@@ -5,6 +5,7 @@ import gameonlp.oredepos.blocks.miner.MinerContainer;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
 import gameonlp.oredepos.blocks.oredeposit.RedstoneOreDepositBlock;
 import gameonlp.oredepos.config.OreDeposConfig;
+import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
@@ -18,9 +19,11 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.ReplaceBlockConfig;
@@ -40,6 +43,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class RegistryManager {
+
     // Template class
     private static class DepositTemplate {
         private final String name;
@@ -73,6 +77,7 @@ public class RegistryManager {
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, OreDepos.MODID);
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, OreDepos.MODID);
     private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, OreDepos.MODID);
+    private static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, OreDepos.MODID);
 
     //Resource Locations
     public static final ResourceLocation WATER_STILL_RL = new ResourceLocation("block/water_still");
@@ -209,6 +214,14 @@ public class RegistryManager {
             .density(15).luminosity(2).viscosity(5).overlay(RegistryManager.WATER_OVERLAY_RL)
             .color(0xbffed0d0)).slopeFindDistance(2).levelDecreasePerBlock(2)
             .block(() -> RegistryManager.SULFURIC_ACID_BLOCK.get()).bucket(() -> RegistryManager.SULFURID_ACID_BUCKET.get());
+
+    //Recipe Serializers
+    @ObjectHolder("oredepos:chemical_platn_recipe_serializer")
+    public static final IRecipeSerializer<ChemicalPlantRecipe> CHEMICAL_PLANT_RECIPE_SERIALIZER = null;
+
+    //Recipe Types
+    public static final ChemicalPlantRecipe.ChemicalPlantRecipeType CHEMICAL_PLANT_RECIPE_TYPE = new ChemicalPlantRecipe.ChemicalPlantRecipeType();
+
 
     private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel){
         return prepareDeposit(name, material, hardness,resistance,tool,harvestLevel, true,true);
@@ -349,6 +362,11 @@ public class RegistryManager {
         MINER_TILE = TILE_ENTITIES.register("miner_tile", () -> TileEntityType.Builder.of(MinerTile::new, MINER.get()).build(null));
     }
 
+    private void registerSerializers(){
+        RECIPE_SERIALIZERS.register("chemical_plant_recipe_serializer", ChemicalPlantRecipe.Serializer::new);
+        Registry.register(Registry.RECIPE_TYPE, ChemicalPlantRecipe.TYPE, CHEMICAL_PLANT_RECIPE_TYPE);
+    }
+
     public void register(IEventBus eventBus){
         registerItems();
         registerBlocks();
@@ -363,5 +381,7 @@ public class RegistryManager {
         FEATURES.register(eventBus);
 
         FLUIDS.register(eventBus);
+        registerSerializers();
+        RECIPE_SERIALIZERS.register(eventBus);
     }
 }
