@@ -2,12 +2,13 @@ package gameonlp.oredepos.events;
 
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,17 +22,16 @@ public class MiningEventHandler {
 
 		BlockState state = event.getState();
 		ItemStack mainHand = event.getPlayer().getMainHandItem();
-		int miningLevel = mainHand.getHarvestLevel(state.getHarvestTool(), event.getPlayer(), state);
-		boolean destroyed = !mainHand.isCorrectToolForDrops(state) || miningLevel < state.getHarvestLevel();
+		boolean destroyed = !mainHand.isCorrectToolForDrops(state);
 
 		if (state.getBlock() instanceof OreDepositBlock) {
-			TileEntity tileEntity = event.getWorld().getBlockEntity(event.getPos());
+			BlockEntity tileEntity = event.getWorld().getBlockEntity(event.getPos());
 			if (tileEntity instanceof OreDepositTile) {
 				OreDepositTile tileEntityOre = (OreDepositTile) tileEntity;
 				
 				if (!event.getWorld().isClientSide() && !destroyed) {
-					Block.dropResources(state, (World)event.getWorld(), event.getPos(), tileEntityOre, event.getPlayer(), event.getPlayer().getMainHandItem());
-					mainHand.hurt(1, event.getWorld().getRandom(), (ServerPlayerEntity) event.getPlayer());
+					Block.dropResources(state, (Level)event.getWorld(), event.getPos(), tileEntityOre, event.getPlayer(), event.getPlayer().getMainHandItem());
+					mainHand.hurt(1, event.getWorld().getRandom(), (ServerPlayer) event.getPlayer());
 				}
 				
 				if (destroyed || tileEntityOre.isZero()) {

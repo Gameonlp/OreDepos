@@ -1,38 +1,29 @@
 package gameonlp.oredepos.blocks.chemicalplant;
 
 import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import gameonlp.oredepos.crafting.FluidInventory;
-import gameonlp.oredepos.items.DrillHeadItem;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
 import gameonlp.oredepos.net.PacketProgressSync;
-import gameonlp.oredepos.net.PacketTooltipSync;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.FluidHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
 import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.util.EnergyCell;
 import gameonlp.oredepos.util.PlayerInOutStackHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -41,15 +32,15 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity, EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
+public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
     ItemStackHandler slots = createItemHandler();
@@ -74,12 +65,12 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
 
     ChemicalPlantRecipe currentRecipe = null;
 
-    protected ChemicalPlantTile(TileEntityType<?> p_i48289_1_) {
-        super(p_i48289_1_);
+    protected ChemicalPlantTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
+        super(p_i48289_1_, pos, state);
     }
 
-    public ChemicalPlantTile() {
-        this(RegistryManager.CHEMICAL_PLANT_TILE.get());
+    public ChemicalPlantTile(BlockPos pos, BlockState state) {
+        this(RegistryManager.CHEMICAL_PLANT_TILE.get(), pos, state);
     }
 
     private ItemStackHandler createItemHandler() {
@@ -125,7 +116,7 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
     }
 
     @Override
-    protected void invalidateCaps() {
+    public void invalidateCaps() {
         super.invalidateCaps();
         machineItemHandler.invalidate();
         itemHandler.invalidate();
@@ -136,40 +127,40 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT p_189515_1_) {
-        CompoundNBT tag = super.save(p_189515_1_);
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = super.serializeNBT();
         tag.putInt("energy", energyCell.getEnergyStored());
         tag.putFloat("progress", progress);
         tag.putFloat("productivity", productivity);
-        CompoundNBT outputFluid = new CompoundNBT();
+        CompoundTag outputFluid = new CompoundTag();
         tag.put("output_fluid", fluidTank.writeToNBT(outputFluid));
-        CompoundNBT primaryFluid = new CompoundNBT();
+        CompoundTag primaryFluid = new CompoundTag();
         tag.put("primary_fluid", primaryInputTank.writeToNBT(primaryFluid));
-        CompoundNBT secondaryFluid = new CompoundNBT();
+        CompoundTag secondaryFluid = new CompoundTag();
         tag.put("secondary_fluid", secondaryInputTank.writeToNBT(secondaryFluid));
         tag.put("slots", slots.serializeNBT());
         return tag;
     }
 
     @Override
-    public void load(BlockState p_230337_1_, CompoundNBT p_230337_2_) {
-        super.load(p_230337_1_, p_230337_2_);
+    public void deserializeNBT(CompoundTag p_230337_2_) {
+        super.deserializeNBT(p_230337_2_);
         energyCell.setEnergy(p_230337_2_.getInt("energy"));
         progress = p_230337_2_.getFloat("progress");
         productivity = p_230337_2_.getFloat("productivity");
-        CompoundNBT outputFluid = p_230337_2_.getCompound("output_fluid");
+        CompoundTag outputFluid = p_230337_2_.getCompound("output_fluid");
         FluidStack fluid = FluidStack.loadFluidStackFromNBT(outputFluid);
         if (fluid == null){
             fluid = FluidStack.EMPTY;
         }
         fluidTank.setFluid(fluid);
-        CompoundNBT primaryFluid = p_230337_2_.getCompound("primary_fluid");
+        CompoundTag primaryFluid = p_230337_2_.getCompound("primary_fluid");
         FluidStack primfluid = FluidStack.loadFluidStackFromNBT(primaryFluid);
         if (primfluid == null){
             primfluid = FluidStack.EMPTY;
         }
         primaryInputTank.setFluid(primfluid);
-        CompoundNBT secondaryFluid = p_230337_2_.getCompound("secondary_fluid");
+        CompoundTag secondaryFluid = p_230337_2_.getCompound("secondary_fluid");
         FluidStack secofluid = FluidStack.loadFluidStackFromNBT(secondaryFluid);
         if (secofluid == null){
             secofluid = FluidStack.EMPTY;
@@ -178,8 +169,7 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
         slots.deserializeNBT(p_230337_2_.getCompound("slots"));
     }
 
-    @Override
-    public void tick() {
+    public void serverTick() {
         if (level.isClientSide()){
             return;
         }
@@ -201,7 +191,7 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
         fluidInventory.setFluid(0, primaryInputTank.getFluid());
         fluidInventory.setFluid(1, secondaryInputTank.getFluid());
         if (currentRecipe == null) {
-            Optional<ChemicalPlantRecipe> recipe = level.getRecipeManager().getRecipeFor(RegistryManager.CHEMICAL_PLANT_RECIPE_TYPE, fluidInventory, level);
+            Optional<ChemicalPlantRecipe> recipe = level.getRecipeManager().getRecipeFor(RegistryManager.CHEMICAL_PLANT_RECIPE_TYPE.get(), fluidInventory, level);
             recipe.ifPresent(chemicalPlantRecipe -> currentRecipe = chemicalPlantRecipe);
         }
         if (currentRecipe != null){

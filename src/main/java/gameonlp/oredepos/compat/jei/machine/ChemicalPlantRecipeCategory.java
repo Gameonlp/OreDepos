@@ -1,6 +1,6 @@
 package gameonlp.oredepos.compat.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
@@ -10,15 +10,16 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     private final IDrawableStatic overlay;
     public ChemicalPlantRecipeCategory(IGuiHelper guiHelper) {
         this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 176, 76);
-        this.icon = guiHelper.createDrawableIngredient(new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()));
         this.overlay = guiHelper.createDrawable(TEXTURE, 176, 0, 18, 45);
     }
 
@@ -48,8 +49,8 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     }
 
     @Override
-    public String getTitle() {
-        return RegistryManager.CHEMICAL_PLANT.get().getName().getString();
+    public Component getTitle() {
+        return new TextComponent(RegistryManager.CHEMICAL_PLANT.get().getName().getString());
     }
 
     @Override
@@ -68,7 +69,7 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
         List<List<FluidStack>> fluidInputs = new LinkedList<>();
         for (FluidIngredient fluidIngredient : recipe.getFluidIngredients()) {
             List<FluidStack> possibilities = new LinkedList<>();
-            for (Fluid value : FluidTags.getAllTags().getTag(fluidIngredient.getFluidTag()).getValues()) {
+            for (Fluid value : ForgeRegistries.FLUIDS.tags().getTag(fluidIngredient.getFluidTag())) {
                 possibilities.add(new FluidStack(value, fluidIngredient.getAmount(), fluidIngredient.getNbt()));
             }
             fluidInputs.add(possibilities);
@@ -93,7 +94,7 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     }
 
     @Override
-    public void draw(ChemicalPlantRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(ChemicalPlantRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         IRecipeCategory.super.draw(recipe, matrixStack, mouseX, mouseY);
     }
 }

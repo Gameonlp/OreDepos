@@ -1,24 +1,24 @@
 package gameonlp.oredepos.crafting;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.Tags;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class FluidIngredient implements Predicate<FluidStack> {
-    private final ResourceLocation fluidTag;
+    private final @NotNull TagKey<Fluid> fluidTag;
     private final int amount;
     //Users may want to only do something with nbt data, we should support that
-    private final CompoundNBT nbt;
+    private final CompoundTag nbt;
 
-    public FluidIngredient(ResourceLocation fluidTag, int amount, CompoundNBT nbt) {
+    public FluidIngredient(@NotNull TagKey<Fluid> fluidTag, int amount, CompoundTag nbt) {
         this.fluidTag = fluidTag;
         this.amount = amount;
         this.nbt = nbt;
@@ -29,7 +29,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         if (fluidStack == null){
             return false;
         }
-        if (!FluidTags.getAllTags().getTag(fluidTag).contains(fluidStack.getFluid())){
+        if (!ForgeRegistries.FLUIDS.tags().getTag(fluidTag).contains(fluidStack.getFluid())){
             return false;
         }
         if (nbt != null && (!fluidStack.hasTag() || !fluidStack.getTag().equals(nbt))) {
@@ -38,21 +38,21 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return fluidStack.getAmount() >= this.amount;
     }
 
-    public void toNetwork(PacketBuffer buffer) {
-        buffer.writeResourceLocation(fluidTag);
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeResourceLocation(fluidTag.location());
         buffer.writeInt(amount);
         buffer.writeNbt(nbt);
     }
 
-    public static FluidIngredient fromNetwork(PacketBuffer buffer) {
-        return new FluidIngredient(buffer.readResourceLocation(), buffer.readInt(), buffer.readNbt());
+    public static FluidIngredient fromNetwork(FriendlyByteBuf buffer) {
+        return new FluidIngredient(ForgeRegistries.FLUIDS.tags().createTagKey(buffer.readResourceLocation()), buffer.readInt(), buffer.readNbt());
     }
 
-    public ResourceLocation getFluidTag() {
+    public @NotNull TagKey<Fluid> getFluidTag() {
         return fluidTag;
     }
 
-    public CompoundNBT getNbt() {
+    public CompoundTag getNbt() {
         return nbt;
     }
 
@@ -62,7 +62,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     @Override
     public String toString() {
-        FluidTags.getAllTags().getTag(fluidTag).getValues().forEach(System.out::println);
         return "FluidIngredient{" +
                 "fluidTag=" + fluidTag +
                 ", amount=" + amount +

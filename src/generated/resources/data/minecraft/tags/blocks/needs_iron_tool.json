@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "oredepos:redstone_ore_deposit",
+    "oredepos:gold_ore_deposit",
+    "oredepos:emerald_ore_deposit",
+    "oredepos:diamond_ore_deposit"
+  ]
+}

@@ -1,14 +1,10 @@
 package gameonlp.oredepos.items;
 
-import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
-public class OreDeposTab extends ItemGroup {
+public class OreDeposTab extends CreativeModeTab {
     public static final OreDeposTab ORE_DEPOS_TAB = new OreDeposTab();
 
     public OreDeposTab() {

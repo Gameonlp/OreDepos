@@ -2,66 +2,76 @@ package gameonlp.oredepos.data;
 
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
-import net.minecraft.block.Block;
-import net.minecraft.data.BlockTagsProvider;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.FluidTagsProvider;
-import net.minecraft.data.ItemTagsProvider;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
+import net.minecraft.data.tags.FluidTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.tags.ITagManager;
 
 import javax.annotation.Nullable;
 
 public class TagProvider {
-    public static final Tags.IOptionalNamedTag<Block> ORE_TIN = BlockTags.createOptional(new ResourceLocation("forge", "ores/tin"));
-    public static final Tags.IOptionalNamedTag<Block> ORE_COPPER = BlockTags.createOptional(new ResourceLocation("forge", "ores/copper"));
-    public static final Tags.IOptionalNamedTag<Block> ORE_LEAD = BlockTags.createOptional(new ResourceLocation("forge", "ores/lead"));
-    public static final Tags.IOptionalNamedTag<Block> ORE_SILVER = BlockTags.createOptional(new ResourceLocation("forge", "ores/silver"));
-    public static final Tags.IOptionalNamedTag<Block> ORE_ALUMINUM = BlockTags.createOptional(new ResourceLocation("forge", "ores/aluminum"));
-    public static final Tags.IOptionalNamedTag<Block> ORE_URANIUM = BlockTags.createOptional(new ResourceLocation("forge", "ores/uranium"));
-    public static final Tags.IOptionalNamedTag<Block> ORE_NICKEL = BlockTags.createOptional(new ResourceLocation("forge", "ores/nickel"));
-    public static final Tags.IOptionalNamedTag<Block> ORE_ZINC = BlockTags.createOptional(new ResourceLocation("forge", "ores/zinc"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_TIN = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/tin"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_COPPER = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/copper"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_LEAD = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/lead"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_SILVER = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/silver"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_ALUMINUM = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/aluminum"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_URANIUM = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/uranium"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_NICKEL = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/nickel"));
-    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_ZINC = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/zinc"));
+    public static final TagKey<Block> ORE_TIN = BlockTags.create(new ResourceLocation("forge", "ores/tin"));
+    public static final TagKey<Block> ORE_COPPER = BlockTags.create(new ResourceLocation("forge", "ores/copper"));
+    public static final TagKey<Block> ORE_LEAD = BlockTags.create(new ResourceLocation("forge", "ores/lead"));
+    public static final TagKey<Block> ORE_SILVER = BlockTags.create(new ResourceLocation("forge", "ores/silver"));
+    public static final TagKey<Block> ORE_ALUMINUM = BlockTags.create(new ResourceLocation("forge", "ores/aluminum"));
+    public static final TagKey<Block> ORE_URANIUM = BlockTags.create(new ResourceLocation("forge", "ores/uranium"));
+    public static final TagKey<Block> ORE_NICKEL = BlockTags.create(new ResourceLocation("forge", "ores/nickel"));
+    public static final TagKey<Block> ORE_ZINC = BlockTags.create(new ResourceLocation("forge", "ores/zinc"));
+    public static final TagKey<Block> STORAGE_BLOCKS_TIN = BlockTags.create(new ResourceLocation("forge", "storage_blocks/tin"));
+    public static final TagKey<Block> STORAGE_BLOCKS_COPPER = BlockTags.create(new ResourceLocation("forge", "storage_blocks/copper"));
+    public static final TagKey<Block> STORAGE_BLOCKS_LEAD = BlockTags.create(new ResourceLocation("forge", "storage_blocks/lead"));
+    public static final TagKey<Block> STORAGE_BLOCKS_SILVER = BlockTags.create(new ResourceLocation("forge", "storage_blocks/silver"));
+    public static final TagKey<Block> STORAGE_BLOCKS_ALUMINUM = BlockTags.create(new ResourceLocation("forge", "storage_blocks/aluminum"));
+    public static final TagKey<Block> STORAGE_BLOCKS_URANIUM = BlockTags.create(new ResourceLocation("forge", "storage_blocks/uranium"));
+    public static final TagKey<Block> STORAGE_BLOCKS_NICKEL = BlockTags.create(new ResourceLocation("forge", "storage_blocks/nickel"));
+    public static final TagKey<Block> STORAGE_BLOCKS_ZINC = BlockTags.create(new ResourceLocation("forge", "storage_blocks/zinc"));
+    public static final TagKey<Block> PICKAXE = BlockTags.create(new ResourceLocation("minecraft:mineable/pickaxe"));
+    public static final TagKey<Block> WOOD = BlockTags.create(new ResourceLocation("forge:needs_wood_tool"));
+    public static final TagKey<Block> GOLD = BlockTags.create(new ResourceLocation("forge:needs_gold_tool"));
+    public static final TagKey<Block> STONE = BlockTags.create(new ResourceLocation("minecraft:needs_stone_tool"));
+    public static final TagKey<Block> IRON = BlockTags.create(new ResourceLocation("minecraft:needs_iron_tool"));
+    public static final TagKey<Block> DIAMOND = BlockTags.create(new ResourceLocation("minecraft:needs_diamond_tool"));
+    public static final TagKey<Block> NETHERITE = BlockTags.create(new ResourceLocation("forge:needs_netherite_tool"));
 
-    public static final Tags.IOptionalNamedTag<Item> ORE_TIN_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/tin"));
-    public static final Tags.IOptionalNamedTag<Item> ORE_COPPER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/copper"));
-    public static final Tags.IOptionalNamedTag<Item> ORE_LEAD_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/lead"));
-    public static final Tags.IOptionalNamedTag<Item> ORE_SILVER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/silver"));
-    public static final Tags.IOptionalNamedTag<Item> ORE_ALUMINUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/aluminum"));
-    public static final Tags.IOptionalNamedTag<Item> ORE_URANIUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/uranium"));
-    public static final Tags.IOptionalNamedTag<Item> ORE_NICKEL_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/nickel"));
-    public static final Tags.IOptionalNamedTag<Item> ORE_ZINC_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/zinc"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_TIN_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/tin"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_COPPER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/copper"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_LEAD_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/lead"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_SILVER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/silver"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_ALUMINUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/aluminum"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_URANIUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/uranium"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_NICKEL_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/nickel"));
-    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_ZINC_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/zinc"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_COPPER = ItemTags.createOptional(new ResourceLocation("forge", "ingots/copper"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_TIN = ItemTags.createOptional(new ResourceLocation("forge", "ingots/tin"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_LEAD = ItemTags.createOptional(new ResourceLocation("forge", "ingots/lead"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_SILVER = ItemTags.createOptional(new ResourceLocation("forge", "ingots/silver"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_ALUMINUM = ItemTags.createOptional(new ResourceLocation("forge", "ingots/aluminum"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_URANIUM = ItemTags.createOptional(new ResourceLocation("forge", "ingots/uranium"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_NICKEL = ItemTags.createOptional(new ResourceLocation("forge", "ingots/nickel"));
-    public static final Tags.IOptionalNamedTag<Item> INGOTS_ZINC = ItemTags.createOptional(new ResourceLocation("forge", "ingots/zinc"));
+    public static final TagKey<Item> ORE_TIN_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/tin"));
+    public static final TagKey<Item> ORE_COPPER_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/copper"));
+    public static final TagKey<Item> ORE_LEAD_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/lead"));
+    public static final TagKey<Item> ORE_SILVER_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/silver"));
+    public static final TagKey<Item> ORE_ALUMINUM_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/aluminum"));
+    public static final TagKey<Item> ORE_URANIUM_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/uranium"));
+    public static final TagKey<Item> ORE_NICKEL_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/nickel"));
+    public static final TagKey<Item> ORE_ZINC_ITEM = ItemTags.create(new ResourceLocation("forge", "ores/zinc"));
+    public static final TagKey<Item> STORAGE_BLOCKS_TIN_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/tin"));
+    public static final TagKey<Item> STORAGE_BLOCKS_COPPER_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/copper"));
+    public static final TagKey<Item> STORAGE_BLOCKS_LEAD_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/lead"));
+    public static final TagKey<Item> STORAGE_BLOCKS_SILVER_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/silver"));
+    public static final TagKey<Item> STORAGE_BLOCKS_ALUMINUM_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/aluminum"));
+    public static final TagKey<Item> STORAGE_BLOCKS_URANIUM_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/uranium"));
+    public static final TagKey<Item> STORAGE_BLOCKS_NICKEL_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/nickel"));
+    public static final TagKey<Item> STORAGE_BLOCKS_ZINC_ITEM = ItemTags.create(new ResourceLocation("forge", "storage_blocks/zinc"));
+    public static final TagKey<Item> INGOTS_COPPER = ItemTags.create(new ResourceLocation("forge", "ingots/copper"));
+    public static final TagKey<Item> INGOTS_TIN = ItemTags.create(new ResourceLocation("forge", "ingots/tin"));
+    public static final TagKey<Item> INGOTS_LEAD = ItemTags.create(new ResourceLocation("forge", "ingots/lead"));
+    public static final TagKey<Item> INGOTS_SILVER = ItemTags.create(new ResourceLocation("forge", "ingots/silver"));
+    public static final TagKey<Item> INGOTS_ALUMINUM = ItemTags.create(new ResourceLocation("forge", "ingots/aluminum"));
+    public static final TagKey<Item> INGOTS_URANIUM = ItemTags.create(new ResourceLocation("forge", "ingots/uranium"));
+    public static final TagKey<Item> INGOTS_NICKEL = ItemTags.create(new ResourceLocation("forge", "ingots/nickel"));
+    public static final TagKey<Item> INGOTS_ZINC = ItemTags.create(new ResourceLocation("forge", "ingots/zinc"));
 
-    public static final Tags.IOptionalNamedTag<Fluid> SULFURIC_ACID = FluidTags.createOptional(new ResourceLocation("forge", "sulfuric_acid"));
+    public static final TagKey<Fluid> SULFURIC_ACID = FluidTags.create(new ResourceLocation("forge", "sulfuric_acid"));
 
     public static class OreDepositBlockTags extends BlockTagsProvider {
 
@@ -112,6 +122,84 @@ public class TagProvider {
                     STORAGE_BLOCKS_SILVER,
                     STORAGE_BLOCKS_ALUMINUM,
                     STORAGE_BLOCKS_URANIUM
+            );
+
+            tag(PICKAXE).add(
+                    RegistryManager.ALUMINUM_BLOCK,
+                    RegistryManager.ALUMINUM_ORE,
+                    RegistryManager.ALUMINUM_ORE_DEPOSIT,
+                    RegistryManager.COPPER_ORE,
+                    RegistryManager.COPPER_BLOCK,
+                    RegistryManager.COPPER_ORE_DEPOSIT,
+                    RegistryManager.TIN_ORE,
+                    RegistryManager.TIN_BLOCK,
+                    RegistryManager.TIN_ORE_DEPOSIT,
+                    RegistryManager.LEAD_ORE,
+                    RegistryManager.LEAD_BLOCK,
+                    RegistryManager.LEAD_ORE_DEPOSIT,
+                    RegistryManager.SILVER_ORE,
+                    RegistryManager.SILVER_BLOCK,
+                    RegistryManager.SILVER_ORE_DEPOSIT,
+                    RegistryManager.URANIUM_ORE,
+                    RegistryManager.URANIUM_BLOCK,
+                    RegistryManager.URANIUM_ORE_DEPOSIT,
+                    RegistryManager.NICKEL_ORE,
+                    RegistryManager.NICKEL_BLOCK,
+                    RegistryManager.NICKEL_ORE_DEPOSIT,
+                    RegistryManager.ZINC_ORE,
+                    RegistryManager.ZINC_BLOCK,
+                    RegistryManager.ZINC_ORE_DEPOSIT,
+
+                    RegistryManager.COAL_ORE_DEPOSIT,
+                    RegistryManager.IRON_ORE_DEPOSIT,
+                    RegistryManager.DIAMOND_ORE_DEPOSIT,
+                    RegistryManager.EMERALD_ORE_DEPOSIT,
+                    RegistryManager.GOLD_ORE_DEPOSIT,
+                    RegistryManager.LAPIS_ORE_DEPOSIT,
+                    RegistryManager.REDSTONE_ORE_DEPOSIT,
+
+                    RegistryManager.MINER.get(),
+                    RegistryManager.CHEMICAL_PLANT.get()
+            );
+
+            tag(WOOD).add(
+                    RegistryManager.COAL_ORE_DEPOSIT,
+                    RegistryManager.COPPER_ORE,
+                    RegistryManager.COPPER_BLOCK,
+                    RegistryManager.COPPER_ORE_DEPOSIT,
+                    RegistryManager.TIN_ORE,
+                    RegistryManager.TIN_BLOCK,
+                    RegistryManager.TIN_ORE_DEPOSIT,
+                    RegistryManager.ZINC_ORE,
+                    RegistryManager.ZINC_BLOCK,
+                    RegistryManager.ZINC_ORE_DEPOSIT
+            );
+
+            tag(STONE).add(
+                    RegistryManager.LAPIS_ORE_DEPOSIT,
+                    RegistryManager.IRON_ORE_DEPOSIT,
+                    RegistryManager.LEAD_ORE,
+                    RegistryManager.LEAD_BLOCK,
+                    RegistryManager.LEAD_ORE_DEPOSIT,
+                    RegistryManager.SILVER_ORE,
+                    RegistryManager.SILVER_BLOCK,
+                    RegistryManager.SILVER_ORE_DEPOSIT,
+                    RegistryManager.NICKEL_ORE,
+                    RegistryManager.NICKEL_BLOCK,
+                    RegistryManager.NICKEL_ORE_DEPOSIT
+            );
+
+            tag(IRON).add(
+                    RegistryManager.REDSTONE_ORE_DEPOSIT,
+                    RegistryManager.GOLD_ORE_DEPOSIT,
+                    RegistryManager.EMERALD_ORE_DEPOSIT,
+                    RegistryManager.DIAMOND_ORE_DEPOSIT
+            );
+
+            tag(NETHERITE).add(
+                    RegistryManager.URANIUM_ORE,
+                    RegistryManager.URANIUM_BLOCK,
+                    RegistryManager.URANIUM_ORE_DEPOSIT
             );
         }
     }

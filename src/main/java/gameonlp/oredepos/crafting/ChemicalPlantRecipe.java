@@ -7,24 +7,18 @@ import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.fixes.AbstractUUIDFix;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -55,7 +49,7 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
 
     // Only checking one slot for one ingredient, not perfect, not too bad
     @Override
-    public boolean matches(IFluidInventory fluidInventory, World p_77569_2_) {
+    public boolean matches(IFluidInventory fluidInventory, Level p_77569_2_) {
         boolean matches;
         if (fluidIngredients.size() == 1){
             matches = fluidIngredients.get(0).test(fluidInventory.getFluid(0)) || fluidIngredients.get(0).test(fluidInventory.getFluid(1));
@@ -104,13 +98,13 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return RegistryManager.CHEMICAL_PLANT_RECIPE_SERIALIZER;
     }
 
     @Override
-    public IRecipeType<?> getType() {
-        return Registry.RECIPE_TYPE.getOptional(TYPE).get();
+    public RecipeType<?> getType() {
+        return RegistryManager.CHEMICAL_PLANT_RECIPE_TYPE.get();
     }
 
     public int getEnergy() {
@@ -126,15 +120,15 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
         return ticks;
     }
 
-    public static class ChemicalPlantRecipeType implements IRecipeType<ChemicalPlantRecipe> {
+    public static class ChemicalPlantRecipeType implements RecipeType<ChemicalPlantRecipe> {
         @Override
         public String toString() {
             return ChemicalPlantRecipe.TYPE.toString();
         }
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
-            implements IRecipeSerializer<ChemicalPlantRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+            implements RecipeSerializer<ChemicalPlantRecipe> {
 
         @Override
         public ChemicalPlantRecipe fromJson(ResourceLocation p_199425_1_, JsonObject json) {
@@ -148,7 +142,7 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
                     fluidStack = new FluidStack(ForgeRegistries.FLUIDS.getValue(location), fluid.get("amount").getAsInt());
                 } else {
                     try {
-                        CompoundNBT nbt = JsonToNBT.parseTag(fluid.get("nbt").getAsString());
+                        CompoundTag nbt = TagParser.parseTag(fluid.get("nbt").getAsString());
                         fluidStack = new FluidStack(ForgeRegistries.FLUIDS.getValue(location), fluid.get("amount").getAsInt(), nbt);
                     } catch (CommandSyntaxException e) {
                         throw new JsonParseException(e);
@@ -156,7 +150,7 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
                 }
             }
             if (results.has("result_item")) {
-                itemStack = ShapedRecipe.itemFromJson(results.getAsJsonObject("result_item"));
+                itemStack = new ItemStack(ShapedRecipe.itemFromJson(results.getAsJsonObject("result_item")));
             }
             if (itemStack == null && fluidStack == null){
                 throw new JsonParseException("No outputs");
@@ -182,11 +176,11 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
                     JsonObject fluid = inputObject.getAsJsonObject("fluid");
                     ResourceLocation location = new ResourceLocation(fluid.get("tag").getAsString());
                     if (!fluid.has("nbt")) {
-                        fluidIngredients.add(new FluidIngredient(location, fluid.get("amount").getAsInt(), null));
+                        fluidIngredients.add(new FluidIngredient(ForgeRegistries.FLUIDS.tags().createTagKey(location), fluid.get("amount").getAsInt(), null));
                     } else {
                         try {
-                            CompoundNBT nbt = JsonToNBT.parseTag(fluid.get("nbt").getAsString());
-                            fluidIngredients.add(new FluidIngredient(location, fluid.get("amount").getAsInt(), nbt));
+                            CompoundTag nbt = TagParser.parseTag(fluid.get("nbt").getAsString());
+                            fluidIngredients.add(new FluidIngredient(ForgeRegistries.FLUIDS.tags().createTagKey(location), fluid.get("amount").getAsInt(), nbt));
                         } catch (CommandSyntaxException e) {
                             throw new JsonParseException(e);
                         }
@@ -204,7 +198,7 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
 
         @Nullable
         @Override
-        public ChemicalPlantRecipe fromNetwork(ResourceLocation p_199426_1_, PacketBuffer buffer) {
+        public ChemicalPlantRecipe fromNetwork(ResourceLocation p_199426_1_, FriendlyByteBuf buffer) {
             ItemStack outStack = buffer.readItem();
             FluidStack outFluid = FluidStack.loadFluidStackFromNBT(buffer.readNbt());
             NonNullList<Ingredient> ingredients = NonNullList.create();
@@ -219,9 +213,9 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, ChemicalPlantRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, ChemicalPlantRecipe recipe) {
             buffer.writeItemStack(recipe.outItem, true);
-            CompoundNBT fluid = new CompoundNBT();
+            CompoundTag fluid = new CompoundTag();
             fluid = recipe.outFluid.writeToNBT(fluid);
             buffer.writeNbt(fluid);
             for (Ingredient ingredient : recipe.ingredients) {

@@ -6,7 +6,7 @@ import gameonlp.oredepos.compat.TOPCompat;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.data.DataGen;
 import gameonlp.oredepos.net.PacketManager;
-import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -35,10 +35,10 @@ public class OreDepos {
         modEventBus.addListener(this::enqueueIMC);
 
         modEventBus.addListener(DataGen::generate);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OreDeposConfig.COMMON_SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, OreDeposConfig.SERVER_SPEC);
 
-        modEventBus.addListener((ModConfig.Loading e) -> OreDeposConfig.onConfigLoad());
-        modEventBus.addListener((ModConfig.Reloading e) -> OreDeposConfig.onConfigLoad());
+        //modEventBus.addListener((e) -> OreDeposConfig.onConfigLoad()); //probably will not work FIXME
+        //modEventBus.addListener((e) -> OreDeposConfig.onConfigLoad());
 
         PacketManager.setup();
 
@@ -49,9 +49,9 @@ public class OreDepos {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ScreenManager.register(RegistryManager.MINER_CONTAINER.get(),
+            MenuScreens.register(RegistryManager.MINER_CONTAINER.get(),
                     MinerScreen::new);
-            ScreenManager.register(RegistryManager.CHEMICAL_PLANT_CONTAINER.get(),
+            MenuScreens.register(RegistryManager.CHEMICAL_PLANT_CONTAINER.get(),
                     ChemicalPlantScreen::new);
         });
     }

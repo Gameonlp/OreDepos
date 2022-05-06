@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "oredepos:coal_ore_deposit",
+    "oredepos:copper_ore",
+    "oredepos:copper_block",
+    "oredepos:copper_ore_deposit",
+    "oredepos:tin_ore",
+    "oredepos:tin_block",
+    "oredepos:tin_ore_deposit",
+    "oredepos:zinc_ore",
+    "oredepos:zinc_block",
+    "oredepos:zinc_ore_deposit"
+  ]
+}

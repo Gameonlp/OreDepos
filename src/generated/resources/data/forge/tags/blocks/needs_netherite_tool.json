@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "oredepos:uranium_ore",
+    "oredepos:uranium_block",
+    "oredepos:uranium_ore_deposit"
+  ]
+}

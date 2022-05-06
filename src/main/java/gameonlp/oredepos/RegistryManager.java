@@ -6,40 +6,38 @@ import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantTile;
 import gameonlp.oredepos.blocks.miner.MinerBlock;
 import gameonlp.oredepos.blocks.miner.MinerContainer;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
-import gameonlp.oredepos.blocks.oredeposit.RedstoneOreDepositBlock;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.ReplaceBlockConfig;
-import net.minecraft.world.gen.feature.ReplaceBlockFeature;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -50,22 +48,22 @@ public class RegistryManager {
     // Template class
     private static class DepositTemplate {
         private final String name;
-        private final Block block;
+        private final Supplier<Block> block;
         private Supplier<Fluid> needed;
         private double factor;
 
         private DepositTemplate(String location, String name, Supplier<Fluid> needed, double factor){
-            this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), needed, factor);
+            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), needed, factor);
         }
         private DepositTemplate(String location, String name, double factor){
-            this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
+            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
         }
 
-        private DepositTemplate(String name, Block block, double factor){
+        private DepositTemplate(String name, Supplier<Block> block, double factor){
             this(name, block, () -> null, factor);
         }
 
-        private DepositTemplate(String name, Block block, Supplier<Fluid> needed, double factor){
+        private DepositTemplate(String name, Supplier<Block> block, Supplier<Fluid> needed, double factor){
             this.name = name;
             this.block = block;
             this.needed = needed;
@@ -74,13 +72,14 @@ public class RegistryManager {
     }
 
     //Registries
-    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, OreDepos.MODID);
+    private static final DeferredRegister<BlockEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, OreDepos.MODID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, OreDepos.MODID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, OreDepos.MODID);
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, OreDepos.MODID);
-    private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, OreDepos.MODID);
+    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, OreDepos.MODID);
     private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, OreDepos.MODID);
-    private static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, OreDepos.MODID);
+    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, OreDepos.MODID);
+    private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registry.RECIPE_TYPE_REGISTRY, OreDepos.MODID);
 
     //Resource Locations
     public static final ResourceLocation WATER_STILL_RL = new ResourceLocation("block/water_still");
@@ -113,8 +112,8 @@ public class RegistryManager {
     //Blocks
     public static RegistryObject<Block> MINER;
     public static RegistryObject<Block> CHEMICAL_PLANT;
-    public static final RegistryObject<FlowingFluidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
-            () -> new FlowingFluidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), AbstractBlock.Properties.of(Material.WATER)
+    public static final RegistryObject<LiquidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
+            () -> new LiquidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
     @ObjectHolder("oredepos:copper_ore")
     public static final Block COPPER_ORE = null;
@@ -194,25 +193,22 @@ public class RegistryManager {
     public static final Block ZINC_ORE_DEPOSIT = null;
 
     //Tile Entities
-    public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
-    public static RegistryObject<TileEntityType<MinerTile>> MINER_TILE;
-    public static RegistryObject<TileEntityType<ChemicalPlantTile>> CHEMICAL_PLANT_TILE;
+    public static RegistryObject<BlockEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
+    public static RegistryObject<BlockEntityType<MinerTile>> MINER_TILE;
+    public static RegistryObject<BlockEntityType<ChemicalPlantTile>> CHEMICAL_PLANT_TILE;
 
     //Containers
-    public static RegistryObject<ContainerType<MinerContainer>> MINER_CONTAINER = CONTAINERS.register("miner_container", () -> IForgeContainerType.create(((windowId, inv, data) -> {
+    public static RegistryObject<MenuType<MinerContainer>> MINER_CONTAINER = CONTAINERS.register("miner_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
         BlockPos pos = data.readBlockPos();
-        World world = inv.player.getCommandSenderWorld();
+        Level world = inv.player.getCommandSenderWorld();
         return new MinerContainer(windowId, world, pos, inv, inv.player);
     })));
-    public static RegistryObject<ContainerType<ChemicalPlantContainer>> CHEMICAL_PLANT_CONTAINER = CONTAINERS.register("chemical_plant_container", () -> IForgeContainerType.create(((windowId, inv, data) -> {
+    public static RegistryObject<MenuType<ChemicalPlantContainer>> CHEMICAL_PLANT_CONTAINER = CONTAINERS.register("chemical_plant_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
         BlockPos pos = data.readBlockPos();
-        World world = inv.player.getCommandSenderWorld();
+        Level world = inv.player.getCommandSenderWorld();
         return new ChemicalPlantContainer(windowId, world, pos, inv, inv.player);
     })));
 
-    //Features
-    @ObjectHolder("oredepos:replace")
-    public static final ReplaceBlockFeature REPLACE_FEATURE = null;
 
     //Fluids
     public static final RegistryObject<FlowingFluid> SULFURIC_ACID_FLUID
@@ -225,103 +221,79 @@ public class RegistryManager {
             .color(0xbffed0d0)).slopeFindDistance(2).levelDecreasePerBlock(2)
             .block(() -> RegistryManager.SULFURIC_ACID_BLOCK.get()).bucket(() -> RegistryManager.SULFURID_ACID_BUCKET.get());
 
-    //Recipe Serializers
+    //Recipes
     @ObjectHolder("oredepos:chemical_plant_recipe")
-    public static final IRecipeSerializer<ChemicalPlantRecipe> CHEMICAL_PLANT_RECIPE_SERIALIZER = null;
-
-    //Recipe Types
-    public static final ChemicalPlantRecipe.ChemicalPlantRecipeType CHEMICAL_PLANT_RECIPE_TYPE = new ChemicalPlantRecipe.ChemicalPlantRecipeType();
+    public static final RecipeSerializer<ChemicalPlantRecipe> CHEMICAL_PLANT_RECIPE_SERIALIZER = null;
+    public static final RegistryObject<ChemicalPlantRecipe.ChemicalPlantRecipeType> CHEMICAL_PLANT_RECIPE_TYPE = RECIPE_TYPES.register("chemical_plant_recipe_type", ChemicalPlantRecipe.ChemicalPlantRecipeType::new);
 
 
-    private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel){
-        return prepareDeposit(name, material, hardness,resistance,tool,harvestLevel, true,true);
+    // Other data
+    List<Supplier<Block>> deposits;
+
+
+    private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance){
+        return prepareDeposit(name, material, hardness,resistance, true,true);
     }
 
-    private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel, boolean hasIngot, boolean hasBlock){
-        return prepareDeposit(name, material, hardness,resistance,tool,harvestLevel,hardness, resistance, hasIngot, hasBlock);
+    private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance, boolean hasIngot, boolean hasBlock){
+        return prepareDeposit(name, material, hardness,resistance,hardness, resistance, hasIngot, hasBlock);
     }
 
-    private Block prepareDeposit(String name, Material material, float hardness, float resistance, ToolType tool, int harvestLevel, float blockHardness, float blockResistance, boolean hasIngot, boolean hasBlock){
-        Block oreBlock = new Block(AbstractBlock.Properties.of(material)
+    private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance, float blockHardness, float blockResistance, boolean hasIngot, boolean hasBlock){
+        Supplier<Block> oreBlock = () -> new Block(BlockBehaviour.Properties.of(material)
                 .strength(hardness, resistance)
-                .harvestTool(tool)
-                .harvestLevel(harvestLevel)
                 .requiresCorrectToolForDrops());
-        registerBlock(name + "_ore", () -> oreBlock);
         if (hasBlock) {
-            registerBlock(name + "_block", () -> new Block(AbstractBlock.Properties.of(Material.METAL)
+            registerBlock(name + "_block", () -> new Block(BlockBehaviour.Properties.of(Material.METAL)
                     .strength(blockHardness, blockResistance)
-                    .harvestTool(tool)
-                    .harvestLevel(harvestLevel)
                     .requiresCorrectToolForDrops()));
         }
         if (hasIngot) {
             ITEMS.register(name + "_ingot", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         }
-        return oreBlock;
+        return registerBlock(name + "_ore", oreBlock);
     }
 
 
     private void registerAllDeposits(){
-        Block tinOreBlock = prepareDeposit("tin", Material.STONE, 2, 5, ToolType.PICKAXE, 1);
-        Block copperOreBlock = prepareDeposit("copper", Material.STONE, 2, 5, ToolType.PICKAXE, 1);
-        Block leadOreBlock = prepareDeposit("lead", Material.STONE, 3, 7, ToolType.PICKAXE, 2);
-        Block silverOreBlock = prepareDeposit("silver", Material.STONE, 3, 4, ToolType.PICKAXE, 2);
-        Block aluminumOreBlock = prepareDeposit("aluminum", Material.STONE, 2, 4, ToolType.PICKAXE, 1);
-        Block uraniumOreBlock = prepareDeposit("uranium", Material.STONE, 10, 5, ToolType.PICKAXE, 4);
-        Block nickelOreBlock = prepareDeposit("nickel", Material.STONE, 3, 5, ToolType.PICKAXE, 2);
-        Block zincOreBlock = prepareDeposit("zinc", Material.STONE, 2, 5, ToolType.PICKAXE, 1);
+        Supplier<Block> tinOreBlock = prepareDeposit("tin", Material.STONE, 2, 5);
+        Supplier<Block> copperOreBlock = prepareDeposit("copper", Material.STONE, 2, 5);
+        Supplier<Block> leadOreBlock = prepareDeposit("lead", Material.STONE, 3, 7);
+        Supplier<Block> silverOreBlock = prepareDeposit("silver", Material.STONE, 3, 4);
+        Supplier<Block> aluminumOreBlock = prepareDeposit("aluminum", Material.STONE, 2, 4);
+        Supplier<Block> uraniumOreBlock = prepareDeposit("uranium", Material.STONE, 10, 5);
+        Supplier<Block> nickelOreBlock = prepareDeposit("nickel", Material.STONE, 3, 5);
+        Supplier<Block> zincOreBlock = prepareDeposit("zinc", Material.STONE, 2, 5);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
-        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coal.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Common.iron.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Common.gold.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Common.diamond.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Common.emerald.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Common.lapis.factor.get()));
-        depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Common.copper.factor.get()));
-        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Common.tin.factor.get()));
-        depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.lead.factor.get()));
-        depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silver.factor.get()));
-        depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Common.aluminum.factor.get()));
-        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Common.uranium.factor.get()));
-        depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, OreDeposConfig.Common.nickel.factor.get()));
-        depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Common.zinc.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Server.coal.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Server.iron.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Server.gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Server.diamond.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Server.emerald.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Server.lapis.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Server.redstone.factor.get()));
+        depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Server.copper.factor.get()));
+        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Server.tin.factor.get()));
+        depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Server.lead.factor.get()));
+        depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Server.silver.factor.get()));
+        depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Server.aluminum.factor.get()));
+        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Server.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
+        depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
 
-
-        DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstone.factor.get());
-        Block redstoneOreDepositBlock = new RedstoneOreDepositBlock(AbstractBlock.Properties.copy(redstoneTemplate.block)
-                    .harvestLevel(redstoneTemplate.block.getHarvestLevel(redstoneTemplate.block.defaultBlockState()))
-                    .harvestTool(redstoneTemplate.block.getHarvestTool(redstoneTemplate.block.defaultBlockState()))
-                    .lootFrom(redstoneTemplate.block::getBlock)
-                    .requiresCorrectToolForDrops(), redstoneTemplate.factor);
-        registerBlock( redstoneTemplate.name + "_deposit",
-                () -> redstoneOreDepositBlock);
-
-        List<Block> deposits = new LinkedList<>();
+        deposits = new LinkedList<>();
         for (DepositTemplate depositTemplate : depositTemplates) {
             deposits.add(registerOreDeposit(depositTemplate));
         }
-        deposits.add(redstoneOreDepositBlock);
-        ORE_DEPOSIT_TILE = TILE_ENTITIES.register("ore_deposit_tile", () -> TileEntityType.Builder.of(OreDepositTile::new, deposits.toArray(new Block[0])).build(null));
     }
 
-    private Block registerOreDeposit(DepositTemplate contained){
-        Block block;
-        if (contained.block.defaultBlockState().requiresCorrectToolForDrops()) {
-            block = new OreDepositBlock(AbstractBlock.Properties.copy(contained.block)
-                    .harvestLevel(contained.block.getHarvestLevel(contained.block.defaultBlockState()))
-                    .harvestTool(contained.block.getHarvestTool(contained.block.defaultBlockState()))
-                    .lootFrom(contained.block::getBlock)
-                    .requiresCorrectToolForDrops(), contained.needed, contained.factor);
-        } else {
-            block = new OreDepositBlock(AbstractBlock.Properties.copy(contained.block)
-                    .harvestLevel(contained.block.getHarvestLevel(contained.block.defaultBlockState()))
-                    .harvestTool(contained.block.getHarvestTool(contained.block.defaultBlockState()))
-                    .lootFrom(contained.block::getBlock), contained.needed, contained.factor);
-        }
-        registerBlock( contained.name + "_deposit", () -> block);
-        return block;
+    private Supplier<Block> registerOreDeposit(DepositTemplate contained){
+        Supplier<Block> block = () -> new OreDepositBlock(BlockBehaviour.Properties.of(Material.STONE)
+                .strength(3,5)//TODO make not fixed
+                .lootFrom(contained.block)
+                .requiresCorrectToolForDrops(), contained.needed, contained.factor);
+        return registerBlock( contained.name + "_deposit", block);
     }
 
     private <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block){
@@ -335,26 +307,24 @@ public class RegistryManager {
     }
 
     private void registerBlocks(){
-        MINER = registerBlock("miner", () -> new MinerBlock(AbstractBlock.Properties.of(Material.METAL)
+        MINER = registerBlock("miner", () -> new MinerBlock(BlockBehaviour.Properties.of(Material.METAL)
                 .strength(3, 10)
-                .harvestTool(ToolType.PICKAXE)
                 .requiresCorrectToolForDrops()));
-        CHEMICAL_PLANT = registerBlock("chemical_plant", () -> new ChemicalPlantBlock(AbstractBlock.Properties.of(Material.METAL)
+        CHEMICAL_PLANT = registerBlock("chemical_plant", () -> new ChemicalPlantBlock(BlockBehaviour.Properties.of(Material.METAL)
                 .strength(3, 10)
-                .harvestTool(ToolType.PICKAXE)
                 .requiresCorrectToolForDrops()));
     }
 
     private void registerItems(){
-        ITEMS.register("iron_pickaxe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 2, ToolType.PICKAXE));
-        ITEMS.register("diamond_pickaxe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 3, ToolType.PICKAXE));
-        ITEMS.register("netherite_pickaxe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 4, ToolType.PICKAXE));
-        ITEMS.register("iron_shovel_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 2, ToolType.SHOVEL));
-        ITEMS.register("diamond_shovel_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 3, ToolType.SHOVEL));
-        ITEMS.register("netherite_shovel_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 4, ToolType.SHOVEL));
-        ITEMS.register("iron_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 2, ToolType.AXE));
-        ITEMS.register("diamond_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 3, ToolType.AXE));
-        ITEMS.register("netherite_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 4, ToolType.AXE));
+        ITEMS.register("iron_pickaxe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.IRON_PICKAXE));
+        ITEMS.register("diamond_pickaxe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.DIAMOND_PICKAXE));
+        ITEMS.register("netherite_pickaxe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.NETHERITE_PICKAXE));
+        ITEMS.register("iron_shovel_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.IRON_SHOVEL));
+        ITEMS.register("diamond_shovel_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.DIAMOND_SHOVEL));
+        ITEMS.register("netherite_shovel_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.NETHERITE_SHOVEL));
+        ITEMS.register("iron_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.IRON_AXE));
+        ITEMS.register("diamond_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.DIAMOND_AXE));
+        ITEMS.register("netherite_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.NETHERITE_AXE));
         ITEMS.register("wire", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("circuit", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("speed_module_1", () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.5f, 0.2f));
@@ -368,18 +338,14 @@ public class RegistryManager {
         ITEMS.register("productivity_module_3", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, -0.15f, 0.1f));
     }
 
-    private void registerFeatures() {
-        FEATURES.register("replace", () -> new ReplaceBlockFeature(ReplaceBlockConfig.CODEC));
-    }
-
     private void registerTileEntities(){
-        MINER_TILE = TILE_ENTITIES.register("miner_tile", () -> TileEntityType.Builder.of(MinerTile::new, MINER.get()).build(null));
-        CHEMICAL_PLANT_TILE = TILE_ENTITIES.register("chemical_plant_tile", () -> TileEntityType.Builder.of(ChemicalPlantTile::new, CHEMICAL_PLANT.get()).build(null));
+        MINER_TILE = TILE_ENTITIES.register("miner_tile", () -> BlockEntityType.Builder.of(MinerTile::new, MINER.get()).build(null));
+        CHEMICAL_PLANT_TILE = TILE_ENTITIES.register("chemical_plant_tile", () -> BlockEntityType.Builder.of(ChemicalPlantTile::new, CHEMICAL_PLANT.get()).build(null));
+        ORE_DEPOSIT_TILE = TILE_ENTITIES.register("ore_deposit_tile", () -> BlockEntityType.Builder.of(OreDepositTile::new, deposits.stream().map(Supplier::get).toList().toArray(new Block[0])).build(null));
     }
 
     private void registerSerializers(){
         RECIPE_SERIALIZERS.register("chemical_plant_recipe", ChemicalPlantRecipe.Serializer::new);
-        Registry.register(Registry.RECIPE_TYPE, ChemicalPlantRecipe.TYPE, CHEMICAL_PLANT_RECIPE_TYPE);
     }
 
     public void register(IEventBus eventBus){
@@ -392,11 +358,11 @@ public class RegistryManager {
         registerTileEntities();
         TILE_ENTITIES.register(eventBus);
         CONTAINERS.register(eventBus);
-        registerFeatures();
         FEATURES.register(eventBus);
 
         FLUIDS.register(eventBus);
         registerSerializers();
         RECIPE_SERIALIZERS.register(eventBus);
+        RECIPE_TYPES.register(eventBus);
     }
 }

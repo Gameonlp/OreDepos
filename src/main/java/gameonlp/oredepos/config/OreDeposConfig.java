@@ -1,12 +1,11 @@
 package gameonlp.oredepos.config;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
 import gameonlp.oredepos.OreDepos;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class OreDeposConfig {
-    public static class Common {
+    public static class Server {
         public static ForgeConfigSpec.IntValue shortDistance;
         public static ForgeConfigSpec.IntValue mediumDistance;
         public static ForgeConfigSpec.IntValue longDistance;
@@ -33,7 +32,7 @@ public class OreDeposConfig {
         public static OreConfig nickel;
         public static OreConfig zinc;
 
-        public Common(ForgeConfigSpec.Builder builder) {
+        public Server(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
             builder.push("Short Distance");
             builder.comment("How many blocks from spawn is short distance stops");
@@ -62,31 +61,31 @@ public class OreDeposConfig {
             longDistanceIncreasesFurther = builder.define("longDistanceIncreasesFurther", true);
             builder.pop();
             builder.push("Ore Settings");
-            coal = new OreConfig(builder, "coal", false, true, false, 1.0f, 17, 1, 128, 20);
-            iron = new OreConfig(builder, "iron", false, true, false, 1.0f, 9, 1, 68, 20);
-            redstone = new OreConfig(builder, "redstone", false, true, false, 1.0f, 8, 1, 16, 8);
-            gold = new OreConfig(builder, "gold", false, true, false, 1.0f, 9, 1, 30, 5);
-            lapis = new OreConfig(builder, "lapis", false, true, false, 1.0f, 7, 1, 34, 2);
-            diamond = new OreConfig(builder, "diamond", false, true, false, 1.0f, 8, 1, 16, 1);
-            emerald = new OreConfig(builder, "emerald", false, true, false, 1.0f, 1, 1, 33, 1);
-            tin = new OreConfig(builder, "tin", true, true, false, 1.0f, 9, 1, 68, 20);
-            copper = new OreConfig(builder, "copper", true, true, false, 1.0f, 9, 1, 68, 20);
-            lead = new OreConfig(builder, "lead", true, true, false, 1.0f, 6, 1, 35, 8);
-            silver = new OreConfig(builder, "silver", true, true, false, 1.0f, 6, 1, 35, 8);
-            aluminum = new OreConfig(builder, "aluminum", true, true, false, 1.0f, 6, 1, 64, 12);
-            uranium = new OreConfig(builder, "uranium", true, true, false, 1.0f, 2, 1, 64, 4);
-            nickel = new OreConfig(builder, "nickel", true, true, false, 1.0f, 5, 1, 20, 5);
-            zinc = new OreConfig(builder, "zinc", true, true, false, 1.0f, 14, 15, 70, 4);
+            coal = new OreConfig(builder, "coal", false, true, false, 1.0f, 17, -64, 128, 40);
+            iron = new OreConfig(builder, "iron", false, true, false, 1.0f, 9, -64, 90, 30);
+            redstone = new OreConfig(builder, "redstone", false, true, false, 1.0f, 8, -64, 30, 20);
+            gold = new OreConfig(builder, "gold", false, true, false, 1.0f, 9, -64, 50, 20);
+            lapis = new OreConfig(builder, "lapis", false, true, false, 1.0f, 7, -64, 50, 10);
+            diamond = new OreConfig(builder, "diamond", false, true, false, 1.0f, 8, -64, 30, 5);
+            emerald = new OreConfig(builder, "emerald", false, true, false, 1.0f, 1, -64, 50, 5);
+            tin = new OreConfig(builder, "tin", true, true, false, 1.0f, 9, -64, 90, 20);
+            copper = new OreConfig(builder, "copper", true, true, false, 1.0f, 9, -64, 80, 20);
+            lead = new OreConfig(builder, "lead", true, true, false, 1.0f, 6, -64, 50, 20);
+            silver = new OreConfig(builder, "silver", true, true, false, 1.0f, 6, -64, 50, 20);
+            aluminum = new OreConfig(builder, "aluminum", true, true, false, 1.0f, 6, -64, 90, 20);
+            uranium = new OreConfig(builder, "uranium", true, true, false, 1.0f, 2, -64, 90, 20);
+            nickel = new OreConfig(builder, "nickel", true, true, false, 1.0f, 5, -64, 35, 20);
+            zinc = new OreConfig(builder, "zinc", true, true, false, 1.0f, 14, -64, 70, 20);
             builder.pop();
             builder.pop();
         }
     }
-    public static final Common COMMON;
-    public static final ForgeConfigSpec COMMON_SPEC;
+    public static final Server SERVER;
+    public static final ForgeConfigSpec SERVER_SPEC;
     static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
-        COMMON_SPEC = specPair.getRight();
-        COMMON = specPair.getLeft();
+        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        SERVER_SPEC = specPair.getRight();
+        SERVER = specPair.getLeft();
     }
 
     public static void onConfigLoad() {

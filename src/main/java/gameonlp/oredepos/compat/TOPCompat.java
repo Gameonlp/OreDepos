@@ -3,13 +3,14 @@ package gameonlp.oredepos.compat;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
 import mcjty.theoneprobe.api.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -28,13 +29,13 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
     public static class OreDepositInfoProvider implements IProbeInfoProvider {
 
         @Override
-        public String getID() {
-            return OreDepos.MODID;
+        public ResourceLocation getID() {
+            return new ResourceLocation(OreDepos.MODID, "topcompat");
         }
 
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-            TileEntity tileEntity = world.getBlockEntity(data.getPos());
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
+            BlockEntity tileEntity = world.getBlockEntity(data.getPos());
             if (tileEntity instanceof OreDepositTile) {
                 OreDepositTile tileEntityOre = (OreDepositTile) tileEntity;
                 int amount = tileEntityOre.getAmount();
@@ -43,10 +44,10 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
 
                 if (tileEntityOre.fluidNeeded() != null) {
                     Fluid fluid = tileEntityOre.fluidNeeded();
-                    probeInfo.text(new TranslationTextComponent(OreDepos.MODID + ".tooltip.requires_fluid")
+                    probeInfo.text(new TranslatableComponent("tooltip." + OreDepos.MODID + ".requires_fluid")
                             .append(" ")
                             .append(fluid.getAttributes().getDisplayName(new FluidStack(fluid, 100)))
-                            .withStyle(TextFormatting.GREEN));
+                            .withStyle(ChatFormatting.GREEN));
                 }
             }
         }

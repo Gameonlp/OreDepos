@@ -2,11 +2,11 @@ package gameonlp.oredepos.data;
 
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.worldgen.OreGen;
-import net.minecraft.data.BlockTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 public class DataGen {
 

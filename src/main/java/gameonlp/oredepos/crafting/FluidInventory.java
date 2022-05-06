@@ -1,13 +1,13 @@
 package gameonlp.oredepos.crafting;
 
-import net.minecraft.inventory.Inventory;
+import net.minecraft.world.SimpleContainer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class FluidInventory extends Inventory implements IFluidInventory {
+public class FluidInventory extends SimpleContainer implements IFluidInventory {
     private List<FluidStack> stacks;
     private int fluidTanks;
 

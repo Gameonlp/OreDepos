@@ -2,12 +2,12 @@ package gameonlp.oredepos.net;
 
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -29,18 +29,18 @@ public class PacketProgressSync {
     }
 
     public static void sync(PacketProgressSync msg){
-        TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
+        BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof ModuleAcceptorTile){
             ((ModuleAcceptorTile) tile).setProgress(msg.progress);
         }
     }
 
-    public static void encode(PacketProgressSync msg, PacketBuffer buffer){
+    public static void encode(PacketProgressSync msg, FriendlyByteBuf buffer){
         buffer.writeBlockPos(msg.pos);
         buffer.writeFloat(msg.progress);
     }
 
-    public static PacketProgressSync decode(PacketBuffer buf){
+    public static PacketProgressSync decode(FriendlyByteBuf buf){
         return new PacketProgressSync(buf.readBlockPos(), buf.readFloat());
     }
 }

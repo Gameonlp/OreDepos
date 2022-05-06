@@ -1,17 +1,21 @@
 package gameonlp.oredepos.blocks.oredeposit;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.BlockGetter;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class OreDepositBlock extends Block {
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+public class OreDepositBlock extends BaseEntityBlock {
     private Supplier<Fluid> fluid;
     private Double factor;
 
@@ -26,13 +30,13 @@ public class OreDepositBlock extends Block {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public RenderShape getRenderShape(BlockState p_49232_) {
+        return RenderShape.MODEL;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new OreDepositTile(fluid.get(), factor);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new OreDepositTile(pos, state, fluid.get(), factor);
     }
 }

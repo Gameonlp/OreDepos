@@ -14,19 +14,21 @@ import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.FluidHandlerTile;
 import gameonlp.oredepos.util.EnergyCell;
 import gameonlp.oredepos.util.PlayerInOutStackHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -35,9 +37,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +49,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MinerTile extends TileEntity implements ITickableTileEntity, EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
+public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
     ItemStackHandler slots = createItemHandler();
@@ -64,15 +67,15 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     float maxProgress = 30;
     float productivity;
 
-    List<ITextComponent> reason = Collections.emptyList();
+    List<Component> reason = Collections.emptyList();
     boolean hadReason;
 
-    protected MinerTile(TileEntityType<?> p_i48289_1_) {
-        super(p_i48289_1_);
+    protected MinerTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
+        super(p_i48289_1_, pos, state);
     }
 
-    public MinerTile() {
-        this(RegistryManager.MINER_TILE.get());
+    public MinerTile(BlockPos pos, BlockState state) {
+        this(RegistryManager.MINER_TILE.get(), pos, state);
     }
 
     private ItemStackHandler createItemHandler() {
@@ -119,7 +122,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     }
 
     @Override
-    protected void invalidateCaps() {
+    public void invalidateCaps() {
         super.invalidateCaps();
         itemHandler.invalidate();
         fluidHandler.invalidate();
@@ -127,8 +130,8 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT p_189515_1_) {
-        CompoundNBT tag = super.save(p_189515_1_);
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = super.serializeNBT();
         tag.putInt("energy", energyCell.getEnergyStored());
         tag.putFloat("progress", progress);
         tag.putFloat("productivity", productivity);
@@ -138,8 +141,8 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     }
 
     @Override
-    public void load(BlockState p_230337_1_, CompoundNBT p_230337_2_) {
-        super.load(p_230337_1_, p_230337_2_);
+    public void deserializeNBT(CompoundTag p_230337_2_) {
+        super.deserializeNBT(p_230337_2_);
         energyCell.setEnergy(p_230337_2_.getInt("energy"));
         progress = p_230337_2_.getFloat("progress");
         productivity = p_230337_2_.getFloat("productivity");
@@ -151,8 +154,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         slots.deserializeNBT(p_230337_2_.getCompound("slots"));
     }
 
-    @Override
-    public void tick() {
+    public void serverTick() {
         int energyDrain = 100; // TODO add config
         int fluidDrain = 100;
         if (level == null || level.isClientSide()){
@@ -160,7 +162,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         }
         if (slots.getStackInSlot(6).equals(ItemStack.EMPTY)){
             if (!hadReason || level.getGameTime() % 20 == 0) {
-                this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.missing_drill"));
+                this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.missing_drill"));
                 hadReason = true;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
             }
@@ -170,7 +172,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         for (int slot = 0; slot <= 5; slot++) {
             if (slots.getStackInSlot(slot).getCount() != 0){
                 if (!hadReason || level.getGameTime() % 20 == 0) {
-                    this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.output_full"));
+                    this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.output_full"));
                     hadReason = true;
                     PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
                 }
@@ -186,7 +188,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                 return;
             }
             if (this.reason.size() == 0){
-                this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.no_deposits"));
+                this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.no_deposits"));
             }
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
             hadReason = true;
@@ -224,7 +226,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
             progress -= maxProgress;
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             OreDepositTile depo = deposits.get(level.getRandom().nextInt(deposits.size()));
-            List<ItemStack> drops = Block.getDrops(depo.getBlockState(), (ServerWorld) level, worldPosition, depo, null, slots.getStackInSlot(6));
+            List<ItemStack> drops = Block.getDrops(depo.getBlockState(), (ServerLevel) level, worldPosition, depo, null, slots.getStackInSlot(6));
             if (productivity >= 1){
                 productivity -= 1;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
@@ -267,15 +269,15 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         }
     }
 
-    private List<ITextComponent> findSuitableTiles(int fluidDrain, List<OreDepositTile> deposits) {
-        List<List<ITextComponent>> reasons = new LinkedList<>();
+    private List<Component> findSuitableTiles(int fluidDrain, List<OreDepositTile> deposits) {
+        List<List<Component>> reasons = new LinkedList<>();
         for (int x = -1; x <= 1; x++) {
             for (int y = 0; y > -3; y--) {
                 for (int z = -1; z <= 1; z++) {
                     if (level == null){
                         continue;
                     }
-                    TileEntity depo = level.getBlockEntity(worldPosition.below().offset(x, y, z));
+                    BlockEntity depo = level.getBlockEntity(worldPosition.below().offset(x, y, z));
                     if (!(depo instanceof OreDepositTile)) {
                         continue;
                     }
@@ -285,29 +287,39 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                     }
                     DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
                     BlockState depoBlock = depo.getBlockState();
-                    boolean sufficientMiningLevel = depoBlock.getHarvestLevel() <= drillHead.getMiningLevel();
-                    boolean correctTool = depoBlock.getHarvestTool() == drillHead.getToolType() || !depoBlock.requiresCorrectToolForDrops();
+                    boolean correctToolForDrops = drillHead.getCorresponding().isCorrectToolForDrops(depoBlock);
                     Fluid fluid = oreDepo.fluidNeeded();
                     boolean correctFluid = fluid == null || fluid.equals(fluidTank.getFluid().getFluid());
                     boolean enoughFluid = fluid == null || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
-                    if (sufficientMiningLevel && correctTool && correctFluid && enoughFluid) {
+                    if (correctToolForDrops && correctFluid && enoughFluid) {
                         deposits.add(oreDepo);
                     } else {
-                        List<ITextComponent> currentReason = new LinkedList<>();
-                        if (!sufficientMiningLevel) {
-                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_level").append(": ").append(String.valueOf(depoBlock.getHarvestLevel())));
-                        }
-                        if (!correctTool) {
-                            ToolType correctType = depoBlock.getHarvestTool();
-                            if (correctType != null) {
-                                currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_tool").append(": ").append(correctType.getName()));
+                        List<Component> currentReason = new LinkedList<>();
+                        if (!correctToolForDrops) {
+                            String correctTool = "?";
+                            if (depoBlock.is(BlockTags.create(new ResourceLocation("minecraft:needs_iron_tool")))){
+                                correctTool = "Iron ";
+                            } else if (depoBlock.is(BlockTags.create(new ResourceLocation("minecraft:needs_diamond_tool")))){
+                                correctTool = "Diamond ";
+                            } else if (depoBlock.is(BlockTags.create(new ResourceLocation("forge:needs_netherite_tool")))){
+                                correctTool = "Netherite ";
                             }
+                            if(depoBlock.is(BlockTags.create(new ResourceLocation("minecraft:mineable/axe")))){
+                                correctTool += "Axe";
+                            } else if(depoBlock.is(BlockTags.create(new ResourceLocation("minecraft:mineable/pickaxe")))){
+                                correctTool += "Pickaxe";
+                            } else if(depoBlock.is(BlockTags.create(new ResourceLocation("minecraft:mineable/shovel")))){
+                                correctTool += "Shovel";
+                            } else if(depoBlock.is(BlockTags.create(new ResourceLocation("minecraft:mineable/hoe")))){
+                                correctTool += "Hoe";
+                            }
+                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_tool").append(": ").append(correctTool));
                         }
                         if (!correctFluid) {
-                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid, 1000).getDisplayName()));
+                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid, 1000).getDisplayName()));
                         }
                         if (!enoughFluid) {
-                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
+                            currentReason.add(new TranslatableComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
                         }
                         reasons.add(currentReason);
                     }
@@ -336,7 +348,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
     public void setProductivity(float productivity) {
         this.productivity = productivity;
     }
-    public void setReason(List<ITextComponent> reason) {
+    public void setReason(List<Component> reason) {
         this.reason = reason;
     }
 }

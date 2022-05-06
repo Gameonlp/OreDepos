@@ -3,14 +3,13 @@ package gameonlp.oredepos.net;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.FluidHandlerTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -34,19 +33,19 @@ public class PacketFluidSync {
     }
 
     public static void sync(PacketFluidSync msg){
-        TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
+        BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof EnergyHandlerTile){
             ((FluidHandlerTile) tile).setFluid(msg.fluid, msg.tank);
         }
     }
 
-    public static void encode(PacketFluidSync msg, PacketBuffer buffer){
+    public static void encode(PacketFluidSync msg, FriendlyByteBuf buffer){
         buffer.writeBlockPos(msg.pos);
         buffer.writeFluidStack(msg.fluid);
         buffer.writeInt(msg.tank);
     }
 
-    public static PacketFluidSync decode(PacketBuffer buf){
+    public static PacketFluidSync decode(FriendlyByteBuf buf){
         return new PacketFluidSync(buf.readBlockPos(), buf.readFluidStack(), buf.readInt());
     }
 }

@@ -2,18 +2,18 @@ package gameonlp.oredepos.util;
 
 import gameonlp.oredepos.net.PacketEnergySync;
 import gameonlp.oredepos.net.PacketManager;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 public class EnergyCell implements IEnergyStorage {
     private int energy;
     private int maxEnergy;
-    private TileEntity tile;
+    private BlockEntity tile;
     private final boolean extractable;
     private final boolean canReceive;
 
-    public EnergyCell(TileEntity tile, boolean extractable, boolean canReceive, int maxEnergy) {
+    public EnergyCell(BlockEntity tile, boolean extractable, boolean canReceive, int maxEnergy) {
         this.tile = tile;
         this.extractable = extractable;
         this.canReceive = canReceive;

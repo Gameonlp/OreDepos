@@ -1,20 +1,20 @@
 package gameonlp.oredepos.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
 public class PlayerInOutStackHandler {
-    private final TileEntity tile;
+    private final BlockEntity tile;
     private final ItemStackHandler handler;
     private ItemStackHandler playerAccessible;
     private ItemStackHandler machineAccessible;
 
     private final int outputRange;
 
-    public PlayerInOutStackHandler(TileEntity tile, ItemStackHandler handler, int outputRange){
+    public PlayerInOutStackHandler(BlockEntity tile, ItemStackHandler handler, int outputRange){
         this.tile = tile;
         this.handler = handler;
         this.outputRange = outputRange;

@@ -4,35 +4,35 @@ import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.items.DrillHeadItem;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.network.PacketDistributor;
 
-public class MinerContainer extends Container {
+public class MinerContainer extends AbstractContainerMenu {
 
-    private TileEntity tileEntity;
-    private PlayerEntity player;
+    private BlockEntity tileEntity;
+    private Player player;
     private IItemHandler playerInventory;
 
     public IEnergyStorage getEnergy(){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY).orElse(null);
     }
 
-    public MinerContainer(int windowId, World world, BlockPos pos,
-                          PlayerInventory playerInventory, PlayerEntity player) {
+    public MinerContainer(int windowId, Level world, BlockPos pos,
+                          Inventory playerInventory, Player player) {
         super(RegistryManager.MINER_CONTAINER.get(), windowId);
         this.tileEntity = world.getBlockEntity(pos);
         if (tileEntity.getLevel() != null && !tileEntity.getLevel().isClientSide() && tileEntity instanceof MinerTile){
@@ -61,8 +61,8 @@ public class MinerContainer extends Container {
         }
     }
     @Override
-    public boolean stillValid(PlayerEntity p_75145_1_) {
-        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.MINER.get());
+    public boolean stillValid(Player p_75145_1_) {
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.MINER.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
@@ -92,7 +92,7 @@ public class MinerContainer extends Container {
     }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         int playerStart = 0;
         int playerEnd = 36;
         int tileStart = playerEnd + 1;
@@ -125,7 +125,7 @@ public class MinerContainer extends Container {
         }
         return itemstack;
     }
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return tileEntity;
     }
 }

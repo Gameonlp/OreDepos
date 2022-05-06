@@ -1,9 +1,9 @@
 package gameonlp.oredepos.net;
 
 import gameonlp.oredepos.OreDepos;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketManager {
     private static final String PROTOCOL_VERSION = "1";

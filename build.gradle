@@ -11,12 +11,13 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+//apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = '1.16.5-1.0.7'
+version = '1.18.2-1.0.7'
 group = 'gameonlp.oredepos' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'oredepos'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
@@ -31,7 +32,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.18.2'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -129,15 +130,15 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.33'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
 
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.1.3-21:api")
-    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.1.3-21")
+    compileOnly fg.deobf("curse.maven:theoneprobe-245211:3671753")
+    runtimeOnly fg.deobf("curse.maven:theoneprobe-245211:3671753")
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
+    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.5.174:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.5.174")
 
-    runtimeOnly fg.deobf("curse.maven:cyclic-239286:3717822")
+    //runtimeOnly fg.deobf("curse.maven:cyclic-239286:3717822")
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"

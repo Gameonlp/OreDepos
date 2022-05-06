@@ -1,29 +1,33 @@
 package gameonlp.oredepos.blocks.miner;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
-public class MinerBlock extends Block {
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraftforge.network.NetworkHooks;
+
+public class MinerBlock extends BaseEntityBlock {
 
     public MinerBlock(Properties properties) {
         super(properties);
@@ -31,59 +35,59 @@ public class MinerBlock extends Block {
 
     @SuppressWarnings("deprecation")
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos,
-                                PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos,
+                                Player player, InteractionHand handIn, BlockHitResult hit) {
         if(!worldIn.isClientSide()) {
-            TileEntity tileEntity = worldIn.getBlockEntity(pos);
+            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
             if(tileEntity instanceof MinerTile) {
-                INamedContainerProvider containerProvider = createContainerProvider(worldIn, pos);
+                MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openGui(((ServerPlayerEntity)player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openGui(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
-    private INamedContainerProvider createContainerProvider(World worldIn, BlockPos pos) {
-        return new INamedContainerProvider() {
+    private MenuProvider createContainerProvider(Level worldIn, BlockPos pos) {
+        return new MenuProvider() {
             @Override
-            public ITextComponent getDisplayName() {
-                return new TranslationTextComponent("screen.oredepos.miner");
+            public Component getDisplayName() {
+                return new TranslatableComponent("screen.oredepos.miner");
             }
 
             @Nullable
             @Override
-            public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
                 return new MinerContainer(i, worldIn, pos, playerInventory, playerEntity);
             }
         };
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new MinerTile();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new MinerTile(pos, state);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState p_49232_) {
+        return RenderShape.MODEL;
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState p_196243_1_, World world, BlockPos blockPos, BlockState p_196243_4_, boolean dropContents) {
+    public void onRemove(BlockState p_196243_1_, Level world, BlockPos blockPos, BlockState p_196243_4_, boolean dropContents) {
         if (!dropContents){
-            TileEntity tile = world.getBlockEntity(blockPos);
+            BlockEntity tile = world.getBlockEntity(blockPos);
             if (tile instanceof MinerTile){
                 MinerTile minerTile = (MinerTile) tile;
                 NonNullList<ItemStack> contents = NonNullList.create();
                 for (int i = 0; i < minerTile.slots.getSlots(); i++) {
                     contents.add(minerTile.slots.extractItem(i, Integer.MAX_VALUE, false));
                 }
-                InventoryHelper.dropContents(world, blockPos, contents);
+                Containers.dropContents(world, blockPos, contents);
             }
         }
         super.onRemove(p_196243_1_, world, blockPos, p_196243_4_, dropContents);

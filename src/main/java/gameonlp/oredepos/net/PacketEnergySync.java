@@ -2,12 +2,12 @@ package gameonlp.oredepos.net;
 
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -29,18 +29,18 @@ public class PacketEnergySync {
     }
 
     public static void sync(PacketEnergySync msg){
-        TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
+        BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof EnergyHandlerTile){
             ((EnergyHandlerTile) tile).setEnergy(msg.energy);
         }
     }
 
-    public static void encode(PacketEnergySync msg, PacketBuffer buffer){
+    public static void encode(PacketEnergySync msg, FriendlyByteBuf buffer){
         buffer.writeBlockPos(msg.pos);
         buffer.writeInt(msg.energy);
     }
 
-    public static PacketEnergySync decode(PacketBuffer buf){
+    public static PacketEnergySync decode(FriendlyByteBuf buf){
         return new PacketEnergySync(buf.readBlockPos(), buf.readInt());
     }
 }

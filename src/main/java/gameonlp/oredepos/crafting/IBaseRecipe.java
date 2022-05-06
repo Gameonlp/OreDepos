@@ -1,11 +1,10 @@
 package gameonlp.oredepos.crafting;
 
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.core.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
-public interface IBaseRecipe extends IRecipe<IFluidInventory> {
+public interface IBaseRecipe extends Recipe<IFluidInventory> {
     FluidStack getResultFluid();
 
     NonNullList<FluidIngredient> getFluidIngredients();

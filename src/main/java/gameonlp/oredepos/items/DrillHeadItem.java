@@ -1,23 +1,17 @@
 package gameonlp.oredepos.items;
 
-import net.minecraft.item.Item;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.item.Item;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class DrillHeadItem extends Item {
-    private final int miningLevel;
-    private final ToolType toolType;
-
-    public DrillHeadItem(Properties p_i48487_1_, int miningLevel, ToolType toolType) {
+    private final Item corresponding;
+    public DrillHeadItem(Properties p_i48487_1_, Item corresponding) {
         super(p_i48487_1_.stacksTo(1));
-        this.miningLevel = miningLevel;
-        this.toolType = toolType;
+        this.corresponding = corresponding;
     }
 
-    public int getMiningLevel(){
-        return this.miningLevel;
-    }
-
-    public ToolType getToolType(){
-        return this.toolType;
+    public Item getCorresponding() {
+        return corresponding;
     }
 }

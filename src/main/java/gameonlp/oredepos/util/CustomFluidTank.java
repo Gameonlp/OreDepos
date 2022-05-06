@@ -2,16 +2,16 @@ package gameonlp.oredepos.util;
 
 import gameonlp.oredepos.net.PacketFluidSync;
 import gameonlp.oredepos.net.PacketManager;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 public class CustomFluidTank extends FluidTank {
-    private TileEntity tile;
+    private BlockEntity tile;
     private int id;
 
-    public CustomFluidTank(TileEntity tile, int capacity, int id) {
+    public CustomFluidTank(BlockEntity tile, int capacity, int id) {
         super(capacity);
         this.tile = tile;
         this.id = id;
