@@ -24,6 +24,21 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Random;
 
 public class OreGen {
+    private enum NetherOre {
+        ANCIENT_DEBRIS_DEPOSIT(Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS_DEPOSIT), Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS), OreDeposConfig.Common.ancient_debris),
+        NETHER_GOLD_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE), OreDeposConfig.Common.nether_gold),
+        NETHER_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE), OreDeposConfig.Common.nether_quartz);
+
+        private final Lazy<Block> block;
+        private final Lazy<Block> replaceBlock;
+        private final OreConfig config;
+
+        private NetherOre(Lazy<Block> block, Lazy<Block> replaceBlock, OreConfig config){
+            this.block = block;
+            this.replaceBlock = replaceBlock;
+            this.config = config;
+        }
+    }
     private enum Ore {
         TIN_DEPOSIT(Lazy.of(() -> RegistryManager.TIN_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.TIN_ORE), OreDeposConfig.Common.tin),
         LEAD_DEPOSIT(Lazy.of(() -> RegistryManager.LEAD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.LEAD_ORE), OreDeposConfig.Common.lead),
@@ -50,15 +65,6 @@ public class OreGen {
             this.replaceBlock = replaceBlock;
             this.config = config;
         }
-
-        public static Ore get(Block block){
-            for (Ore ore : Ore.values()) {
-                if(ore.block.equals(block)){
-                    return ore;
-                }
-            }
-            return null;
-        }
     }
 
     public static void oreGeneration(final BiomeLoadingEvent event) {
@@ -74,8 +80,34 @@ public class OreGen {
                 }
             }
         }
+        for (NetherOre ore : NetherOre.values()) {
+            if (ore.config.enabled.get()) {
+                if (ore.config.replace.get() && ore.config.isModded){
+                    generateOre(event, ore.replaceBlock.get(), ore);
+                    replaceOre(event, ore.block.get(), ore.replaceBlock.get(), ore);
+                } else if (ore.config.replace.get()){
+                    replaceOre(event, ore.block.get(), ore.replaceBlock.get(), ore);
+                } else {
+                    generateOre(event, ore.block.get(), ore);
+                }
+            }
+        }
     }
 
+    private static void generateOre(BiomeLoadingEvent event, Block block, NetherOre ore) {
+        OreFeatureConfig oreFeatureConfig = new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NETHER_ORE_REPLACEABLES,
+                block.defaultBlockState(), ore.config.veinSize.get());
+        ConfiguredPlacement<?> genRange = Placement.RANGE.configured(new TopSolidRangeConfig(ore.config.minHeight.get(), ore.config.minHeight.get(), ore.config.maxHeight.get()));
+        ConfiguredFeature<?, ?> feature = register(block, oreFeatureConfig, genRange, ore.config.count.get());
+        event.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
+    }
+    private static void replaceOre(BiomeLoadingEvent event, Block block, Block toReplace, NetherOre ore) {
+        ReplaceBlockConfig replace = new ReplaceBlockConfig(toReplace.defaultBlockState(), block.defaultBlockState());
+        ConfiguredPlacement<?> blocksToCheck = Placement.RANGE.configured(new TopSolidRangeConfig(ore.config.minHeight.get(), ore.config.minHeight.get(), ore.config.maxHeight.get()));
+        ConfiguredFeature<?, ?> confFeature = Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, block.getRegistryName(),
+                RegistryManager.REPLACE_FEATURE.configured(replace).decorated(blocksToCheck).squared().count(128).count(128 / ore.config.veinSize.get()));//TODO not happy about this might make my own Placement config
+        event.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, confFeature);
+    }
     private static void generateOre(BiomeLoadingEvent event, Block block, Ore ore) {
         OreFeatureConfig oreFeatureConfig = new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
                 block.defaultBlockState(), ore.config.veinSize.get());

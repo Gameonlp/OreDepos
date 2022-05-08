@@ -158,6 +158,12 @@ public class RegistryManager {
     public static final Block DIAMOND_ORE = null;
     @ObjectHolder("minecraft:emerald_ore")
     public static final Block EMERALD_ORE = null;
+    @ObjectHolder("minecraft:nether_quartz_ore")
+    public static final Block NETHER_QUARTZ_ORE = null;
+    @ObjectHolder("minecraft:nether_gold_ore")
+    public static final Block NETHER_GOLD_ORE = null;
+    @ObjectHolder("minecraft:ancient_debris")
+    public static final Block ANCIENT_DEBRIS = null;
     @ObjectHolder("minecraft:redstone_ore")
     public static final Block REDSTONE_ORE = null;
     @ObjectHolder("minecraft:lapis_ore")
@@ -172,6 +178,12 @@ public class RegistryManager {
     public static final Block DIAMOND_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:emerald_ore_deposit")
     public static final Block EMERALD_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:nether_quartz_ore_deposit")
+    public static final Block NETHER_QUARTZ_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:nether_gold_ore_deposit")
+    public static final Block NETHER_GOLD_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:ancient_debris_deposit")
+    public static final Block ANCIENT_DEBRIS_DEPOSIT = null;
     @ObjectHolder("oredepos:redstone_ore_deposit")
     public static final Block REDSTONE_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:lapis_ore_deposit")
@@ -279,6 +291,9 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Common.diamond.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Common.emerald.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Common.lapis.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "nether_quartz_ore", OreDeposConfig.Common.nether_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "nether_gold_ore", OreDeposConfig.Common.nether_gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "ancient_debris", OreDeposConfig.Common.ancient_debris.factor.get()));
         depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Common.copper.factor.get()));
         depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Common.tin.factor.get()));
         depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.lead.factor.get()));

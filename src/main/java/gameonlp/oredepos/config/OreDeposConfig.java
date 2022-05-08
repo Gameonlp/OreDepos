@@ -24,6 +24,9 @@ public class OreDeposConfig {
         public static OreConfig lapis;
         public static OreConfig diamond;
         public static OreConfig emerald;
+        public static OreConfig nether_quartz;
+        public static OreConfig nether_gold;
+        public static OreConfig ancient_debris;
         public static OreConfig tin;
         public static OreConfig copper;
         public static OreConfig lead;
@@ -69,6 +72,9 @@ public class OreDeposConfig {
             lapis = new OreConfig(builder, "lapis", false, true, false, 1.0f, 7, 1, 34, 2);
             diamond = new OreConfig(builder, "diamond", false, true, false, 1.0f, 8, 1, 16, 1);
             emerald = new OreConfig(builder, "emerald", false, true, false, 1.0f, 1, 1, 33, 1);
+            nether_quartz = new OreConfig(builder, "nether_quartz", false, true, false, 1.0f, 18, 1, 256, 20);
+            nether_gold = new OreConfig(builder, "nether_gold", false, true, false, 1.0f, 9, 1, 256, 5);
+            ancient_debris = new OreConfig(builder, "ancient_debris", false, true, false, 1.0f, 3, 8, 128, 1);
             tin = new OreConfig(builder, "tin", true, true, false, 1.0f, 9, 1, 68, 20);
             copper = new OreConfig(builder, "copper", true, true, false, 1.0f, 9, 1, 68, 20);
             lead = new OreConfig(builder, "lead", true, true, false, 1.0f, 6, 1, 35, 8);
