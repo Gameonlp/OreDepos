@@ -13,7 +13,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 //apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = '1.18.2-1.0.7'
+version = '1.18.2-1.0.7.1'
 group = 'gameonlp.oredepos' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'oredepos'
 

@@ -92,22 +92,34 @@ public class RegistryManager {
                     new Item.Properties().stacksTo(1).tab(OreDeposTab.ORE_DEPOS_TAB)));
     @ObjectHolder("oredepos:diamond_pickaxe_drill_head")
     public static final Item DIAMOND_PICKAXE_DRILL_HEAD = null;
-    @ObjectHolder("oredepos:copper_ingot")
-    public static final Item COPPER_INGOT = null;
     @ObjectHolder("oredepos:tin_ingot")
     public static final Item TIN_INGOT = null;
+    @ObjectHolder("oredepos:raw_tin")
+    public static final Item RAW_TIN = null;
     @ObjectHolder("oredepos:lead_ingot")
     public static final Item LEAD_INGOT = null;
+    @ObjectHolder("oredepos:raw_lead")
+    public static final Item RAW_LEAD = null;
     @ObjectHolder("oredepos:silver_ingot")
     public static final Item SILVER_INGOT = null;
+    @ObjectHolder("oredepos:raw_silver")
+    public static final Item RAW_SILVER = null;
     @ObjectHolder("oredepos:aluminum_ingot")
     public static final Item ALUMINUM_INGOT = null;
+    @ObjectHolder("oredepos:raw_aluminum")
+    public static final Item RAW_ALUMINUM = null;
     @ObjectHolder("oredepos:uranium_ingot")
     public static final Item URANIUM_INGOT = null;
+    @ObjectHolder("oredepos:raw_uranium")
+    public static final Item RAW_URANIUM = null;
     @ObjectHolder("oredepos:nickel_ingot")
     public static final Item NICKEL_INGOT = null;
+    @ObjectHolder("oredepos:raw_nickel")
+    public static final Item RAW_NICKEL = null;
     @ObjectHolder("oredepos:zinc_ingot")
     public static final Item ZINC_INGOT = null;
+    @ObjectHolder("oredepos:raw_zinc")
+    public static final Item RAW_ZINC = null;
 
     //Blocks
     public static RegistryObject<Block> MINER;
@@ -115,82 +127,155 @@ public class RegistryManager {
     public static final RegistryObject<LiquidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
             () -> new LiquidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
-    @ObjectHolder("oredepos:copper_ore")
+
+    @ObjectHolder("minecraft:coal_ore")
+    public static final Block COAL_ORE = null;
+    @ObjectHolder("oredepos:coal_ore_deposit")
+    public static final Block COAL_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_coal_ore")
+    public static final Block DEEPSLATE_COAL_ORE = null;
+    @ObjectHolder("oredepos:deepslate_coal_ore_deposit")
+    public static final Block DEEPSLATE_COAL_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:iron_ore")
+    public static final Block IRON_ORE = null;
+    @ObjectHolder("oredepos:iron_ore_deposit")
+    public static final Block IRON_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_iron_ore")
+    public static final Block DEEPSLATE_IRON_ORE = null;
+    @ObjectHolder("oredepos:deepslate_iron_ore_deposit")
+    public static final Block DEEPSLATE_IRON_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:gold_ore")
+    public static final Block GOLD_ORE = null;
+    @ObjectHolder("oredepos:gold_ore_deposit")
+    public static final Block GOLD_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_gold_ore")
+    public static final Block DEEPSLATE_GOLD_ORE = null;
+    @ObjectHolder("oredepos:deepslate_gold_ore_deposit")
+    public static final Block DEEPSLATE_GOLD_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:diamond_ore")
+    public static final Block DIAMOND_ORE = null;
+    @ObjectHolder("oredepos:diamond_ore_deposit")
+    public static final Block DIAMOND_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_diamond_ore")
+    public static final Block DEEPSLATE_DIAMOND_ORE = null;
+    @ObjectHolder("oredepos:deepslate_diamond_ore_deposit")
+    public static final Block DEEPSLATE_DIAMOND_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:emerald_ore")
+    public static final Block EMERALD_ORE = null;
+    @ObjectHolder("oredepos:emerald_ore_deposit")
+    public static final Block EMERALD_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_emerald_ore")
+    public static final Block DEEPSLATE_EMERALD_ORE = null;
+    @ObjectHolder("oredepos:deepslate_emerald_ore_deposit")
+    public static final Block DEEPSLATE_EMERALD_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:redstone_ore")
+    public static final Block REDSTONE_ORE = null;
+    @ObjectHolder("oredepos:redstone_ore_deposit")
+    public static final Block REDSTONE_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_redstone_ore")
+    public static final Block DEEPSLATE_REDSTONE_ORE = null;
+    @ObjectHolder("oredepos:deepslate_redstone_ore_deposit")
+    public static final Block DEEPSLATE_REDSTONE_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:lapis_ore")
+    public static final Block LAPIS_ORE = null;
+    @ObjectHolder("oredepos:lapis_ore_deposit")
+    public static final Block LAPIS_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_lapis_ore")
+    public static final Block DEEPSLATE_LAPIS_ORE = null;
+    @ObjectHolder("oredepos:deepslate_lapis_ore_deposit")
+    public static final Block DEEPSLATE_LAPIS_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:copper_ore")
     public static final Block COPPER_ORE = null;
-    @ObjectHolder("oredepos:copper_block")
-    public static final Block COPPER_BLOCK = null;
+    @ObjectHolder("oredepos:copper_ore_deposit")
+    public static final Block COPPER_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:deepslate_copper_ore")
+    public static final Block DEEPSLATE_COPPER_ORE = null;
+    @ObjectHolder("oredepos:deepslate_copper_ore_deposit")
+    public static final Block DEEPSLATE_COPPER_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:tin_ore")
     public static final Block TIN_ORE = null;
     @ObjectHolder("oredepos:tin_block")
     public static final Block TIN_BLOCK = null;
+    @ObjectHolder("oredepos:raw_tin_block")
+    public static final Block RAW_TIN_BLOCK = null;
+    @ObjectHolder("oredepos:tin_ore_deposit")
+    public static final Block TIN_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_tin_ore")
+    public static final Block DEEPSLATE_TIN_ORE = null;
+    @ObjectHolder("oredepos:deepslate_tin_ore_deposit")
+    public static final Block DEEPSLATE_TIN_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:lead_ore")
     public static final Block LEAD_ORE = null;
     @ObjectHolder("oredepos:lead_block")
     public static final Block LEAD_BLOCK = null;
+    @ObjectHolder("oredepos:raw_lead_block")
+    public static final Block RAW_LEAD_BLOCK = null;
+    @ObjectHolder("oredepos:lead_ore_deposit")
+    public static final Block LEAD_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_lead_ore")
+    public static final Block DEEPSLATE_LEAD_ORE = null;
+    @ObjectHolder("oredepos:deepslate_lead_ore_deposit")
+    public static final Block DEEPSLATE_LEAD_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:silver_ore")
     public static final Block SILVER_ORE = null;
     @ObjectHolder("oredepos:silver_block")
     public static final Block SILVER_BLOCK = null;
+    @ObjectHolder("oredepos:raw_silver_block")
+    public static final Block RAW_SILVER_BLOCK = null;
+    @ObjectHolder("oredepos:silver_ore_deposit")
+    public static final Block SILVER_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_silver_ore")
+    public static final Block DEEPSLATE_SILVER_ORE = null;
+    @ObjectHolder("oredepos:deepslate_silver_ore_deposit")
+    public static final Block DEEPSLATE_SILVER_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:aluminum_ore")
     public static final Block ALUMINUM_ORE = null;
     @ObjectHolder("oredepos:aluminum_block")
     public static final Block ALUMINUM_BLOCK = null;
+    @ObjectHolder("oredepos:raw_aluminum_block")
+    public static final Block RAW_ALUMINUM_BLOCK = null;
+    @ObjectHolder("oredepos:aluminum_ore_deposit")
+    public static final Block ALUMINUM_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_aluminum_ore")
+    public static final Block DEEPSLATE_ALUMINUM_ORE = null;
+    @ObjectHolder("oredepos:deepslate_aluminum_ore_deposit")
+    public static final Block DEEPSLATE_ALUMINUM_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:uranium_ore")
     public static final Block URANIUM_ORE = null;
     @ObjectHolder("oredepos:uranium_block")
     public static final Block URANIUM_BLOCK = null;
+    @ObjectHolder("oredepos:raw_uranium_block")
+    public static final Block RAW_URANIUM_BLOCK = null;
+    @ObjectHolder("oredepos:uranium_ore_deposit")
+    public static final Block URANIUM_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_uranium_ore")
+    public static final Block DEEPSLATE_URANIUM_ORE = null;
+    @ObjectHolder("oredepos:deepslate_uranium_ore_deposit")
+    public static final Block DEEPSLATE_URANIUM_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:nickel_ore")
     public static final Block NICKEL_ORE = null;
     @ObjectHolder("oredepos:nickel_block")
     public static final Block NICKEL_BLOCK = null;
+    @ObjectHolder("oredepos:raw_nickel_block")
+    public static final Block RAW_NICKEL_BLOCK = null;
+    @ObjectHolder("oredepos:nickel_ore_deposit")
+    public static final Block NICKEL_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_nickel_ore")
+    public static final Block DEEPSLATE_NICKEL_ORE = null;
+    @ObjectHolder("oredepos:deepslate_nickel_ore_deposit")
+    public static final Block DEEPSLATE_NICKEL_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:zinc_ore")
     public static final Block ZINC_ORE = null;
     @ObjectHolder("oredepos:zinc_block")
     public static final Block ZINC_BLOCK = null;
-    @ObjectHolder("minecraft:coal_ore")
-    public static final Block COAL_ORE = null;
-    @ObjectHolder("minecraft:iron_ore")
-    public static final Block IRON_ORE = null;
-    @ObjectHolder("minecraft:gold_ore")
-    public static final Block GOLD_ORE = null;
-    @ObjectHolder("minecraft:diamond_ore")
-    public static final Block DIAMOND_ORE = null;
-    @ObjectHolder("minecraft:emerald_ore")
-    public static final Block EMERALD_ORE = null;
-    @ObjectHolder("minecraft:redstone_ore")
-    public static final Block REDSTONE_ORE = null;
-    @ObjectHolder("minecraft:lapis_ore")
-    public static final Block LAPIS_ORE = null;
-    @ObjectHolder("oredepos:coal_ore_deposit")
-    public static final Block COAL_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:iron_ore_deposit")
-    public static final Block IRON_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:gold_ore_deposit")
-    public static final Block GOLD_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:diamond_ore_deposit")
-    public static final Block DIAMOND_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:emerald_ore_deposit")
-    public static final Block EMERALD_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:redstone_ore_deposit")
-    public static final Block REDSTONE_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:lapis_ore_deposit")
-    public static final Block LAPIS_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:tin_ore_deposit")
-    public static final Block TIN_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:copper_ore_deposit")
-    public static final Block COPPER_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:lead_ore_deposit")
-    public static final Block LEAD_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:silver_ore_deposit")
-    public static final Block SILVER_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:aluminum_ore_deposit")
-    public static final Block ALUMINUM_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:uranium_ore_deposit")
-    public static final Block URANIUM_ORE_DEPOSIT = null;
-    @ObjectHolder("oredepos:nickel_ore_deposit")
-    public static final Block NICKEL_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:raw_zinc_block")
+    public static final Block RAW_ZINC_BLOCK = null;
     @ObjectHolder("oredepos:zinc_ore_deposit")
     public static final Block ZINC_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_zinc_ore")
+    public static final Block DEEPSLATE_ZINC_ORE = null;
+    @ObjectHolder("oredepos:deepslate_zinc_ore_deposit")
+    public static final Block DEEPSLATE_ZINC_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<BlockEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -254,33 +339,77 @@ public class RegistryManager {
         return registerBlock(name + "_ore", oreBlock);
     }
 
+    private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance){
+        return prepareDeepslateDeposit(name, material, hardness,resistance, true,true);
+    }
+
+    private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance, boolean hasChunk, boolean hasBlock){
+        return prepareDeepslateDeposit(name, material, hardness,resistance,hardness, resistance, hasChunk, hasBlock);
+    }
+
+    private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance, float blockHardness, float blockResistance, boolean hasChunk, boolean hasBlock){
+        Supplier<Block> oreBlock = () -> new Block(BlockBehaviour.Properties.of(material)
+                .strength(hardness, resistance)
+                .requiresCorrectToolForDrops());
+        if (hasBlock) {
+            registerBlock("raw_" + name + "_block", () -> new Block(BlockBehaviour.Properties.of(Material.METAL)
+                    .strength(blockHardness, blockResistance)
+                    .requiresCorrectToolForDrops()));
+        }
+        if (hasChunk) {
+            ITEMS.register("raw_" + name, () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
+        }
+        return registerBlock("deepslate_" + name + "_ore", oreBlock);
+    }
+
 
     private void registerAllDeposits(){
         Supplier<Block> tinOreBlock = prepareDeposit("tin", Material.STONE, 2, 5);
-        Supplier<Block> copperOreBlock = prepareDeposit("copper", Material.STONE, 2, 5);
+        Supplier<Block> deepslateTinOreBlock = prepareDeepslateDeposit("tin", Material.STONE, 2, 5);
         Supplier<Block> leadOreBlock = prepareDeposit("lead", Material.STONE, 3, 7);
+        Supplier<Block> deepslateLeadOreBlock = prepareDeepslateDeposit("lead", Material.STONE, 3, 7);
         Supplier<Block> silverOreBlock = prepareDeposit("silver", Material.STONE, 3, 4);
+        Supplier<Block> deepslateSilverOreBlock = prepareDeepslateDeposit("silver", Material.STONE, 3, 4);
         Supplier<Block> aluminumOreBlock = prepareDeposit("aluminum", Material.STONE, 2, 4);
+        Supplier<Block> deepslateAluminumOreBlock = prepareDeepslateDeposit("aluminum", Material.STONE, 2, 4);
         Supplier<Block> uraniumOreBlock = prepareDeposit("uranium", Material.STONE, 10, 5);
+        Supplier<Block> deepslateUraniumOreBlock = prepareDeepslateDeposit("uranium", Material.STONE, 10, 5);
         Supplier<Block> nickelOreBlock = prepareDeposit("nickel", Material.STONE, 3, 5);
+        Supplier<Block> deepslateNickelOreBlock = prepareDeepslateDeposit("nickel", Material.STONE, 3, 5);
         Supplier<Block> zincOreBlock = prepareDeposit("zinc", Material.STONE, 2, 5);
+        Supplier<Block> deepslateZincOreBlock = prepareDeepslateDeposit("zinc", Material.STONE, 2, 5);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Server.coal.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_coal_ore", OreDeposConfig.Server.coal.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Server.iron.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_iron_ore", OreDeposConfig.Server.iron.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Server.gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_gold_ore", OreDeposConfig.Server.gold.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Server.diamond.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_diamond_ore", OreDeposConfig.Server.diamond.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Server.emerald.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_emerald_ore", OreDeposConfig.Server.emerald.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Server.lapis.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_lapis_ore", OreDeposConfig.Server.lapis.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Server.redstone.factor.get()));
-        depositTemplates.add(new DepositTemplate("copper_ore", copperOreBlock, OreDeposConfig.Server.copper.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_redstone_ore", OreDeposConfig.Server.redstone.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "copper_ore", OreDeposConfig.Server.copper.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_copper_ore", OreDeposConfig.Server.copper.factor.get()));
         depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Server.tin.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_tin_ore", deepslateTinOreBlock, OreDeposConfig.Server.tin.factor.get()));
         depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Server.lead.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_lead_ore", deepslateLeadOreBlock, OreDeposConfig.Server.lead.factor.get()));
         depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Server.silver.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_silver_ore", deepslateSilverOreBlock, OreDeposConfig.Server.silver.factor.get()));
         depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Server.aluminum.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_aluminum_ore", deepslateAluminumOreBlock, OreDeposConfig.Server.aluminum.factor.get()));
         depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Server.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_uranium_ore", deepslateUraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Server.uranium.factor.get()));
         depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_nickel_ore", deepslateNickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
         depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_zinc_ore", deepslateZincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
 
         deposits = new LinkedList<>();
         for (DepositTemplate depositTemplate : depositTemplates) {

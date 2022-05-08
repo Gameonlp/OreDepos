@@ -2,15 +2,26 @@
   "replace": false,
   "values": [
     "oredepos:lapis_ore_deposit",
+    "oredepos:deepslate_lapis_ore_deposit",
     "oredepos:iron_ore_deposit",
+    "oredepos:deepslate_iron_ore_deposit",
     "oredepos:lead_ore",
     "oredepos:lead_block",
+    "oredepos:raw_lead_block",
     "oredepos:lead_ore_deposit",
+    "oredepos:deepslate_lead_ore",
+    "oredepos:deepslate_lead_ore_deposit",
     "oredepos:silver_ore",
     "oredepos:silver_block",
+    "oredepos:raw_silver_block",
     "oredepos:silver_ore_deposit",
+    "oredepos:deepslate_silver_ore",
+    "oredepos:deepslate_silver_ore_deposit",
     "oredepos:nickel_ore",
     "oredepos:nickel_block",
-    "oredepos:nickel_ore_deposit"
+    "oredepos:raw_nickel_block",
+    "oredepos:nickel_ore_deposit",
+    "oredepos:deepslate_nickel_ore",
+    "oredepos:deepslate_nickel_ore_deposit"
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "oredepos:raw_aluminum_block"
+    }
+  ],
+  "result": {
+    "item": "oredepos:raw_aluminum",
+    "count": 9
+  }
+}

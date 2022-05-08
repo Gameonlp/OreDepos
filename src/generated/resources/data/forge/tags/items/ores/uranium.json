@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "oredepos:uranium_ore"
+    "oredepos:uranium_ore",
+    "oredepos:deepslate_uranium_ore"
   ]
 }

@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "item": "oredepos:nickel_ore"
+    "tag": "forge:ingots/nickel"
   },
   "result": "oredepos:nickel_ingot",
-  "experience": 0.7,
+  "experience": 1.4,
   "cookingtime": 200
 }

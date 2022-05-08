@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "oredepos:zinc_ore"
+    "oredepos:zinc_ore",
+    "oredepos:deepslate_zinc_ore"
   ]
 }

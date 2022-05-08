@@ -3,6 +3,9 @@
   "values": [
     "oredepos:uranium_ore",
     "oredepos:uranium_block",
-    "oredepos:uranium_ore_deposit"
+    "oredepos:raw_uranium_block",
+    "oredepos:uranium_ore_deposit",
+    "oredepos:deepslate_uranium_ore",
+    "oredepos:deepslate_uranium_ore_deposit"
   ]
 }

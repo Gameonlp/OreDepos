@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "oredepos:aluminum_ore"
+    "oredepos:aluminum_ore",
+    "oredepos:deepslate_aluminum_ore"
   ]
 }

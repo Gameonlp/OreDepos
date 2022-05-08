@@ -2,8 +2,12 @@
   "replace": false,
   "values": [
     "oredepos:redstone_ore_deposit",
+    "oredepos:deepslate_redstone_ore_deposit",
     "oredepos:gold_ore_deposit",
+    "oredepos:deepslate_gold_ore_deposit",
     "oredepos:emerald_ore_deposit",
-    "oredepos:diamond_ore_deposit"
+    "oredepos:deepslate_emerald_ore_deposit",
+    "oredepos:diamond_ore_deposit",
+    "oredepos:deepslate_diamond_ore_deposit"
   ]
 }

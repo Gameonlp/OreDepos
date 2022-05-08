@@ -2,14 +2,26 @@
   "replace": false,
   "values": [
     "oredepos:coal_ore_deposit",
-    "oredepos:copper_ore",
-    "oredepos:copper_block",
+    "oredepos:deepslate_coal_ore_deposit",
     "oredepos:copper_ore_deposit",
+    "oredepos:deepslate_copper_ore_deposit",
+    "oredepos:aluminum_block",
+    "oredepos:raw_aluminum_block",
+    "oredepos:aluminum_ore",
+    "oredepos:aluminum_ore_deposit",
+    "oredepos:deepslate_aluminum_ore",
+    "oredepos:deepslate_aluminum_ore_deposit",
     "oredepos:tin_ore",
     "oredepos:tin_block",
+    "oredepos:raw_tin_block",
     "oredepos:tin_ore_deposit",
+    "oredepos:deepslate_tin_ore",
+    "oredepos:deepslate_tin_ore_deposit",
     "oredepos:zinc_ore",
     "oredepos:zinc_block",
-    "oredepos:zinc_ore_deposit"
+    "oredepos:raw_zinc_block",
+    "oredepos:zinc_ore_deposit",
+    "oredepos:deepslate_zinc_ore",
+    "oredepos:deepslate_zinc_ore_deposit"
   ]
 }
