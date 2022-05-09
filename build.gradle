@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-1.0.7'
+version = '1.16.5-1.0.8'
 group = 'gameonlp.oredepos' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'oredepos'
 
