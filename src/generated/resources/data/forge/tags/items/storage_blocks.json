@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "#forge:storage_blocks/sulfur",
+    "#forge:storage_blocks/certus_quartz",
     "#forge:storage_blocks/zinc",
     "#forge:storage_blocks/nickel",
     "#forge:storage_blocks/copper",

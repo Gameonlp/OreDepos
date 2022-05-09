@@ -9,6 +9,9 @@
   "inputs": [
     {
       "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "oredepos:sulfur"
     }
   ],
   "fluid_inputs": [

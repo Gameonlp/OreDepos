@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "#forge:ores/sulfur",
+    "#forge:ores/certus_quartz",
     "#forge:ores/zinc",
     "#forge:ores/nickel",
     "#forge:ores/copper",

@@ -27,6 +27,8 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Block> ORE_URANIUM = BlockTags.createOptional(new ResourceLocation("forge", "ores/uranium"));
     public static final Tags.IOptionalNamedTag<Block> ORE_NICKEL = BlockTags.createOptional(new ResourceLocation("forge", "ores/nickel"));
     public static final Tags.IOptionalNamedTag<Block> ORE_ZINC = BlockTags.createOptional(new ResourceLocation("forge", "ores/zinc"));
+    public static final Tags.IOptionalNamedTag<Block> ORE_CERTUS_QUARTZ = BlockTags.createOptional(new ResourceLocation("forge", "ores/certus_quartz"));
+    public static final Tags.IOptionalNamedTag<Block> ORE_SULFUR = BlockTags.createOptional(new ResourceLocation("forge", "ores/sulfur"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_TIN = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/tin"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_COPPER = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/copper"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_LEAD = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/lead"));
@@ -35,6 +37,8 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_URANIUM = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/uranium"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_NICKEL = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/nickel"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_ZINC = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/zinc"));
+    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_CERTUS_QUARTZ = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/certus_quartz"));
+    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_SULFUR = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/sulfur"));
 
     public static final Tags.IOptionalNamedTag<Item> ORE_TIN_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/tin"));
     public static final Tags.IOptionalNamedTag<Item> ORE_COPPER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/copper"));
@@ -44,6 +48,8 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Item> ORE_URANIUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/uranium"));
     public static final Tags.IOptionalNamedTag<Item> ORE_NICKEL_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/nickel"));
     public static final Tags.IOptionalNamedTag<Item> ORE_ZINC_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/zinc"));
+    public static final Tags.IOptionalNamedTag<Item> ORE_CERTUS_QUARTZ_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/certus_quartz"));
+    public static final Tags.IOptionalNamedTag<Item> ORE_SULFUR_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/sulfur"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_TIN_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/tin"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_COPPER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/copper"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_LEAD_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/lead"));
@@ -52,6 +58,8 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_URANIUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/uranium"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_NICKEL_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/nickel"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_ZINC_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/zinc"));
+    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_CERTUS_QUARTZ_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/certus_quartz"));
+    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_SULFUR_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/sulfur"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_COPPER = ItemTags.createOptional(new ResourceLocation("forge", "ingots/copper"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_TIN = ItemTags.createOptional(new ResourceLocation("forge", "ingots/tin"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_LEAD = ItemTags.createOptional(new ResourceLocation("forge", "ingots/lead"));
@@ -60,6 +68,8 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Item> INGOTS_URANIUM = ItemTags.createOptional(new ResourceLocation("forge", "ingots/uranium"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_NICKEL = ItemTags.createOptional(new ResourceLocation("forge", "ingots/nickel"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_ZINC = ItemTags.createOptional(new ResourceLocation("forge", "ingots/zinc"));
+    public static final Tags.IOptionalNamedTag<Item> GEMS_CERTUS_QUARTZ = ItemTags.createOptional(new ResourceLocation("forge", "gems/certus_quartz"));
+    public static final Tags.IOptionalNamedTag<Item> DUSTS_SULFUR = ItemTags.createOptional(new ResourceLocation("forge", "dusts/sulfur"));
 
     public static final Tags.IOptionalNamedTag<Fluid> SULFURIC_ACID = FluidTags.createOptional(new ResourceLocation("forge", "sulfuric_acid"));
 
@@ -84,7 +94,11 @@ public class TagProvider {
             tag(ORE_URANIUM).add(RegistryManager.URANIUM_ORE);
             tag(ORE_NICKEL).add(RegistryManager.NICKEL_ORE);
             tag(ORE_ZINC).add(RegistryManager.ZINC_ORE);
+            tag(ORE_CERTUS_QUARTZ).add(RegistryManager.CERTUS_QUARTZ_ORE);
+            tag(ORE_SULFUR).add(RegistryManager.SULFUR_ORE);
             tag(Tags.Blocks.ORES).addTags(
+                    ORE_SULFUR,
+                    ORE_CERTUS_QUARTZ,
                     ORE_ZINC,
                     ORE_NICKEL,
                     ORE_TIN,
@@ -103,7 +117,11 @@ public class TagProvider {
             tag(STORAGE_BLOCKS_URANIUM).add(RegistryManager.URANIUM_BLOCK);
             tag(STORAGE_BLOCKS_NICKEL).add(RegistryManager.NICKEL_BLOCK);
             tag(STORAGE_BLOCKS_ZINC).add(RegistryManager.ZINC_BLOCK);
+            tag(STORAGE_BLOCKS_CERTUS_QUARTZ).add(RegistryManager.CERTUS_QUARTZ_BLOCK);
+            tag(STORAGE_BLOCKS_SULFUR).add(RegistryManager.SULFUR_BLOCK);
             tag(Tags.Blocks.STORAGE_BLOCKS).addTags(
+                    STORAGE_BLOCKS_SULFUR,
+                    STORAGE_BLOCKS_CERTUS_QUARTZ,
                     STORAGE_BLOCKS_ZINC,
                     STORAGE_BLOCKS_NICKEL,
                     STORAGE_BLOCKS_TIN,
@@ -136,7 +154,11 @@ public class TagProvider {
             copy(ORE_URANIUM, ORE_URANIUM_ITEM);
             copy(ORE_NICKEL, ORE_NICKEL_ITEM);
             copy(ORE_ZINC, ORE_ZINC_ITEM);
+            copy(ORE_CERTUS_QUARTZ, ORE_CERTUS_QUARTZ_ITEM);
+            copy(ORE_SULFUR, ORE_SULFUR_ITEM);
             tag(Tags.Items.ORES).addTags(
+                    ORE_SULFUR_ITEM,
+                    ORE_CERTUS_QUARTZ_ITEM,
                     ORE_ZINC_ITEM,
                     ORE_NICKEL_ITEM,
                     ORE_COPPER_ITEM,
@@ -155,7 +177,11 @@ public class TagProvider {
             copy(STORAGE_BLOCKS_URANIUM, STORAGE_BLOCKS_URANIUM_ITEM);
             copy(STORAGE_BLOCKS_NICKEL, STORAGE_BLOCKS_NICKEL_ITEM);
             copy(STORAGE_BLOCKS_ZINC, STORAGE_BLOCKS_ZINC_ITEM);
+            copy(STORAGE_BLOCKS_CERTUS_QUARTZ, STORAGE_BLOCKS_CERTUS_QUARTZ_ITEM);
+            copy(STORAGE_BLOCKS_SULFUR, STORAGE_BLOCKS_SULFUR_ITEM);
             tag(Tags.Items.STORAGE_BLOCKS).addTags(
+                    STORAGE_BLOCKS_SULFUR_ITEM,
+                    STORAGE_BLOCKS_CERTUS_QUARTZ_ITEM,
                     STORAGE_BLOCKS_ZINC_ITEM,
                     STORAGE_BLOCKS_NICKEL_ITEM,
                     STORAGE_BLOCKS_COPPER_ITEM,
@@ -183,6 +209,16 @@ public class TagProvider {
                     INGOTS_SILVER,
                     INGOTS_ALUMINUM,
                     INGOTS_URANIUM
+            );
+
+            tag(GEMS_CERTUS_QUARTZ).add(RegistryManager.CERTUS_QUARTZ);
+            tag(Tags.Items.GEMS).addTags(
+                    GEMS_CERTUS_QUARTZ
+            );
+
+            tag(DUSTS_SULFUR).add(RegistryManager.SULFUR);
+            tag(Tags.Items.DUSTS).addTags(
+                    DUSTS_SULFUR
             );
         }
     }
