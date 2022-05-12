@@ -180,20 +180,22 @@ public class ChemicalPlantTile extends TileEntity implements ITickableTileEntity
 
     @Override
     public void tick() {
-        if (level.isClientSide()){
+        if (level == null || level.isClientSide()){
             return;
         }
         if (!fluidTank.isEmpty()){
             Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
-            LazyOptional<IFluidHandler> capability = level.getBlockEntity(worldPosition.offset(facing.getNormal())).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
-            capability.ifPresent(handler -> {
-                if (handler.fill(fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE) != 0){
-                    FluidStack toFill = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    int accepted = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                    toFill.grow(-accepted);
-                    fluidTank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                }
-            });
+            if(level.getBlockEntity(worldPosition.offset(facing.getNormal())) != null) {
+                LazyOptional<IFluidHandler> capability = level.getBlockEntity(worldPosition.offset(facing.getNormal())).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
+                capability.ifPresent(handler -> {
+                    if (handler.fill(fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE) != 0) {
+                        FluidStack toFill = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                        int accepted = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+                        toFill.grow(-accepted);
+                        fluidTank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+                    }
+                });
+            }
         }
         FluidInventory fluidInventory = new FluidInventory(2, 2);
         fluidInventory.setItem(0, slots.getStackInSlot(1));
