@@ -1,6 +1,7 @@
 package gameonlp.oredepos.blocks.chemicalplant;
 
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import gameonlp.oredepos.crafting.FluidInventory;
@@ -15,6 +16,7 @@ import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.util.EnergyCell;
 import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -127,8 +129,8 @@ public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile,
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = super.serializeNBT();
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.putInt("energy", energyCell.getEnergyStored());
         tag.putFloat("progress", progress);
         tag.putFloat("productivity", productivity);
@@ -139,12 +141,11 @@ public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile,
         CompoundTag secondaryFluid = new CompoundTag();
         tag.put("secondary_fluid", secondaryInputTank.writeToNBT(secondaryFluid));
         tag.put("slots", slots.serializeNBT());
-        return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag p_230337_2_) {
-        super.deserializeNBT(p_230337_2_);
+    public void load(CompoundTag p_230337_2_) {
+        super.load(p_230337_2_);
         energyCell.setEnergy(p_230337_2_.getInt("energy"));
         progress = p_230337_2_.getFloat("progress");
         productivity = p_230337_2_.getFloat("productivity");
@@ -169,21 +170,26 @@ public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile,
         slots.deserializeNBT(p_230337_2_.getCompound("slots"));
     }
 
-    public void serverTick() {
+    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, ChemicalPlantTile e) {
+        e.tick();
+    }
+    private void tick() {
         if (level.isClientSide()){
             return;
         }
         if (!fluidTank.isEmpty()){
             Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
-            LazyOptional<IFluidHandler> capability = level.getBlockEntity(worldPosition.offset(facing.getNormal())).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
-            capability.ifPresent(handler -> {
-                if (handler.fill(fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE) != 0){
-                    FluidStack toFill = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    int accepted = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                    toFill.grow(-accepted);
-                    fluidTank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                }
-            });
+            if(level.getBlockEntity(worldPosition.offset(facing.getNormal())) != null) {
+                LazyOptional<IFluidHandler> capability = level.getBlockEntity(worldPosition.offset(facing.getNormal())).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
+                capability.ifPresent(handler -> {
+                    if (handler.fill(fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE) != 0) {
+                        FluidStack toFill = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                        int accepted = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+                        toFill.grow(-accepted);
+                        fluidTank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+                    }
+                });
+            }
         }
         FluidInventory fluidInventory = new FluidInventory(2, 2);
         fluidInventory.setItem(0, slots.getStackInSlot(1));
