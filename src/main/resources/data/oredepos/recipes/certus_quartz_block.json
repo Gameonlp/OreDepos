@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "11",
+    "11"
+  ],
+  "key": {
+    "1": {
+      "tag": "forge:gems/certus_quartz"
+    }
+  },
+  "result": {
+    "item": "oredepos:certus_quartz_block",
+    "count": 1
+  }
+}

@@ -11,6 +11,8 @@ import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -30,6 +32,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -120,6 +123,10 @@ public class RegistryManager {
     public static final Item ZINC_INGOT = null;
     @ObjectHolder("oredepos:raw_zinc")
     public static final Item RAW_ZINC = null;
+    @ObjectHolder("oredepos:certus_quartz")
+    public static final Item CERTUS_QUARTZ = null;
+    @ObjectHolder("oredepos:sulfur")
+    public static final Item SULFUR = null;
 
     //Blocks
     public static RegistryObject<Block> MINER;
@@ -192,6 +199,12 @@ public class RegistryManager {
     public static final Block DEEPSLATE_COPPER_ORE = null;
     @ObjectHolder("oredepos:deepslate_copper_ore_deposit")
     public static final Block DEEPSLATE_COPPER_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:nether_quartz_ore_deposit")
+    public static final Block NETHER_QUARTZ_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:nether_gold_ore_deposit")
+    public static final Block NETHER_GOLD_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:ancient_debris_deposit")
+    public static final Block ANCIENT_DEBRIS_DEPOSIT = null;
     @ObjectHolder("oredepos:tin_ore")
     public static final Block TIN_ORE = null;
     @ObjectHolder("oredepos:tin_block")
@@ -276,6 +289,18 @@ public class RegistryManager {
     public static final Block DEEPSLATE_ZINC_ORE = null;
     @ObjectHolder("oredepos:deepslate_zinc_ore_deposit")
     public static final Block DEEPSLATE_ZINC_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:certus_quartz_ore")
+    public static final Block CERTUS_QUARTZ_ORE = null;
+    @ObjectHolder("oredepos:certus_quartz_block")
+    public static final Block CERTUS_QUARTZ_BLOCK = null;
+    @ObjectHolder("oredepos:certus_quartz_ore_deposit")
+    public static final Block CERTUS_QUARTZ_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:sulfur_ore")
+    public static final Block SULFUR_ORE = null;
+    @ObjectHolder("oredepos:sulfur_block")
+    public static final Block SULFUR_BLOCK = null;
+    @ObjectHolder("oredepos:sulfur_ore_deposit")
+    public static final Block SULFUR_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<BlockEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -378,6 +403,8 @@ public class RegistryManager {
         Supplier<Block> deepslateNickelOreBlock = prepareDeepslateDeposit("nickel", Material.STONE, 3, 5);
         Supplier<Block> zincOreBlock = prepareDeposit("zinc", Material.STONE, 2, 5);
         Supplier<Block> deepslateZincOreBlock = prepareDeepslateDeposit("zinc", Material.STONE, 2, 5);
+        Block certusQuartzOreBlock = prepareDeposit("certus_quartz", Material.STONE, 3, 15, ToolType.PICKAXE, 2, false, true);
+        Block sulfurOreBlock = prepareDeposit("sulfur", Material.STONE, 2.5f, 5, ToolType.PICKAXE, 2, false, true);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Server.coal.factor.get()));
@@ -410,6 +437,8 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("deepslate_nickel_ore", deepslateNickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
         depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
         depositTemplates.add(new DepositTemplate("deepslate_zinc_ore", deepslateZincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
+        depositTemplates.add(new DepositTemplate("certus_quartz_ore", certusQuartzOreBlock, OreDeposConfig.Common.certus_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("sulfur_ore", sulfurOreBlock, OreDeposConfig.Common.sulfur.factor.get()));
 
         deposits = new LinkedList<>();
         for (DepositTemplate depositTemplate : depositTemplates) {
@@ -465,6 +494,8 @@ public class RegistryManager {
         ITEMS.register("productivity_module_1", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.4f, -0.05f, 0.04f));
         ITEMS.register("productivity_module_2", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, -0.1f, 0.06f));
         ITEMS.register("productivity_module_3", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, -0.15f, 0.1f));
+        ITEMS.register("certus_quartz", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
+        ITEMS.register("sulfur", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
 
     private void registerTileEntities(){

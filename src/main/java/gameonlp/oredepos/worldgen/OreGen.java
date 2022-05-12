@@ -23,6 +23,22 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 
 public class OreGen {
+    private enum NetherOre {
+        SULFUR_DEPOSIT(Lazy.of(() -> RegistryManager.SULFUR_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.SULFUR_ORE), OreDeposConfig.Common.sulfur),
+        ANCIENT_DEBRIS_DEPOSIT(Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS_DEPOSIT), Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS), OreDeposConfig.Common.ancient_debris),
+        NETHER_GOLD_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE), OreDeposConfig.Common.nether_gold),
+        NETHER_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE), OreDeposConfig.Common.nether_quartz);
+
+        private final Lazy<Block> block;
+        private final Lazy<Block> replaceBlock;
+        private final OreConfig config;
+
+        private NetherOre(Lazy<Block> block, Lazy<Block> replaceBlock, OreConfig config){
+            this.block = block;
+            this.replaceBlock = replaceBlock;
+            this.config = config;
+        }
+    }
     private enum Ore {
         TIN_DEPOSIT(Lazy.of(() -> RegistryManager.TIN_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.TIN_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_TIN_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_TIN_ORE), OreDeposConfig.Server.tin),
         LEAD_DEPOSIT(Lazy.of(() -> RegistryManager.LEAD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.LEAD_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_LEAD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_LEAD_ORE), OreDeposConfig.Server.lead),
@@ -32,6 +48,7 @@ public class OreGen {
         NICKEL_DEPOSIT(Lazy.of(() -> RegistryManager.NICKEL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NICKEL_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_NICKEL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_NICKEL_ORE), OreDeposConfig.Server.nickel),
         URANIUM_DEPOSIT(Lazy.of(() -> RegistryManager.URANIUM_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.URANIUM_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_URANIUM_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_URANIUM_ORE), OreDeposConfig.Server.uranium),
         ZINC_DEPOSIT(Lazy.of(() -> RegistryManager.ZINC_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.ZINC_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_ZINC_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_ZINC_ORE), OreDeposConfig.Server.zinc),
+        CERTUS_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE), OreDeposConfig.Common.certus_quartz),
         COAL_DEPOSIT(Lazy.of(() -> RegistryManager.COAL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.COAL_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_COAL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_COAL_ORE), OreDeposConfig.Server.coal),
         IRON_DEPOSIT(Lazy.of(() -> RegistryManager.IRON_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.IRON_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_IRON_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_IRON_ORE), OreDeposConfig.Server.iron),
         REDSTONE_DEPOSIT(Lazy.of(() -> RegistryManager.REDSTONE_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.REDSTONE_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_REDSTONE_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_REDSTONE_ORE), OreDeposConfig.Server.redstone),

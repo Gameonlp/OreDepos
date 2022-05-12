@@ -23,6 +23,9 @@ public class OreDeposConfig {
         public static OreConfig lapis;
         public static OreConfig diamond;
         public static OreConfig emerald;
+        public static OreConfig nether_quartz;
+        public static OreConfig nether_gold;
+        public static OreConfig ancient_debris;
         public static OreConfig tin;
         public static OreConfig copper;
         public static OreConfig lead;
@@ -31,6 +34,8 @@ public class OreDeposConfig {
         public static OreConfig uranium;
         public static OreConfig nickel;
         public static OreConfig zinc;
+        public static OreConfig certus_quartz;
+        public static OreConfig sulfur;
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -61,21 +66,26 @@ public class OreDeposConfig {
             longDistanceIncreasesFurther = builder.define("longDistanceIncreasesFurther", true);
             builder.pop();
             builder.push("Ore Settings");
-            coal = new OreConfig(builder, "coal", false, true, false, 1.0f, 17, -64, 128, 20);
-            iron = new OreConfig(builder, "iron", false, true, false, 1.0f, 9, -64, 68, 20);
-            redstone = new OreConfig(builder, "redstone", false, true, false, 1.0f, 8, -64, 16, 8);
-            gold = new OreConfig(builder, "gold", false, true, false, 1.0f, 9, -64, 30, 5);
-            lapis = new OreConfig(builder, "lapis", false, true, false, 1.0f, 7, -64, 34, 2);
-            diamond = new OreConfig(builder, "diamond", false, true, false, 1.0f, 8, -64, 16, 1);
-            emerald = new OreConfig(builder, "emerald", false, true, false, 1.0f, 1, -64, 33, 1);
-            tin = new OreConfig(builder, "tin", true, true, false, 1.0f, 9, -64, 68, 20);
-            copper = new OreConfig(builder, "copper", true, true, false, 1.0f, 9, -64, 68, 20);
-            lead = new OreConfig(builder, "lead", true, true, false, 1.0f, 6, -64, 35, 8);
-            silver = new OreConfig(builder, "silver", true, true, false, 1.0f, 6, -64, 35, 8);
-            aluminum = new OreConfig(builder, "aluminum", true, true, false, 1.0f, 6, -64, 64, 12);
-            uranium = new OreConfig(builder, "uranium", true, true, false, 1.0f, 2, -64, 64, 4);
-            nickel = new OreConfig(builder, "nickel", true, true, false, 1.0f, 5, -64, 20, 5);
-            zinc = new OreConfig(builder, "zinc", true, true, false, 1.0f, 14, -64, 70, 4);
+            coal = new OreConfig(builder, "coal", false, true, false, 1.0f, 17, 1, 128, 20);
+            iron = new OreConfig(builder, "iron", false, true, false, 1.0f, 9, 1, 68, 20);
+            redstone = new OreConfig(builder, "redstone", false, true, false, 1.0f, 8, 1, 16, 8);
+            gold = new OreConfig(builder, "gold", false, true, false, 1.0f, 9, 1, 30, 5);
+            lapis = new OreConfig(builder, "lapis", false, true, false, 1.0f, 7, 1, 34, 2);
+            diamond = new OreConfig(builder, "diamond", false, true, false, 1.0f, 8, 1, 16, 1);
+            emerald = new OreConfig(builder, "emerald", false, true, false, 1.0f, 1, 1, 33, 1);
+            nether_quartz = new OreConfig(builder, "nether_quartz", false, true, false, 1.0f, 18, 1, 256, 20);
+            nether_gold = new OreConfig(builder, "nether_gold", false, true, false, 1.0f, 9, 1, 256, 5);
+            ancient_debris = new OreConfig(builder, "ancient_debris", false, true, false, 1.0f, 3, 8, 128, 1);
+            tin = new OreConfig(builder, "tin", true, true, false, 1.0f, 9, 1, 68, 20);
+            copper = new OreConfig(builder, "copper", true, true, false, 1.0f, 9, 1, 68, 20);
+            lead = new OreConfig(builder, "lead", true, true, false, 1.0f, 6, 1, 35, 8);
+            silver = new OreConfig(builder, "silver", true, true, false, 1.0f, 6, 1, 35, 8);
+            aluminum = new OreConfig(builder, "aluminum", true, true, false, 1.0f, 6, 1, 64, 12);
+            uranium = new OreConfig(builder, "uranium", true, true, false, 1.0f, 2, 1, 64, 4);
+            nickel = new OreConfig(builder, "nickel", true, true, false, 1.0f, 5, 1, 20, 5);
+            zinc = new OreConfig(builder, "zinc", true, true, false, 1.0f, 14, 15, 70, 4);
+            certus_quartz = new OreConfig(builder, "certus_quartz", true, true, false, 1.0f, 4, 12, 74, 4);
+            sulfur = new OreConfig(builder, "sulfur", true, true, false, 1.0f, 6, 1, 128, 10);
             builder.pop();
             builder.pop();
         }
