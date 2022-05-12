@@ -33,7 +33,7 @@ public class ChemicalPlantScreen extends AbstractContainerScreen<ChemicalPlantCo
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
         ChemicalPlantTile tile = (ChemicalPlantTile)menu.getTileEntity();
-        RenderSystem.clearColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, GUI);
         int i = this.leftPos;
         int j = this.topPos;
@@ -44,26 +44,20 @@ public class ChemicalPlantScreen extends AbstractContainerScreen<ChemicalPlantCo
         int filled = 45 - (int)(45 * (1 - (currentEnergy / maxEnergy)));
         this.blit(matrixStack, i + 151, j + 4 + 45 - filled, 194, 45 - filled, 18, filled);
         this.blit(matrixStack, i + 151, j + 4, 230, 0, 18, 45);
-        FluidTank tank = tile.primaryInputTank;
-        if (!tank.getFluid().isEmpty()) {
-            FluidHelper.render(matrixStack, i + 11, j + 18, 45, tank);
-            RenderSystem.setShaderTexture(0, GUI);
-            this.blit(matrixStack, i + 10, j + 18, 176, 0, 18, 45);
-        }
-        tank = tile.secondaryInputTank;
-        if (!tank.getFluid().isEmpty()) {
-            FluidHelper.render(matrixStack, i + 29, j + 18, 45, tank);
-            RenderSystem.setShaderTexture(0, GUI);
-            this.blit(matrixStack, i + 28, j + 18, 176, 0, 18, 45);
-        }
-        tank = tile.fluidTank;
-        if (!tank.getFluid().isEmpty()) {
-            FluidHelper.render(matrixStack, i + 96, j + 4, 45, tank);
-            RenderSystem.setShaderTexture(0, GUI);
-            this.blit(matrixStack, i + 95, j + 4, 176, 0, 18, 45);
-        }
+        renderTank(tile.primaryInputTank, matrixStack, i, 11, j, 18, 10);
+        renderTank(tile.secondaryInputTank, matrixStack, i, 29, j, 18, 28);
+        renderTank(tile.fluidTank, matrixStack, i, 96, j, 4, 95);
         RenderHelper.renderBar(matrixStack, i + 126, j + 5, 6, 43, tile.progress / tile.maxProgress, 0xFF29D825);
         RenderHelper.renderBar(matrixStack, i + 134, j + 5, 6, 43, tile.productivity, 0xFFBB18BB);
+    }
+
+    private void renderTank(FluidTank tank, PoseStack matrixStack, int i, int x, int j, int x1, int x2) {
+        if (!tank.getFluid().isEmpty()) {
+            FluidHelper.render(matrixStack, i + x, j + x1, 45, tank);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.setShaderTexture(0, GUI);
+            this.blit(matrixStack, i + x2, j + x1, 176, 0, 18, 45);
+        }
     }
 
     @Override

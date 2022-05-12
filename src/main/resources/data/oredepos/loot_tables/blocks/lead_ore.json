@@ -25,7 +25,7 @@
                   }
                 }
               ],
-              "name": "minecraft:lead_ore"
+              "name": "oredepos:lead_ore"
             },
             {
               "type": "minecraft:item",
@@ -39,7 +39,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "minecraft:raw_lead"
+              "name": "oredepos:raw_lead"
             }
           ]
         }

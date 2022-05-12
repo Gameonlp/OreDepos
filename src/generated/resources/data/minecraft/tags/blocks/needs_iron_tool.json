@@ -1,6 +1,14 @@
 {
   "replace": false,
   "values": [
+    "oredepos:sulfur_ore",
+    "oredepos:sulfur_block",
+    "oredepos:sulfur_ore_deposit",
+    "oredepos:certus_quartz_ore",
+    "oredepos:certus_quartz_block",
+    "oredepos:certus_quartz_ore_deposit",
+    "oredepos:deepslate_certus_quartz_ore",
+    "oredepos:deepslate_certus_quartz_ore_deposit",
     "oredepos:redstone_ore_deposit",
     "oredepos:deepslate_redstone_ore_deposit",
     "oredepos:gold_ore_deposit",

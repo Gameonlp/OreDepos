@@ -1,8 +1,11 @@
 package gameonlp.oredepos.blocks.miner;
 
+import gameonlp.oredepos.RegistryManager;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -91,5 +94,11 @@ public class MinerBlock extends BaseEntityBlock {
             }
         }
         super.onRemove(p_196243_1_, world, blockPos, p_196243_4_, dropContents);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return level.isClientSide() ? null : createTickerHelper(type, RegistryManager.MINER_TILE.get(), MinerTile::serverTick);
     }
 }

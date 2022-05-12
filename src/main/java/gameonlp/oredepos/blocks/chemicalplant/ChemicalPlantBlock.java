@@ -1,5 +1,7 @@
 package gameonlp.oredepos.blocks.chemicalplant;
 
+import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.blocks.miner.MinerTile;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -110,9 +112,9 @@ public class ChemicalPlantBlock extends BaseEntityBlock {
         p_206840_1_.add(BlockStateProperties.FACING);
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-        return super.getTicker(p_153212_, p_153213_, p_153214_);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return level.isClientSide() ? null : createTickerHelper(type, RegistryManager.CHEMICAL_PLANT_TILE.get(), ChemicalPlantTile::serverTick);
     }
 }

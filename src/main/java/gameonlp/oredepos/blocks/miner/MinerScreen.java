@@ -34,7 +34,7 @@ public class MinerScreen extends AbstractContainerScreen<MinerContainer> {
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
         MinerTile tile = (MinerTile)menu.getTileEntity();
         //noinspection deprecation
-        RenderSystem.clearColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, GUI);
         int i = this.leftPos;
         int j = this.topPos;
@@ -48,6 +48,7 @@ public class MinerScreen extends AbstractContainerScreen<MinerContainer> {
         FluidTank tank = tile.fluidTank;
         if (!tank.getFluid().isEmpty()) {
             FluidHelper.render(matrixStack, i + 116, j + 4, 45, tank);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             RenderSystem.setShaderTexture(0, GUI);
             this.blit(matrixStack, i + 115, j + 4, 176, 0, 18, 45);
         }

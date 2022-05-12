@@ -83,17 +83,16 @@ public class OreDepositTile extends BlockEntity {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = super.serializeNBT();
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.putInt("amount", amount);
         tag.putInt("max_amount", maxAmount);
         tag.putString("fluid", fluid != null ? fluid.getRegistryName().toString() : "");
-        return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag p_230337_2_) {
-        super.deserializeNBT(p_230337_2_);
+    public void load(CompoundTag p_230337_2_) {
+        super.load(p_230337_2_);
 
         amount = p_230337_2_.getInt("amount");
         maxAmount = p_230337_2_.getInt("max_amount");

@@ -11,8 +11,6 @@ import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -32,7 +30,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -199,10 +196,16 @@ public class RegistryManager {
     public static final Block DEEPSLATE_COPPER_ORE = null;
     @ObjectHolder("oredepos:deepslate_copper_ore_deposit")
     public static final Block DEEPSLATE_COPPER_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:nether_quartz_ore")
+    public static final Block NETHER_QUARTZ_ORE = null;
     @ObjectHolder("oredepos:nether_quartz_ore_deposit")
     public static final Block NETHER_QUARTZ_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:nether_gold_ore")
+    public static final Block NETHER_GOLD_ORE = null;
     @ObjectHolder("oredepos:nether_gold_ore_deposit")
     public static final Block NETHER_GOLD_ORE_DEPOSIT = null;
+    @ObjectHolder("minecraft:ancient_debris")
+    public static final Block ANCIENT_DEBRIS = null;
     @ObjectHolder("oredepos:ancient_debris_deposit")
     public static final Block ANCIENT_DEBRIS_DEPOSIT = null;
     @ObjectHolder("oredepos:tin_ore")
@@ -295,6 +298,10 @@ public class RegistryManager {
     public static final Block CERTUS_QUARTZ_BLOCK = null;
     @ObjectHolder("oredepos:certus_quartz_ore_deposit")
     public static final Block CERTUS_QUARTZ_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:deepslate_certus_quartz_ore")
+    public static final Block DEEPSLATE_CERTUS_QUARTZ_ORE = null;
+    @ObjectHolder("oredepos:deepslate_certus_quartz_ore_deposit")
+    public static final Block DEEPSLATE_CERTUS_QUARTZ_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:sulfur_ore")
     public static final Block SULFUR_ORE = null;
     @ObjectHolder("oredepos:sulfur_block")
@@ -403,8 +410,9 @@ public class RegistryManager {
         Supplier<Block> deepslateNickelOreBlock = prepareDeepslateDeposit("nickel", Material.STONE, 3, 5);
         Supplier<Block> zincOreBlock = prepareDeposit("zinc", Material.STONE, 2, 5);
         Supplier<Block> deepslateZincOreBlock = prepareDeepslateDeposit("zinc", Material.STONE, 2, 5);
-        Block certusQuartzOreBlock = prepareDeposit("certus_quartz", Material.STONE, 3, 15, ToolType.PICKAXE, 2, false, true);
-        Block sulfurOreBlock = prepareDeposit("sulfur", Material.STONE, 2.5f, 5, ToolType.PICKAXE, 2, false, true);
+        Supplier<Block> certusQuartzOreBlock = prepareDeposit("certus_quartz", Material.STONE, 3, 15, false, true);
+        Supplier<Block> deepslateCertusQuartzOreBlock = prepareDeepslateDeposit("certus_quartz", Material.STONE, 3, 15, false, false);
+        Supplier<Block> sulfurOreBlock = prepareDeposit("sulfur", Material.STONE, 2.5f, 5, false, true);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Server.coal.factor.get()));
@@ -423,6 +431,9 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("minecraft", "deepslate_redstone_ore", OreDeposConfig.Server.redstone.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "copper_ore", OreDeposConfig.Server.copper.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "deepslate_copper_ore", OreDeposConfig.Server.copper.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "nether_quartz_ore", OreDeposConfig.Server.nether_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "nether_gold_ore", OreDeposConfig.Server.nether_gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "ancient_debris", OreDeposConfig.Server.ancient_debris.factor.get()));
         depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Server.tin.factor.get()));
         depositTemplates.add(new DepositTemplate("deepslate_tin_ore", deepslateTinOreBlock, OreDeposConfig.Server.tin.factor.get()));
         depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Server.lead.factor.get()));
@@ -437,8 +448,9 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("deepslate_nickel_ore", deepslateNickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
         depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
         depositTemplates.add(new DepositTemplate("deepslate_zinc_ore", deepslateZincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
-        depositTemplates.add(new DepositTemplate("certus_quartz_ore", certusQuartzOreBlock, OreDeposConfig.Common.certus_quartz.factor.get()));
-        depositTemplates.add(new DepositTemplate("sulfur_ore", sulfurOreBlock, OreDeposConfig.Common.sulfur.factor.get()));
+        depositTemplates.add(new DepositTemplate("certus_quartz_ore", certusQuartzOreBlock, OreDeposConfig.Server.certus_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_certus_quartz_ore", deepslateCertusQuartzOreBlock, OreDeposConfig.Server.certus_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("sulfur_ore", sulfurOreBlock, OreDeposConfig.Server.sulfur.factor.get()));
 
         deposits = new LinkedList<>();
         for (DepositTemplate depositTemplate : depositTemplates) {

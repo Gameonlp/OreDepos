@@ -39,7 +39,7 @@ public class FluidHelper {
         float g = (fluidColor >> 8 & 0xFF) / 255.0f;
         float b = (fluidColor & 0xFF) / 255.0f;
         //noinspection deprecation
-        RenderSystem.clearColor(r, g, b, a);
+        RenderSystem.setShaderColor(r, g, b, a);
         TextureAtlasSprite fluidSprite = FluidHelper.getStillFluidSprite(tank.getFluid());
         RenderSystem.setShaderTexture(0, fluidSprite.atlas().location());
         float current = tank.getFluid().getAmount();

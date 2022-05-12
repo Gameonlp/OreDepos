@@ -24,19 +24,38 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 
 public class OreGen {
     private enum NetherOre {
-        SULFUR_DEPOSIT(Lazy.of(() -> RegistryManager.SULFUR_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.SULFUR_ORE), OreDeposConfig.Common.sulfur),
-        ANCIENT_DEBRIS_DEPOSIT(Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS_DEPOSIT), Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS), OreDeposConfig.Common.ancient_debris),
-        NETHER_GOLD_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE), OreDeposConfig.Common.nether_gold),
-        NETHER_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE), OreDeposConfig.Common.nether_quartz);
+        SULFUR_DEPOSIT(Lazy.of(() -> RegistryManager.SULFUR_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.SULFUR_ORE), OreDeposConfig.Server.sulfur),
+        ANCIENT_DEBRIS_DEPOSIT(Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS_DEPOSIT), Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS), OreDeposConfig.Server.ancient_debris),
+        NETHER_GOLD_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE), OreDeposConfig.Server.nether_gold),
+        NETHER_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_QUARTZ_ORE), OreDeposConfig.Server.nether_quartz);
 
-        private final Lazy<Block> block;
-        private final Lazy<Block> replaceBlock;
         private final OreConfig config;
+        private final Holder<ConfiguredFeature<OreConfiguration,?>> depositFeature;
+        private final Holder<PlacedFeature> depositPlaced;
+        private final Holder<ConfiguredFeature<OreConfiguration,?>> replaceFeature;
+        private final Holder<PlacedFeature> replacePlaced;
+        private final Holder<ConfiguredFeature<OreConfiguration,?>> replacableFeature;
+        private final Holder<PlacedFeature> replacablePlaced;
 
         private NetherOre(Lazy<Block> block, Lazy<Block> replaceBlock, OreConfig config){
-            this.block = block;
-            this.replaceBlock = replaceBlock;
             this.config = config;
+            this.depositFeature = FeatureUtils.register(block.get().getRegistryName() + "_feature", Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, block.get().defaultBlockState())), config.veinSize.get()));
+            this.depositPlaced = PlacementUtils.register(block.get().getRegistryName() + "_placed",
+                    depositFeature, commonOrePlacement(config.count.get(), // VeinsPerChunk
+                            HeightRangePlacement.triangle(VerticalAnchor.absolute(config.minHeight.get()), VerticalAnchor.aboveBottom(config.maxHeight.get()))));
+            this.replaceFeature = FeatureUtils.register(block.get().getRegistryName() + "_replace_feature", Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(new BlockMatchTest(replaceBlock.get()), block.get().defaultBlockState())), config.veinSize.get()));
+            this.replacePlaced = PlacementUtils.register(block.get().getRegistryName() + "_replace_placed",
+                    replaceFeature, commonOrePlacement(config.count.get(), // VeinsPerChunk
+                            HeightRangePlacement.triangle(VerticalAnchor.absolute(config.minHeight.get()), VerticalAnchor.aboveBottom(config.maxHeight.get()))));
+            if (config.isModded) {
+                this.replacableFeature = FeatureUtils.register(replaceBlock.get().getRegistryName() + "_feature", Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, replaceBlock.get().defaultBlockState())), config.veinSize.get()));
+                this.replacablePlaced = PlacementUtils.register(replaceBlock.get().getRegistryName() + "_placed",
+                        replacableFeature, commonOrePlacement(config.count.get(), // VeinsPerChunk
+                                HeightRangePlacement.triangle(VerticalAnchor.absolute(config.minHeight.get()), VerticalAnchor.aboveBottom(config.maxHeight.get()))));
+            } else {
+                replacableFeature = null;
+                replacablePlaced = null;
+            }
         }
     }
     private enum Ore {
@@ -48,7 +67,7 @@ public class OreGen {
         NICKEL_DEPOSIT(Lazy.of(() -> RegistryManager.NICKEL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NICKEL_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_NICKEL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_NICKEL_ORE), OreDeposConfig.Server.nickel),
         URANIUM_DEPOSIT(Lazy.of(() -> RegistryManager.URANIUM_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.URANIUM_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_URANIUM_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_URANIUM_ORE), OreDeposConfig.Server.uranium),
         ZINC_DEPOSIT(Lazy.of(() -> RegistryManager.ZINC_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.ZINC_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_ZINC_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_ZINC_ORE), OreDeposConfig.Server.zinc),
-        CERTUS_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE), OreDeposConfig.Common.certus_quartz),
+        CERTUS_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_CERTUS_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_CERTUS_QUARTZ_ORE), OreDeposConfig.Server.certus_quartz),
         COAL_DEPOSIT(Lazy.of(() -> RegistryManager.COAL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.COAL_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_COAL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_COAL_ORE), OreDeposConfig.Server.coal),
         IRON_DEPOSIT(Lazy.of(() -> RegistryManager.IRON_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.IRON_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_IRON_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_IRON_ORE), OreDeposConfig.Server.iron),
         REDSTONE_DEPOSIT(Lazy.of(() -> RegistryManager.REDSTONE_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.REDSTONE_ORE), Lazy.of(() -> RegistryManager.DEEPSLATE_REDSTONE_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.DEEPSLATE_REDSTONE_ORE), OreDeposConfig.Server.redstone),
@@ -100,6 +119,18 @@ public class OreGen {
                 }
             }
         }
+        for (NetherOre ore : NetherOre.values()) {
+            if (ore.config.enabled.get()) {
+                if (ore.config.replace.get() && ore.config.isModded){
+                    generateOre(event, ore, ore.replacablePlaced);
+                    replaceOre(event, ore);
+                } else if (ore.config.replace.get()){
+                    replaceOre(event, ore);
+                } else {
+                    generateOre(event, ore, ore.depositPlaced);
+                }
+            }
+        }
     }
 
     private static void generateOre(BiomeLoadingEvent event, Ore ore, Holder<PlacedFeature> featureHolder) {
@@ -110,8 +141,16 @@ public class OreGen {
 
         features.add(featureHolder);
     }
+    private static void generateOre(BiomeLoadingEvent event, NetherOre ore, Holder<PlacedFeature> featureHolder) {
+        List<Holder<PlacedFeature>> features = event.getGeneration().getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES);
+        features.add(featureHolder);
+    }
 
     private static void replaceOre(BiomeLoadingEvent event, Ore ore) {
+        generateOre(event, ore, ore.replacePlaced);
+    }
+
+    private static void replaceOre(BiomeLoadingEvent event, NetherOre ore) {
         generateOre(event, ore, ore.replacePlaced);
     }
 

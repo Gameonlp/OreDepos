@@ -25,7 +25,7 @@
                   }
                 }
               ],
-              "name": "minecraft:uranium_ore"
+              "name": "oredepos:uranium_ore"
             },
             {
               "type": "minecraft:item",
@@ -39,7 +39,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "minecraft:raw_uranium"
+              "name": "oredepos:raw_uranium"
             }
           ]
         }

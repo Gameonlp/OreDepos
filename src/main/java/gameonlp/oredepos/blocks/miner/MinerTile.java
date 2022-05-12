@@ -17,6 +17,7 @@ import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -130,19 +131,18 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = super.serializeNBT();
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.putInt("energy", energyCell.getEnergyStored());
         tag.putFloat("progress", progress);
         tag.putFloat("productivity", productivity);
         tag = fluidTank.writeToNBT(tag);
         tag.put("slots", slots.serializeNBT());
-        return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag p_230337_2_) {
-        super.deserializeNBT(p_230337_2_);
+    public void load(CompoundTag p_230337_2_) {
+        super.load(p_230337_2_);
         energyCell.setEnergy(p_230337_2_.getInt("energy"));
         progress = p_230337_2_.getFloat("progress");
         productivity = p_230337_2_.getFloat("productivity");
@@ -154,10 +154,14 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
         slots.deserializeNBT(p_230337_2_.getCompound("slots"));
     }
 
-    public void serverTick() {
+    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, MinerTile e) {
+        e.tick();
+    }
+
+    private void tick(){
         int energyDrain = 100; // TODO add config
         int fluidDrain = 100;
-        if (level == null || level.isClientSide()){
+        if (level == null){
             return;
         }
         if (slots.getStackInSlot(6).equals(ItemStack.EMPTY)){
