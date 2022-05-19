@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "oredepos:block/osmium_ore_deposit"
+  }
+}

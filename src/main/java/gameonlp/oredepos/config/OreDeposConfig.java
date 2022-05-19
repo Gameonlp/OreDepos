@@ -37,6 +37,7 @@ public class OreDeposConfig {
         public static OreConfig zinc;
         public static OreConfig certus_quartz;
         public static OreConfig sulfur;
+        public static OreConfig osmium;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -87,6 +88,7 @@ public class OreDeposConfig {
             zinc = new OreConfig(builder, "zinc", true, true, false, 1.0f, 14, 15, 70, 4);
             certus_quartz = new OreConfig(builder, "certus_quartz", true, true, false, 1.0f, 4, 12, 74, 4);
             sulfur = new OreConfig(builder, "sulfur", true, true, false, 1.0f, 6, 1, 128, 10);
+            osmium = new OreConfig(builder, "osmium", true, true, false, 1.0f, 8, 1, 36, 8);
             builder.pop();
             builder.pop();
         }

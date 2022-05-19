@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#forge:ores/osmium",
     "#forge:ores/sulfur",
     "#forge:ores/certus_quartz",
     "#forge:ores/zinc",

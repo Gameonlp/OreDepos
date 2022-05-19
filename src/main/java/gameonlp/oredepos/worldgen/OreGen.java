@@ -50,6 +50,7 @@ public class OreGen {
         URANIUM_DEPOSIT(Lazy.of(() -> RegistryManager.URANIUM_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.URANIUM_ORE), OreDeposConfig.Common.uranium),
         ZINC_DEPOSIT(Lazy.of(() -> RegistryManager.ZINC_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.ZINC_ORE), OreDeposConfig.Common.zinc),
         CERTUS_QUARTZ_DEPOSIT(Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.CERTUS_QUARTZ_ORE), OreDeposConfig.Common.certus_quartz),
+        OSMIUM_DEPOSIT(Lazy.of(() -> RegistryManager.OSMIUM_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.OSMIUM_ORE), OreDeposConfig.Common.osmium),
         COAL_DEPOSIT(Lazy.of(() -> RegistryManager.COAL_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.COAL_ORE), OreDeposConfig.Common.coal),
         IRON_DEPOSIT(Lazy.of(() -> RegistryManager.IRON_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.IRON_ORE), OreDeposConfig.Common.iron),
         REDSTONE_DEPOSIT(Lazy.of(() -> RegistryManager.REDSTONE_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.REDSTONE_ORE), OreDeposConfig.Common.redstone),
