@@ -29,6 +29,14 @@ public class ModelProviders {
             simpleBlockAndItem(RegistryManager.OSMIUM_ORE_DEPOSIT);
             simpleBlockAndItem(RegistryManager.OSMIUM_ORE);
             simpleBlockAndItem(RegistryManager.OSMIUM_BLOCK);
+
+            simpleBlockAndItem(RegistryManager.ARDITE_ORE_DEPOSIT);
+            simpleBlockAndItem(RegistryManager.ARDITE_ORE);
+            simpleBlockAndItem(RegistryManager.ARDITE_BLOCK);
+
+            simpleBlockAndItem(RegistryManager.COBALT_ORE_DEPOSIT);
+            simpleBlockAndItem(RegistryManager.COBALT_ORE);
+            simpleBlockAndItem(RegistryManager.COBALT_BLOCK);
         }
     }
 
@@ -48,6 +56,10 @@ public class ModelProviders {
         @Override
         protected void registerModels() {
             simpleItem(RegistryManager.OSMIUM_INGOT);
+
+            simpleItem(RegistryManager.ARDITE_INGOT);
+
+            simpleItem(RegistryManager.COBALT_INGOT);
         }
     }
 }

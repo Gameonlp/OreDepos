@@ -12,7 +12,7 @@ public class OreDeposTab extends ItemGroup {
     public static final OreDeposTab ORE_DEPOS_TAB = new OreDeposTab();
 
     public OreDeposTab() {
-        super("oreDeposits");
+        super("ore_deposits");
     }
 
     @Override

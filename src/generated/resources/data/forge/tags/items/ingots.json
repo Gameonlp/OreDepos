@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "#forge:ingots/cobalt",
+    "#forge:ingots/ardite",
     "#forge:ingots/osmium",
     "#forge:ingots/zinc",
     "#forge:ingots/nickel",

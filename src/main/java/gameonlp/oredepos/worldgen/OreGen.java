@@ -25,6 +25,8 @@ import java.util.Random;
 
 public class OreGen {
     private enum NetherOre {
+        COBALT_DEPOSIT(Lazy.of(() -> RegistryManager.COBALT_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.COBALT_ORE), OreDeposConfig.Common.cobalt),
+        ARDITE_DEPOSIT(Lazy.of(() -> RegistryManager.ARDITE_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.ARDITE_ORE), OreDeposConfig.Common.ardite),
         SULFUR_DEPOSIT(Lazy.of(() -> RegistryManager.SULFUR_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.SULFUR_ORE), OreDeposConfig.Common.sulfur),
         ANCIENT_DEBRIS_DEPOSIT(Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS_DEPOSIT), Lazy.of(() -> RegistryManager.ANCIENT_DEBRIS), OreDeposConfig.Common.ancient_debris),
         NETHER_GOLD_DEPOSIT(Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE_DEPOSIT), Lazy.of(() -> RegistryManager.NETHER_GOLD_ORE), OreDeposConfig.Common.nether_gold),

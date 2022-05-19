@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "oredepos:ardite_block"
+    }
+  ],
+  "result": {
+    "item": "oredepos:ardite_ingot",
+    "count": 9
+  }
+}

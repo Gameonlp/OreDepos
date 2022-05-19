@@ -111,6 +111,10 @@ public class RegistryManager {
     public static final Item ZINC_INGOT = null;
     @ObjectHolder("oredepos:osmium_ingot")
     public static final Item OSMIUM_INGOT = null;
+    @ObjectHolder("oredepos:ardite_ingot")
+    public static final Item ARDITE_INGOT = null;
+    @ObjectHolder("oredepos:cobalt_ingot")
+    public static final Item COBALT_INGOT = null;
     @ObjectHolder("oredepos:certus_quartz")
     public static final Item CERTUS_QUARTZ = null;
     @ObjectHolder("oredepos:sulfur")
@@ -166,6 +170,14 @@ public class RegistryManager {
     public static final Block OSMIUM_ORE = null;
     @ObjectHolder("oredepos:osmium_block")
     public static final Block OSMIUM_BLOCK = null;
+    @ObjectHolder("oredepos:ardite_ore")
+    public static final Block ARDITE_ORE = null;
+    @ObjectHolder("oredepos:ardite_block")
+    public static final Block ARDITE_BLOCK = null;
+    @ObjectHolder("oredepos:cobalt_ore")
+    public static final Block COBALT_ORE = null;
+    @ObjectHolder("oredepos:cobalt_block")
+    public static final Block COBALT_BLOCK = null;
     @ObjectHolder("minecraft:coal_ore")
     public static final Block COAL_ORE = null;
     @ObjectHolder("minecraft:iron_ore")
@@ -228,6 +240,10 @@ public class RegistryManager {
     public static final Block SULFUR_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:osmium_ore_deposit")
     public static final Block OSMIUM_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:ardite_ore_deposit")
+    public static final Block ARDITE_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:cobalt_ore_deposit")
+    public static final Block COBALT_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -310,6 +326,8 @@ public class RegistryManager {
         Block certusQuartzOreBlock = prepareDeposit("certus_quartz", Material.STONE, 3, 15, ToolType.PICKAXE, 2, false, true);
         Block sulfurOreBlock = prepareDeposit("sulfur", Material.STONE, 2.5f, 5, ToolType.PICKAXE, 2, false, true);
         Block osmiumOreBlock = prepareDeposit("osmium", Material.STONE, 2.5f, 5, ToolType.PICKAXE, 0);
+        Block arditeOreBlock = prepareDeposit("ardite", Material.STONE, 4, 5, ToolType.PICKAXE, 3);
+        Block cobaltOreBlock = prepareDeposit("cobalt", Material.STONE, 3, 7, ToolType.PICKAXE, 4);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coal.factor.get()));
@@ -332,6 +350,8 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("certus_quartz_ore", certusQuartzOreBlock, OreDeposConfig.Common.certus_quartz.factor.get()));
         depositTemplates.add(new DepositTemplate("sulfur_ore", sulfurOreBlock, OreDeposConfig.Common.sulfur.factor.get()));
         depositTemplates.add(new DepositTemplate("osmium_ore", osmiumOreBlock, OreDeposConfig.Common.osmium.factor.get()));
+        depositTemplates.add(new DepositTemplate("ardite_ore", arditeOreBlock, OreDeposConfig.Common.ardite.factor.get()));
+        depositTemplates.add(new DepositTemplate("cobalt_ore", cobaltOreBlock, OreDeposConfig.Common.cobalt.factor.get()));
 
 
         DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstone.factor.get());

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "oredepos:ardite_ingot"
+    ]
+  },
+  "criteria": {
+    "has_items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "oredepos:ardite_ore"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "oredepos:ardite_ingot"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_items",
+      "has_the_recipe"
+    ]
+  ]
+}

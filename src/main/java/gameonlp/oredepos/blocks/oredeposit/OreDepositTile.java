@@ -16,7 +16,7 @@ public class OreDepositTile extends TileEntity {
     private int amount;
     private int maxAmount;
     private Fluid fluid;
-    private Double factor;
+    private double factor;
 
     protected OreDepositTile(TileEntityType<?> p_i48289_1_) {
         super(p_i48289_1_);

@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "#forge:storage_blocks/cobalt",
+    "#forge:storage_blocks/ardite",
     "#forge:storage_blocks/osmium",
     "#forge:storage_blocks/sulfur",
     "#forge:storage_blocks/certus_quartz",

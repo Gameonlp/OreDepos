@@ -17,5 +17,6 @@ public class DataGen {
         gen.addProvider(new TagProvider.OreDepositFluidTags(gen, event.getExistingFileHelper()));
         gen.addProvider(new ModelProviders.OreDepositsBlockStateProvider(gen, OreDepos.MODID, event.getExistingFileHelper()));
         gen.addProvider(new ModelProviders.OreDepositsItemModelProvider(gen, OreDepos.MODID, event.getExistingFileHelper()));
+        gen.addProvider(new OreDepositsRecipeProvider(gen));
     }
 }
