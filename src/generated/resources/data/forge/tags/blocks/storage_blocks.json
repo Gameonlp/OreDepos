@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#forge:storage_blocks/platinum",
     "#forge:storage_blocks/cobalt",
     "#forge:storage_blocks/ardite",
     "#forge:storage_blocks/osmium",

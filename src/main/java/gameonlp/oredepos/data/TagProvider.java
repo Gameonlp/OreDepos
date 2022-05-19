@@ -32,6 +32,7 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Block> ORE_OSMIUM = BlockTags.createOptional(new ResourceLocation("forge", "ores/osmium"));
     public static final Tags.IOptionalNamedTag<Block> ORE_ARDITE = BlockTags.createOptional(new ResourceLocation("forge", "ores/ardite"));
     public static final Tags.IOptionalNamedTag<Block> ORE_COBALT = BlockTags.createOptional(new ResourceLocation("forge", "ores/cobalt"));
+    public static final Tags.IOptionalNamedTag<Block> ORE_PLATINUM = BlockTags.createOptional(new ResourceLocation("forge", "ores/platinum"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_TIN = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/tin"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_COPPER = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/copper"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_LEAD = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/lead"));
@@ -45,6 +46,7 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_OSMIUM = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/osmium"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_ARDITE = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/ardite"));
     public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_COBALT = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/cobalt"));
+    public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_PLATINUM = BlockTags.createOptional(new ResourceLocation("forge", "storage_blocks/platinum"));
 
     public static final Tags.IOptionalNamedTag<Item> ORE_TIN_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/tin"));
     public static final Tags.IOptionalNamedTag<Item> ORE_COPPER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/copper"));
@@ -59,6 +61,7 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Item> ORE_OSMIUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/osmium"));
     public static final Tags.IOptionalNamedTag<Item> ORE_ARDITE_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/ardite"));
     public static final Tags.IOptionalNamedTag<Item> ORE_COBALT_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/cobalt"));
+    public static final Tags.IOptionalNamedTag<Item> ORE_PLATINUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "ores/platinum"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_TIN_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/tin"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_COPPER_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/copper"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_LEAD_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/lead"));
@@ -72,6 +75,7 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_OSMIUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/osmium"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_ARDITE_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/ardite"));
     public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_COBALT_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/cobalt"));
+    public static final Tags.IOptionalNamedTag<Item> STORAGE_BLOCKS_PLATINUM_ITEM = ItemTags.createOptional(new ResourceLocation("forge", "storage_blocks/platinum"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_COPPER = ItemTags.createOptional(new ResourceLocation("forge", "ingots/copper"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_TIN = ItemTags.createOptional(new ResourceLocation("forge", "ingots/tin"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_LEAD = ItemTags.createOptional(new ResourceLocation("forge", "ingots/lead"));
@@ -85,6 +89,7 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Item> INGOTS_OSMIUM = ItemTags.createOptional(new ResourceLocation("forge", "ingots/osmium"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_ARDITE = ItemTags.createOptional(new ResourceLocation("forge", "ingots/ardite"));
     public static final Tags.IOptionalNamedTag<Item> INGOTS_COBALT = ItemTags.createOptional(new ResourceLocation("forge", "ingots/cobalt"));
+    public static final Tags.IOptionalNamedTag<Item> INGOTS_PLATINUM = ItemTags.createOptional(new ResourceLocation("forge", "ingots/platinum"));
 
     public static final Tags.IOptionalNamedTag<Fluid> SULFURIC_ACID = FluidTags.createOptional(new ResourceLocation("forge", "sulfuric_acid"));
 
@@ -114,7 +119,9 @@ public class TagProvider {
             tag(ORE_OSMIUM).add(RegistryManager.OSMIUM_ORE);
             tag(ORE_ARDITE).add(RegistryManager.ARDITE_ORE);
             tag(ORE_COBALT).add(RegistryManager.COBALT_ORE);
+            tag(ORE_PLATINUM).add(RegistryManager.PLATINUM_ORE);
             tag(Tags.Blocks.ORES).addTags(
+                    ORE_PLATINUM,
                     ORE_COBALT,
                     ORE_ARDITE,
                     ORE_OSMIUM,
@@ -143,7 +150,9 @@ public class TagProvider {
             tag(STORAGE_BLOCKS_OSMIUM).add(RegistryManager.OSMIUM_BLOCK);
             tag(STORAGE_BLOCKS_ARDITE).add(RegistryManager.ARDITE_BLOCK);
             tag(STORAGE_BLOCKS_COBALT).add(RegistryManager.COBALT_BLOCK);
+            tag(STORAGE_BLOCKS_PLATINUM).add(RegistryManager.PLATINUM_BLOCK);
             tag(Tags.Blocks.STORAGE_BLOCKS).addTags(
+                    STORAGE_BLOCKS_PLATINUM,
                     STORAGE_BLOCKS_COBALT,
                     STORAGE_BLOCKS_ARDITE,
                     STORAGE_BLOCKS_OSMIUM,
@@ -186,7 +195,9 @@ public class TagProvider {
             copy(ORE_OSMIUM, ORE_OSMIUM_ITEM);
             copy(ORE_ARDITE, ORE_ARDITE_ITEM);
             copy(ORE_COBALT, ORE_COBALT_ITEM);
+            copy(ORE_PLATINUM, ORE_PLATINUM_ITEM);
             tag(Tags.Items.ORES).addTags(
+                    ORE_PLATINUM_ITEM,
                     ORE_COBALT_ITEM,
                     ORE_ARDITE_ITEM,
                     ORE_OSMIUM_ITEM,
@@ -215,7 +226,9 @@ public class TagProvider {
             copy(STORAGE_BLOCKS_OSMIUM, STORAGE_BLOCKS_OSMIUM_ITEM);
             copy(STORAGE_BLOCKS_ARDITE, STORAGE_BLOCKS_ARDITE_ITEM);
             copy(STORAGE_BLOCKS_COBALT, STORAGE_BLOCKS_COBALT_ITEM);
+            copy(STORAGE_BLOCKS_PLATINUM, STORAGE_BLOCKS_PLATINUM_ITEM);
             tag(Tags.Items.STORAGE_BLOCKS).addTags(
+                    STORAGE_BLOCKS_PLATINUM_ITEM,
                     STORAGE_BLOCKS_COBALT_ITEM,
                     STORAGE_BLOCKS_ARDITE_ITEM,
                     STORAGE_BLOCKS_OSMIUM_ITEM,
@@ -242,7 +255,9 @@ public class TagProvider {
             tag(INGOTS_OSMIUM).add(RegistryManager.OSMIUM_INGOT);
             tag(INGOTS_ARDITE).add(RegistryManager.ARDITE_INGOT);
             tag(INGOTS_COBALT).add(RegistryManager.COBALT_INGOT);
+            tag(INGOTS_PLATINUM).add(RegistryManager.PLATINUM_INGOT);
             tag(Tags.Items.INGOTS).addTags(
+                    INGOTS_PLATINUM,
                     INGOTS_COBALT,
                     INGOTS_ARDITE,
                     INGOTS_OSMIUM,

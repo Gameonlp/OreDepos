@@ -37,6 +37,10 @@ public class ModelProviders {
             simpleBlockAndItem(RegistryManager.COBALT_ORE_DEPOSIT);
             simpleBlockAndItem(RegistryManager.COBALT_ORE);
             simpleBlockAndItem(RegistryManager.COBALT_BLOCK);
+
+            simpleBlockAndItem(RegistryManager.PLATINUM_ORE_DEPOSIT);
+            simpleBlockAndItem(RegistryManager.PLATINUM_ORE);
+            simpleBlockAndItem(RegistryManager.PLATINUM_BLOCK);
         }
     }
 
@@ -60,6 +64,8 @@ public class ModelProviders {
             simpleItem(RegistryManager.ARDITE_INGOT);
 
             simpleItem(RegistryManager.COBALT_INGOT);
+
+            simpleItem(RegistryManager.PLATINUM_INGOT);
         }
     }
 }

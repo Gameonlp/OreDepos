@@ -115,6 +115,8 @@ public class RegistryManager {
     public static final Item ARDITE_INGOT = null;
     @ObjectHolder("oredepos:cobalt_ingot")
     public static final Item COBALT_INGOT = null;
+    @ObjectHolder("oredepos:platinum_ingot")
+    public static final Item PLATINUM_INGOT = null;
     @ObjectHolder("oredepos:certus_quartz")
     public static final Item CERTUS_QUARTZ = null;
     @ObjectHolder("oredepos:sulfur")
@@ -178,6 +180,10 @@ public class RegistryManager {
     public static final Block COBALT_ORE = null;
     @ObjectHolder("oredepos:cobalt_block")
     public static final Block COBALT_BLOCK = null;
+    @ObjectHolder("oredepos:platinum_ore")
+    public static final Block PLATINUM_ORE = null;
+    @ObjectHolder("oredepos:platinum_block")
+    public static final Block PLATINUM_BLOCK = null;
     @ObjectHolder("minecraft:coal_ore")
     public static final Block COAL_ORE = null;
     @ObjectHolder("minecraft:iron_ore")
@@ -244,6 +250,8 @@ public class RegistryManager {
     public static final Block ARDITE_ORE_DEPOSIT = null;
     @ObjectHolder("oredepos:cobalt_ore_deposit")
     public static final Block COBALT_ORE_DEPOSIT = null;
+    @ObjectHolder("oredepos:platinum_ore_deposit")
+    public static final Block PLATINUM_ORE_DEPOSIT = null;
 
     //Tile Entities
     public static RegistryObject<TileEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
@@ -328,6 +336,7 @@ public class RegistryManager {
         Block osmiumOreBlock = prepareDeposit("osmium", Material.STONE, 2.5f, 5, ToolType.PICKAXE, 0);
         Block arditeOreBlock = prepareDeposit("ardite", Material.STONE, 4, 5, ToolType.PICKAXE, 3);
         Block cobaltOreBlock = prepareDeposit("cobalt", Material.STONE, 3, 7, ToolType.PICKAXE, 4);
+        Block platinumOreBlock = prepareDeposit("platinum", Material.STONE, 4, 8, ToolType.PICKAXE, 3);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
         depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coal.factor.get()));
@@ -352,6 +361,7 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("osmium_ore", osmiumOreBlock, OreDeposConfig.Common.osmium.factor.get()));
         depositTemplates.add(new DepositTemplate("ardite_ore", arditeOreBlock, OreDeposConfig.Common.ardite.factor.get()));
         depositTemplates.add(new DepositTemplate("cobalt_ore", cobaltOreBlock, OreDeposConfig.Common.cobalt.factor.get()));
+        depositTemplates.add(new DepositTemplate("platinum_ore", platinumOreBlock, OreDeposConfig.Common.platinum.factor.get()));
 
 
         DepositTemplate redstoneTemplate = new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstone.factor.get());

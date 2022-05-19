@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#forge:ores/platinum",
     "#forge:ores/cobalt",
     "#forge:ores/ardite",
     "#forge:ores/osmium",

@@ -40,7 +40,11 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
     @Override
     protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
         depositRecipes(consumer, RegistryManager.OSMIUM_INGOT, RegistryManager.OSMIUM_BLOCK, RegistryManager.OSMIUM_ORE, TagProvider.INGOTS_OSMIUM);
+
         depositRecipes(consumer, RegistryManager.ARDITE_INGOT, RegistryManager.ARDITE_BLOCK, RegistryManager.ARDITE_ORE, TagProvider.INGOTS_ARDITE);
+
         depositRecipes(consumer, RegistryManager.COBALT_INGOT, RegistryManager.COBALT_BLOCK, RegistryManager.COBALT_ORE, TagProvider.INGOTS_COBALT);
+
+        depositRecipes(consumer, RegistryManager.PLATINUM_INGOT, RegistryManager.PLATINUM_BLOCK, RegistryManager.PLATINUM_ORE, TagProvider.INGOTS_PLATINUM);
     }
 }
