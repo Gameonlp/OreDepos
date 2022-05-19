@@ -36,6 +36,10 @@ public class OreDeposConfig {
         public static OreConfig zinc;
         public static OreConfig certus_quartz;
         public static OreConfig sulfur;
+        public static OreConfig osmium;
+        public static OreConfig ardite;
+        public static OreConfig cobalt;
+        public static OreConfig platinum;
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -84,8 +88,12 @@ public class OreDeposConfig {
             uranium = new OreConfig(builder, "uranium", true, true, false, 1.0f, 2, -64, 64, 4);
             nickel = new OreConfig(builder, "nickel", true, true, false, 1.0f, 5, -64, 20, 5);
             zinc = new OreConfig(builder, "zinc", true, true, false, 1.0f, 14, -20, 70, 4);
-            certus_quartz = new OreConfig(builder, "certus_quartz", true, true, false, 1.0f, 4, -35, 74, 4);
+            certus_quartz = new OreConfig(builder, "certus_quartz", true, false, false, 1.0f, 4, -35, 74, 4);
             sulfur = new OreConfig(builder, "sulfur", true, true, false, 1.0f, 6, -64, 128, 10);
+            osmium = new OreConfig(builder, "osmium", true, false, false, 1.0f, 8, 1, 36, 8);
+            ardite = new OreConfig(builder, "ardite", true, false, false, 1.0f, 6, 90, 128, 3);
+            cobalt = new OreConfig(builder, "cobalt", true, false, false, 1.0f, 6, 90, 128, 3);
+            platinum = new OreConfig(builder, "platinum", true, false, false, 1.0f, 1, 1, 64, 1);
             builder.pop();
             builder.pop();
         }
