@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "oredepos:osmium_block"
+    "oredepos:osmium_block",
+    "oredepos:raw_osmium_block"
   ]
 }

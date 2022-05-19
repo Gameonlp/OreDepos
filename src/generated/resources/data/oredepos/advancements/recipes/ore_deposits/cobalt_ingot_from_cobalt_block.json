@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "oredepos:cobalt_block"
+            "items": [
+              "oredepos:cobalt_block"
+            ]
           }
         ]
       }

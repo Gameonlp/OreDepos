@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "oredepos:osmium_ore"
+    "oredepos:osmium_ore",
+    "oredepos:deepslate_osmium_ore"
   ]
 }

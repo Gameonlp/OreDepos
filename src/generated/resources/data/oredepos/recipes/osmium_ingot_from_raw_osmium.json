@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "oredepos:raw_osmium"
+  },
+  "result": "oredepos:osmium_ingot",
+  "experience": 0.7,
+  "cookingtime": 200
+}

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "oredepos:platinum_block"
+            "items": [
+              "oredepos:platinum_block"
+            ]
           }
         ]
       }

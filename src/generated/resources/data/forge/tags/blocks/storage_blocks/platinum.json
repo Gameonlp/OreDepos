@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "oredepos:platinum_block"
+    "oredepos:platinum_block",
+    "oredepos:raw_platinum_block"
   ]
 }

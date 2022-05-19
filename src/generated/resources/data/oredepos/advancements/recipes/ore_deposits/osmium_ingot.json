@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "item": "oredepos:osmium_ore"
+            "tag": "forge:ores/osmium"
           }
         ]
       }

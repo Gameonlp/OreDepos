@@ -1,6 +1,16 @@
 {
   "replace": false,
   "values": [
-    "minecraft:air"
+    "oredepos:platinum_ore",
+    "oredepos:platinum_block",
+    "oredepos:raw_platinum_block",
+    "oredepos:platinum_ore_deposit",
+    "oredepos:deepslate_platinum_ore",
+    "oredepos:deepslate_platinum_ore_deposit",
+    "oredepos:ardite_ore",
+    "oredepos:ardite_block",
+    "oredepos:raw_ardite_block",
+    "oredepos:ardite_ore_deposit",
+    "oredepos:ancient_debris_deposit"
   ]
 }

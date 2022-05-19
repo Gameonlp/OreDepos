@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "oredepos:block/raw_osmium_block"
+    }
+  }
+}

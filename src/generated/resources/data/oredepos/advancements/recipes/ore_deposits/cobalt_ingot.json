@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "item": "oredepos:cobalt_ore"
+            "tag": "forge:ores/cobalt"
           }
         ]
       }

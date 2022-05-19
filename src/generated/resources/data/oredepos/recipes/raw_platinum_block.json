@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:raw_materials/platinum"
+    }
+  },
+  "result": {
+    "item": "oredepos:raw_platinum_block"
+  }
+}
