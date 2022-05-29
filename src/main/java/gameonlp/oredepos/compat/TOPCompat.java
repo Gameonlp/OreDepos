@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -42,11 +44,11 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
 
                 addProbeInfoOre(probeInfo, amount, tileEntityOre.getMaxAmount());
 
-                if (tileEntityOre.fluidNeeded() != null) {
-                    Fluid fluid = tileEntityOre.fluidNeeded();
+                if (!tileEntityOre.fluidNeeded().getValues().isEmpty()) {
+                    ITag<Fluid> fluid = tileEntityOre.fluidNeeded();
                     probeInfo.text(new TranslatableComponent("tooltip." + OreDepos.MODID + ".requires_fluid")
                             .append(" ")
-                            .append(fluid.getAttributes().getDisplayName(new FluidStack(fluid, 100)))
+                            .append(new FluidStack(fluid.getValues().get(0), 100).getDisplayName())
                             .withStyle(ChatFormatting.GREEN));
                 }
             }

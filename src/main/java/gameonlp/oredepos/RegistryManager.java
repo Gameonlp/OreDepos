@@ -49,24 +49,17 @@ public class RegistryManager {
     private static class DepositTemplate {
         private final String name;
         private final Supplier<Block> block;
-        private Supplier<Fluid> needed;
+        private String needed;
         private double factor;
 
-        private DepositTemplate(String location, String name, Supplier<Fluid> needed, double factor){
-            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), needed, factor);
-        }
         private DepositTemplate(String location, String name, double factor){
-            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
+            this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
         }
 
-        private DepositTemplate(String name, Supplier<Block> block, double factor){
-            this(name, block, () -> null, factor);
-        }
-
-        private DepositTemplate(String name, Supplier<Block> block, Supplier<Fluid> needed, double factor){
+        private DepositTemplate(String name, Block block, double factor){
             this.name = name;
             this.block = block;
-            this.needed = needed;
+            this.needed = "oredepos:mining/" + name + "_deposit";
             this.factor = factor;
         }
     }
@@ -518,8 +511,8 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("deepslate_silver_ore", deepslateSilverOreBlock, OreDeposConfig.Server.silver.factor.get()));
         depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Server.aluminum.factor.get()));
         depositTemplates.add(new DepositTemplate("deepslate_aluminum_ore", deepslateAluminumOreBlock, OreDeposConfig.Server.aluminum.factor.get()));
-        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Server.uranium.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_uranium_ore", deepslateUraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Server.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, OreDeposConfig.Server.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_uranium_ore", deepslateUraniumOreBlock, OreDeposConfig.Server.uranium.factor.get()));
         depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
         depositTemplates.add(new DepositTemplate("deepslate_nickel_ore", deepslateNickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
         depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Server.zinc.factor.get()));

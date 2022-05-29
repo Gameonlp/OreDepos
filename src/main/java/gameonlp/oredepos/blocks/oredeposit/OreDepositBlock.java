@@ -16,14 +16,14 @@ import java.util.function.Supplier;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class OreDepositBlock extends BaseEntityBlock {
-    private Supplier<Fluid> fluid;
+    private String fluid;
     private Double factor;
 
     public OreDepositBlock(Properties properties, double factor) {
-        this(properties, () -> null, factor);
+        this(properties, "", factor);
     }
 
-    public OreDepositBlock(Properties properties, Supplier<Fluid> fluid, double factor) {
+    public OreDepositBlock(Properties properties, String fluid, double factor) {
         super(properties);
         this.fluid = fluid;
         this.factor = factor;
@@ -37,6 +37,6 @@ public class OreDepositBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new OreDepositTile(pos, state, fluid.get(), factor);
+        return new OreDepositTile(pos, state, fluid, factor);
     }
 }

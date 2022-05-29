@@ -128,6 +128,7 @@ public class TagProvider {
     public static final TagKey<Item> RAW_PLATINUM = ItemTags.create(new ResourceLocation("forge", "raw_materials/platinum"));
 
     public static final TagKey<Fluid> SULFURIC_ACID = FluidTags.create(new ResourceLocation("forge", "sulfuric_acid"));
+    public static final TagKey<Fluid> MINING_URANIUM_ORE_DEPOSIT = FluidTags.create(new ResourceLocation("oredepos", "mining/uranium_ore_deposit"));
 
     public static class OreDepositBlockTags extends BlockTagsProvider {
 
@@ -593,6 +594,7 @@ public class TagProvider {
         @Override
         protected void addTags() {
             tag(SULFURIC_ACID).add(RegistryManager.SULFURIC_ACID_FLUID.get());
+            tag(MINING_URANIUM_ORE_DEPOSIT).addTag(SULFURIC_ACID);
         }
     }
 }

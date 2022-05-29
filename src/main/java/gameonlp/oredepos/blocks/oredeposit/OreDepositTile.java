@@ -6,6 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class OreDepositTile extends BlockEntity {
     private int amount;
     private int maxAmount;
-    private Fluid fluid;
+    private String fluid;
     private double factor;
 
     protected OreDepositTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
@@ -27,7 +29,7 @@ public class OreDepositTile extends BlockEntity {
         this(RegistryManager.ORE_DEPOSIT_TILE.get(), pos, state);
     }
 
-    public OreDepositTile(BlockPos pos, BlockState state, Fluid fluid, double factor){
+    public OreDepositTile(BlockPos pos, BlockState state, String fluid, double factor){
         this(pos, state);
         this.fluid = fluid;
         this.factor = factor;
@@ -60,14 +62,13 @@ public class OreDepositTile extends BlockEntity {
             } else {
                 amount = 1;
             }
-            System.out.println(this.getBlockState());
             amount = (int) Math.max(amount * factor, 1);
             maxAmount = amount;
         }
     }
 
-    public Fluid fluidNeeded(){
-        return fluid;
+    public ITag<Fluid> fluidNeeded(){
+        return FluidTags.getAllTags().getTagOrEmpty(new ResourceLocation(fluid));
     }
 
     public void decrement() {
@@ -87,7 +88,7 @@ public class OreDepositTile extends BlockEntity {
         super.saveAdditional(tag);
         tag.putInt("amount", amount);
         tag.putInt("max_amount", maxAmount);
-        tag.putString("fluid", fluid != null ? fluid.getRegistryName().toString() : "");
+        tag.putString("fluid", fluid);
     }
 
     @Override
@@ -96,10 +97,7 @@ public class OreDepositTile extends BlockEntity {
 
         amount = p_230337_2_.getInt("amount");
         maxAmount = p_230337_2_.getInt("max_amount");
-        String fluidName = p_230337_2_.getString("fluid");
-        if (!fluidName.equals("")) {
-            fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
-        }
+        fluid = p_230337_2_.getString("fluid");
     }
 
     public int getAmount() {

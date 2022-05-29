@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.ITag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
@@ -251,7 +252,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                     }
                 }
             }
-            if (depo.fluidNeeded() != null){
+            if (!depo.fluidNeeded().getValues().isEmpty()){
                 fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.EXECUTE);
             }
             depo.decrement();
@@ -292,9 +293,9 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                     DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
                     BlockState depoBlock = depo.getBlockState();
                     boolean correctToolForDrops = drillHead.getCorresponding().isCorrectToolForDrops(depoBlock);
-                    Fluid fluid = oreDepo.fluidNeeded();
-                    boolean correctFluid = fluid == null || fluid.equals(fluidTank.getFluid().getFluid());
-                    boolean enoughFluid = fluid == null || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
+                    ITag<Fluid> fluid = oreDepo.fluidNeeded();
+                    boolean correctFluid = fluid.getValues().isEmpty() || fluid.contains(fluidTank.getFluid().getFluid());
+                    boolean enoughFluid = fluid.getValues().isEmpty() || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
                     if (correctToolForDrops && correctFluid && enoughFluid) {
                         deposits.add(oreDepo);
                     } else {
@@ -320,7 +321,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                             currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_tool").append(": ").append(correctTool));
                         }
                         if (!correctFluid) {
-                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid, 1000).getDisplayName()));
+                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid.getRandomElement(level.random), 100).getDisplayName()));
                         }
                         if (!enoughFluid) {
                             currentReason.add(new TranslatableComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
