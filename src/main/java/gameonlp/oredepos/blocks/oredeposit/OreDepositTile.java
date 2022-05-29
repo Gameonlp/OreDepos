@@ -3,17 +3,18 @@ package gameonlp.oredepos.blocks.oredeposit;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.RegistryManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
 
 public class OreDepositTile extends BlockEntity {
     private int amount;
@@ -67,8 +68,9 @@ public class OreDepositTile extends BlockEntity {
         }
     }
 
-    public ITag<Fluid> fluidNeeded(){
-        return FluidTags.getAllTags().getTagOrEmpty(new ResourceLocation(fluid));
+    public @NotNull ITag<Fluid> fluidNeeded(){
+        TagKey<Fluid> needed = ForgeRegistries.FLUIDS.tags().createTagKey(new ResourceLocation(fluid));
+        return ForgeRegistries.FLUIDS.tags().getTag(needed);
     }
 
     public void decrement() {

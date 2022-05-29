@@ -17,13 +17,13 @@ import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.ITag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
@@ -43,6 +43,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -252,7 +253,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                     }
                 }
             }
-            if (!depo.fluidNeeded().getValues().isEmpty()){
+            if (!depo.fluidNeeded().isEmpty()){
                 fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.EXECUTE);
             }
             depo.decrement();
@@ -294,8 +295,8 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                     BlockState depoBlock = depo.getBlockState();
                     boolean correctToolForDrops = drillHead.getCorresponding().isCorrectToolForDrops(depoBlock);
                     ITag<Fluid> fluid = oreDepo.fluidNeeded();
-                    boolean correctFluid = fluid.getValues().isEmpty() || fluid.contains(fluidTank.getFluid().getFluid());
-                    boolean enoughFluid = fluid.getValues().isEmpty() || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
+                    boolean correctFluid = fluid.isEmpty() || fluid.contains(fluidTank.getFluid().getFluid());
+                    boolean enoughFluid = fluid.isEmpty() || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
                     if (correctToolForDrops && correctFluid && enoughFluid) {
                         deposits.add(oreDepo);
                     } else {
@@ -321,7 +322,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                             currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_tool").append(": ").append(correctTool));
                         }
                         if (!correctFluid) {
-                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid.getRandomElement(level.random), 100).getDisplayName()));
+                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid.getRandomElement(level.random).get(), 100).getDisplayName()));
                         }
                         if (!enoughFluid) {
                             currentReason.add(new TranslatableComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));

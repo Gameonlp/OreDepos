@@ -49,14 +49,14 @@ public class RegistryManager {
     private static class DepositTemplate {
         private final String name;
         private final Supplier<Block> block;
-        private String needed;
-        private double factor;
+        private final String needed;
+        private final double factor;
 
         private DepositTemplate(String location, String name, double factor){
-            this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
+            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
         }
 
-        private DepositTemplate(String name, Block block, double factor){
+        private DepositTemplate(String name, Supplier<Block> block, double factor){
             this.name = name;
             this.block = block;
             this.needed = "oredepos:mining/" + name + "_deposit";
