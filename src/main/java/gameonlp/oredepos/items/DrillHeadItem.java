@@ -1,11 +1,7 @@
 package gameonlp.oredepos.items;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.world.item.Item;
 
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -19,10 +15,6 @@ public class DrillHeadItem extends Item {
 
     public Item getCorresponding() {
         return corresponding;
-    }
-
-    public ToolType getToolType(){
-        return this.toolType;
     }
 
     @Override
