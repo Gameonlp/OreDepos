@@ -19,6 +19,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -245,7 +246,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                     }
                 }
             }
-            if (depo.fluidNeeded() != null){
+            if (!depo.fluidNeeded().getValues().isEmpty()){
                 fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.EXECUTE);
             }
             depo.decrement();
@@ -287,9 +288,9 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                     BlockState depoBlock = depo.getBlockState();
                     boolean sufficientMiningLevel = depoBlock.getHarvestLevel() <= drillHead.getMiningLevel();
                     boolean correctTool = depoBlock.getHarvestTool() == drillHead.getToolType() || !depoBlock.requiresCorrectToolForDrops();
-                    Fluid fluid = oreDepo.fluidNeeded();
-                    boolean correctFluid = fluid == null || fluid.equals(fluidTank.getFluid().getFluid());
-                    boolean enoughFluid = fluid == null || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
+                    ITag<Fluid> fluid = oreDepo.fluidNeeded();
+                    boolean correctFluid = fluid.getValues().isEmpty() || fluid.contains(fluidTank.getFluid().getFluid());
+                    boolean enoughFluid = fluid.getValues().isEmpty() || fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.SIMULATE).getAmount() >= fluidDrain;
                     if (sufficientMiningLevel && correctTool && correctFluid && enoughFluid) {
                         deposits.add(oreDepo);
                     } else {
@@ -304,7 +305,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                             }
                         }
                         if (!correctFluid) {
-                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid, 1000).getDisplayName()));
+                            currentReason.add(new TranslationTextComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid.getRandomElement(level.random), 100).getDisplayName()));
                         }
                         if (!enoughFluid) {
                             currentReason.add(new TranslationTextComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));

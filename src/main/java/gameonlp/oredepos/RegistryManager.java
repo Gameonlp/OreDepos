@@ -51,24 +51,17 @@ public class RegistryManager {
     private static class DepositTemplate {
         private final String name;
         private final Block block;
-        private Supplier<Fluid> needed;
+        private String needed;
         private double factor;
 
-        private DepositTemplate(String location, String name, Supplier<Fluid> needed, double factor){
-            this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), needed, factor);
-        }
         private DepositTemplate(String location, String name, double factor){
             this(name, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
         }
 
         private DepositTemplate(String name, Block block, double factor){
-            this(name, block, () -> null, factor);
-        }
-
-        private DepositTemplate(String name, Block block, Supplier<Fluid> needed, double factor){
             this.name = name;
             this.block = block;
-            this.needed = needed;
+            this.needed = "oredepos:mining/" + name + "_deposit";
             this.factor = factor;
         }
     }
@@ -353,7 +346,7 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Common.lead.factor.get()));
         depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Common.silver.factor.get()));
         depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Common.aluminum.factor.get()));
-        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, SULFURIC_ACID_FLUID::get, OreDeposConfig.Common.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, OreDeposConfig.Common.uranium.factor.get()));
         depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, OreDeposConfig.Common.nickel.factor.get()));
         depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Common.zinc.factor.get()));
         depositTemplates.add(new DepositTemplate("certus_quartz_ore", certusQuartzOreBlock, OreDeposConfig.Common.certus_quartz.factor.get()));
@@ -369,7 +362,7 @@ public class RegistryManager {
                     .harvestLevel(redstoneTemplate.block.getHarvestLevel(redstoneTemplate.block.defaultBlockState()))
                     .harvestTool(redstoneTemplate.block.getHarvestTool(redstoneTemplate.block.defaultBlockState()))
                     .lootFrom(redstoneTemplate.block::getBlock)
-                    .requiresCorrectToolForDrops(), redstoneTemplate.factor);
+                    .requiresCorrectToolForDrops(), redstoneTemplate.needed, redstoneTemplate.factor);
         registerBlock( redstoneTemplate.name + "_deposit",
                 () -> redstoneOreDepositBlock);
 

@@ -5,6 +5,8 @@ import gameonlp.oredepos.RegistryManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class OreDepositTile extends TileEntity {
     private int amount;
     private int maxAmount;
-    private Fluid fluid;
+    private String fluid;
     private double factor;
 
     protected OreDepositTile(TileEntityType<?> p_i48289_1_) {
@@ -26,7 +28,7 @@ public class OreDepositTile extends TileEntity {
         this(RegistryManager.ORE_DEPOSIT_TILE.get());
     }
 
-    public OreDepositTile(Fluid fluid, double factor){
+    public OreDepositTile(String fluid, double factor){
         this();
         this.fluid = fluid;
         this.factor = factor;
@@ -64,8 +66,8 @@ public class OreDepositTile extends TileEntity {
         }
     }
 
-    public Fluid fluidNeeded(){
-        return fluid;
+    public ITag<Fluid> fluidNeeded(){
+        return FluidTags.getAllTags().getTagOrEmpty(new ResourceLocation(fluid));
     }
 
     public void decrement() {
@@ -85,7 +87,7 @@ public class OreDepositTile extends TileEntity {
         CompoundNBT tag = super.save(p_189515_1_);
         tag.putInt("amount", amount);
         tag.putInt("max_amount", maxAmount);
-        tag.putString("fluid", fluid != null ? fluid.getRegistryName().toString() : "");
+        tag.putString("fluid", fluid);
         return tag;
     }
 
@@ -95,10 +97,7 @@ public class OreDepositTile extends TileEntity {
 
         amount = p_230337_2_.getInt("amount");
         maxAmount = p_230337_2_.getInt("max_amount");
-        String fluidName = p_230337_2_.getString("fluid");
-        if (fluidName != "") {
-            fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
-        }
+        fluid = p_230337_2_.getString("fluid");
     }
 
     public int getAmount() {

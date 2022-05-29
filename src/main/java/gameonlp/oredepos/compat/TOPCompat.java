@@ -6,6 +6,8 @@ import mcjty.theoneprobe.api.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -41,11 +43,11 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
 
                 addProbeInfoOre(probeInfo, amount, tileEntityOre.getMaxAmount());
 
-                if (tileEntityOre.fluidNeeded() != null) {
-                    Fluid fluid = tileEntityOre.fluidNeeded();
+                if (!tileEntityOre.fluidNeeded().getValues().isEmpty()) {
+                    ITag<Fluid> fluid = tileEntityOre.fluidNeeded();
                     probeInfo.text(new TranslationTextComponent("tooltip." + OreDepos.MODID + ".requires_fluid")
                             .append(" ")
-                            .append(fluid.getAttributes().getDisplayName(new FluidStack(fluid, 100)))
+                            .append(new FluidStack(fluid.getValues().get(0), 100).getDisplayName())
                             .withStyle(TextFormatting.GREEN));
                 }
             }

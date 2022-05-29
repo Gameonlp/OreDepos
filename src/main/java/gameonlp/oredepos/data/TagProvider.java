@@ -92,6 +92,7 @@ public class TagProvider {
     public static final Tags.IOptionalNamedTag<Item> INGOTS_PLATINUM = ItemTags.createOptional(new ResourceLocation("forge", "ingots/platinum"));
 
     public static final Tags.IOptionalNamedTag<Fluid> SULFURIC_ACID = FluidTags.createOptional(new ResourceLocation("forge", "sulfuric_acid"));
+    public static final Tags.IOptionalNamedTag<Fluid> MINING_URANIUM_ORE_DEPOSIT = FluidTags.createOptional(new ResourceLocation("oredepos", "mining/uranium_ore_deposit"));
 
     public static class OreDepositBlockTags extends BlockTagsProvider {
 
@@ -296,6 +297,7 @@ public class TagProvider {
         @Override
         protected void addTags() {
             tag(SULFURIC_ACID).add(RegistryManager.SULFURIC_ACID_FLUID.get());
+            tag(MINING_URANIUM_ORE_DEPOSIT).addTag(SULFURIC_ACID);
         }
     }
 }
