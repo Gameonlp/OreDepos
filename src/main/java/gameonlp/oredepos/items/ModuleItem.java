@@ -32,6 +32,22 @@ public class ModuleItem extends Item {
         return productivity;
     }
 
+    public int getWidth(int width){
+        return width;
+    }
+
+    public int getLength(int length){
+        return length;
+    }
+
+    public int getDepth(int depth){
+        return depth;
+    }
+
+    public boolean getInversion(boolean inversion){
+        return inversion;
+    }
+
     @Override
     public void appendHoverText(ItemStack p_77624_1_, @Nullable World p_77624_2_, List<ITextComponent> tooltip, ITooltipFlag p_77624_4_) {
         tooltip.add(new TranslationTextComponent("tooltip.oredepos.energy").append(" x" + (1.0f + energyConsumptionIncrease)).withStyle(energyConsumptionIncrease < 0 ? TextFormatting.GREEN : TextFormatting.RED));

@@ -33,6 +33,8 @@ public class PacketTooltipSync {
     }
 
     public static void sync(PacketTooltipSync msg){
+        if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.hasChunkAt(msg.pos))
+            return;
         TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof MinerTile){
             ((MinerTile) tile).setReason(msg.tooltip);

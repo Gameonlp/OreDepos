@@ -179,21 +179,6 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
             }
         }
         clearReason();
-        List<OreDepositTile> deposits = new LinkedList<>();
-        int lengthPriorReason = this.reason.size();
-        this.reason = findSuitableTiles(fluidDrain, deposits);
-        if (deposits.isEmpty()) {
-            if (hadReason && lengthPriorReason == this.reason.size() && level.getGameTime() % 20 != 0){
-                return;
-            }
-            if (this.reason.size() == 0){
-                this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.no_deposits"));
-            }
-            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
-            hadReason = true;
-            return;
-        }
-        clearReason();
         List<ModuleItem> modules = new LinkedList<>();
         ItemStack mod1 = slots.getStackInSlot(7);
         ItemStack mod2 = slots.getStackInSlot(8);
@@ -207,16 +192,40 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         if (!mod3.isEmpty()){
             modules.add((ModuleItem) mod3.getItem());
         }
+        List<OreDepositTile> deposits = new LinkedList<>();
+        int lengthPriorReason = this.reason.size();
+
+        int length = 0;
+        int width = 0;
+        int depth = 0;
+        boolean inversion = false;
         float drain = energyDrain;
+        float progressIncrease = 1.0f;
+        float productivityIncrease = 0.0f;
         for (ModuleItem module : modules){
+            length = module.getLength(length);
+            width = module.getWidth(width);
+            depth = module.getDepth(depth);
+            inversion = module.getInversion(inversion);
             drain = module.getEnergyConsumption(drain);
+            progressIncrease = module.getProgress(progressIncrease);
+            productivityIncrease = module.getProductivity(productivityIncrease);
         }
+        this.reason = findSuitableTiles(fluidDrain, deposits, width, length, depth, inversion);
+        if (deposits.isEmpty()) {
+            if (hadReason && lengthPriorReason == this.reason.size() && level.getGameTime() % 20 != 0){
+                return;
+            }
+            if (this.reason.size() == 0){
+                this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.no_deposits"));
+            }
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
+            hadReason = true;
+            return;
+        }
+        clearReason();
         if (energyCell.getEnergyStored() >= drain) {
             energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
-            float progressIncrease = 1.0f;
-            for (ModuleItem module : modules){
-                progressIncrease = module.getProgress(progressIncrease);
-            }
             progress += progressIncrease;
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             this.setChanged();
@@ -230,7 +239,7 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                 productivity -= 1;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
                 for (ItemStack drop : drops) {
-                    drop.setCount(drop.getCount() * 2); // might not work
+                    drop.setCount(drop.getCount() * 2);
                 }
             }
             ItemStack leftover = ItemStack.EMPTY;
@@ -250,10 +259,6 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
                 fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.EXECUTE);
             }
             depo.decrement();
-            float productivityIncrease = 0.0f;
-            for (ModuleItem module : modules) {
-                productivityIncrease = module.getProductivity(productivityIncrease);
-            }
             productivity += productivityIncrease;
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
             this.setChanged();
@@ -268,15 +273,15 @@ public class MinerTile extends TileEntity implements ITickableTileEntity, Energy
         }
     }
 
-    private List<ITextComponent> findSuitableTiles(int fluidDrain, List<OreDepositTile> deposits) {
+    private List<ITextComponent> findSuitableTiles(int fluidDrain, List<OreDepositTile> deposits, int width, int length, int depth, boolean inversion) {
         List<List<ITextComponent>> reasons = new LinkedList<>();
-        for (int x = -1; x <= 1; x++) {
-            for (int y = 0; y > -3; y--) {
-                for (int z = -1; z <= 1; z++) {
+        for (int x = -1 - width; x <= 1 + width; x++) {
+            for (int y = inversion ? 1 : -1; (inversion && y <= 3 + depth) || (!inversion && y >= -3 - depth); y += inversion ? 1 : -1) {
+                for (int z = -1 - length; z <= 1 + length; z++) {
                     if (level == null){
                         continue;
                     }
-                    TileEntity depo = level.getBlockEntity(worldPosition.below().offset(x, y, z));
+                    TileEntity depo = level.getBlockEntity(worldPosition.offset(x, y, z));
                     if (!(depo instanceof OreDepositTile)) {
                         continue;
                     }

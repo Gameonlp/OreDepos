@@ -29,6 +29,8 @@ public class PacketEnergySync {
     }
 
     public static void sync(PacketEnergySync msg){
+        if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.hasChunkAt(msg.pos))
+            return;
         TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof EnergyHandlerTile){
             ((EnergyHandlerTile) tile).setEnergy(msg.energy);

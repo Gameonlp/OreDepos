@@ -29,6 +29,8 @@ public class PacketProductivitySync {
     }
 
     public static void sync(PacketProductivitySync msg){
+        if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.hasChunkAt(msg.pos))
+            return;
         TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof ModuleAcceptorTile){
             ((ModuleAcceptorTile) tile).setProductivity(msg.productivity);

@@ -34,6 +34,8 @@ public class PacketFluidSync {
     }
 
     public static void sync(PacketFluidSync msg){
+        if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.hasChunkAt(msg.pos))
+            return;
         TileEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof EnergyHandlerTile){
             ((FluidHandlerTile) tile).setFluid(msg.fluid, msg.tank);
