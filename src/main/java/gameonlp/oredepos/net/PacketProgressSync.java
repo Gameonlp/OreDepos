@@ -29,6 +29,8 @@ public class PacketProgressSync {
     }
 
     public static void sync(PacketProgressSync msg){
+        if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.hasChunkAt(msg.pos))
+            return;
         BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(msg.pos);
         if (tile instanceof ModuleAcceptorTile){
             ((ModuleAcceptorTile) tile).setProgress(msg.progress);

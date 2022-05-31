@@ -186,21 +186,6 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
             }
         }
         clearReason();
-        List<OreDepositTile> deposits = new LinkedList<>();
-        int lengthPriorReason = this.reason.size();
-        this.reason = findSuitableTiles(fluidDrain, deposits);
-        if (deposits.isEmpty()) {
-            if (hadReason && lengthPriorReason == this.reason.size() && level.getGameTime() % 20 != 0){
-                return;
-            }
-            if (this.reason.size() == 0){
-                this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.no_deposits"));
-            }
-            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
-            hadReason = true;
-            return;
-        }
-        clearReason();
         List<ModuleItem> modules = new LinkedList<>();
         ItemStack mod1 = slots.getStackInSlot(7);
         ItemStack mod2 = slots.getStackInSlot(8);
@@ -239,7 +224,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                 return;
             }
             if (this.reason.size() == 0){
-                this.reason = Collections.singletonList(new TranslationTextComponent("tooltip.oredepos.no_deposits"));
+                this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.no_deposits"));
             }
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
             hadReason = true;

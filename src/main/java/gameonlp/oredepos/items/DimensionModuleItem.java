@@ -1,11 +1,12 @@
 package gameonlp.oredepos.items;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -45,19 +46,19 @@ public class DimensionModuleItem extends ModuleItem{
     }
 
     @Override
-    public void appendHoverText(ItemStack p_77624_1_, @Nullable World p_77624_2_, List<ITextComponent> tooltip, ITooltipFlag p_77624_4_) {
+    public void appendHoverText(ItemStack p_77624_1_, @Nullable Level p_77624_2_, List<Component> tooltip, TooltipFlag p_77624_4_) {
         super.appendHoverText(p_77624_1_, p_77624_2_, tooltip, p_77624_4_);
         if(width != 0) {
-            tooltip.add(new TranslationTextComponent("tooltip.oredepos.width").append(" +" + width).withStyle(width > 0 ? TextFormatting.GREEN : TextFormatting.RED));
+            tooltip.add(new TranslatableComponent("tooltip.oredepos.width").append(" +" + width).withStyle(width > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         if(length != 0) {
-            tooltip.add(new TranslationTextComponent("tooltip.oredepos.length").append(" +" + length).withStyle(length > 0 ? TextFormatting.GREEN : TextFormatting.RED));
+            tooltip.add(new TranslatableComponent("tooltip.oredepos.length").append(" +" + length).withStyle(length > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         if(depth != 0) {
-            tooltip.add(new TranslationTextComponent("tooltip.oredepos.depth").append(" +" + depth).withStyle(depth > 0 ? TextFormatting.GREEN : TextFormatting.RED));
+            tooltip.add(new TranslatableComponent("tooltip.oredepos.depth").append(" +" + depth).withStyle(depth > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         if (inversion){
-            tooltip.add(new TranslationTextComponent("tooltip.oredepos.inversion").withStyle(TextFormatting.GREEN));
+            tooltip.add(new TranslatableComponent("tooltip.oredepos.inversion").withStyle(ChatFormatting.GREEN));
         }
     }
 }
