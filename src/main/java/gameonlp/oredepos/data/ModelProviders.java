@@ -78,6 +78,11 @@ public class ModelProviders {
 
             simpleItem(RegistryManager.PLATINUM_INGOT);
             simpleItem(RegistryManager.RAW_PLATINUM);
+
+            simpleItem(RegistryManager.LENGTH_MODULE_1);
+            simpleItem(RegistryManager.WIDTH_MODULE_1);
+            simpleItem(RegistryManager.DEPTH_MODULE_1);
+            simpleItem(RegistryManager.INVERSION_MODULE);
         }
     }
 }

@@ -134,6 +134,15 @@ public class RegistryManager {
     @ObjectHolder("oredepos:sulfur")
     public static final Item SULFUR = null;
 
+    @ObjectHolder("oredepos:length_module_1")
+    public static final Item LENGTH_MODULE_1 = null;
+    @ObjectHolder("oredepos:width_module_1")
+    public static final Item WIDTH_MODULE_1 = null;
+    @ObjectHolder("oredepos:depth_module_1")
+    public static final Item DEPTH_MODULE_1 = null;
+    @ObjectHolder("oredepos:inversion_module")
+    public static final Item INVERSION_MODULE = null;
+
     //Blocks
     public static RegistryObject<Block> MINER;
     public static RegistryObject<Block> CHEMICAL_PLANT;
@@ -581,6 +590,10 @@ public class RegistryManager {
         ITEMS.register("productivity_module_1", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.4f, -0.05f, 0.04f));
         ITEMS.register("productivity_module_2", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, -0.1f, 0.06f));
         ITEMS.register("productivity_module_3", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, -0.15f, 0.1f));
+        ITEMS.register("length_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 1, 0, 0, false));
+        ITEMS.register("width_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 1, 0, false));
+        ITEMS.register("depth_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 0, 1, false));
+        ITEMS.register("inversion_module", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.2f, 0, 0, 0, true));
         ITEMS.register("certus_quartz", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("sulfur", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
