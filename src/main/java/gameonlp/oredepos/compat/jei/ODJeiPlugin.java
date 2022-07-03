@@ -7,6 +7,7 @@ import gameonlp.oredepos.compat.jei.machine.ChemicalPlantRecipeCategory;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -17,8 +18,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.resources.ResourceLocation;
 
+import java.lang.reflect.Array;
+import java.util.List;
+
 @JeiPlugin
 public class ODJeiPlugin implements IModPlugin {
+
+    private final RecipeType<ChemicalPlantRecipe> TYPE = new RecipeType<>(ChemicalPlantRecipe.TYPE, ChemicalPlantRecipe.class);
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
@@ -31,7 +37,7 @@ public class ODJeiPlugin implements IModPlugin {
         if (recipeManager == null) {
             return;
         }
-        registration.addRecipes(recipeManager.getAllRecipesFor(RegistryManager.CHEMICAL_PLANT_RECIPE_TYPE.get()), ChemicalPlantRecipe.TYPE);
+        registration.addRecipes(TYPE, recipeManager.getAllRecipesFor(RegistryManager.CHEMICAL_PLANT_RECIPE_TYPE.get()));
     }
 
     @Override
@@ -41,12 +47,12 @@ public class ODJeiPlugin implements IModPlugin {
     }
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(ChemicalPlantScreen.class, 72, 33, 19, 14, ChemicalPlantRecipe.TYPE);
+        registration.addRecipeClickArea(ChemicalPlantScreen.class, 72, 33, 19, 14, TYPE);
     }
 
         @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()), ChemicalPlantRecipe.TYPE);
+        registration.addRecipeCatalyst(new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()), TYPE);
     }
 
     @Override

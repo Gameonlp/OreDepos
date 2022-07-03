@@ -6,23 +6,23 @@ import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlantRecipe> {
@@ -32,6 +32,7 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     private final IDrawable bg;
     private final IDrawable icon;
     private final IDrawableStatic overlay;
+
     public ChemicalPlantRecipeCategory(IGuiHelper guiHelper) {
         this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 176, 76);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()));
@@ -41,6 +42,11 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     @Override
     public ResourceLocation getUid() {
         return ChemicalPlantRecipe.TYPE;
+    }
+
+    @Override
+    public RecipeType<ChemicalPlantRecipe> getRecipeType() {
+        return new RecipeType<>(ChemicalPlantRecipe.TYPE, ChemicalPlantRecipe.class);
     }
 
     @Override
@@ -64,37 +70,21 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     }
 
     @Override
-    public void setIngredients(ChemicalPlantRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputIngredients(recipe.getIngredients());
-        List<List<FluidStack>> fluidInputs = new LinkedList<>();
-        for (FluidIngredient fluidIngredient : recipe.getFluidIngredients()) {
-            List<FluidStack> possibilities = new LinkedList<>();
-            for (Fluid value : ForgeRegistries.FLUIDS.tags().getTag(fluidIngredient.getFluidTag())) {
-                possibilities.add(new FluidStack(value, fluidIngredient.getAmount(), fluidIngredient.getNbt()));
-            }
-            fluidInputs.add(possibilities);
+    public void setRecipe(IRecipeLayoutBuilder builder, ChemicalPlantRecipe recipe, IFocusGroup focuses) {
+        NonNullList<Ingredient> inputs = recipe.getIngredients();
+        for (int i = 0; i < inputs.size(); i++) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 73, 23 + i * 18).addItemStack(inputs.get(i).getItems()[0]);
         }
-        ingredients.setInputLists(VanillaTypes.FLUID, fluidInputs);
-        if (recipe.getResultItem() != ItemStack.EMPTY)
-            ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
-        if (recipe.getResultFluid() != FluidStack.EMPTY)
-            ingredients.setOutput(VanillaTypes.FLUID, recipe.getResultFluid());
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ChemicalPlantRecipe recipe, IIngredients ingredients) {
-        recipeLayout.getItemStacks().init(0, true, 72, 22);
-        recipeLayout.getItemStacks().init(1, true, 72, 40);
-        recipeLayout.getFluidStacks().init(0, true, 33, 18, 18, 45, 1000, false, overlay);
-        recipeLayout.getFluidStacks().init(1, true, 51, 18, 18, 45, 1000, false, overlay);
-        recipeLayout.getItemStacks().init(2, false, 128, 51);
-        recipeLayout.getFluidStacks().init(2, false, 118, 4, 18, 45, 1000, false, overlay);
-        recipeLayout.getItemStacks().set(ingredients);
-        recipeLayout.getFluidStacks().set(ingredients);
-    }
-
-    @Override
-    public void draw(ChemicalPlantRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
-        IRecipeCategory.super.draw(recipe, matrixStack, mouseX, mouseY);
+        NonNullList<FluidIngredient> fluidInputs = recipe.getFluidIngredients();
+        for (int i = 0; i < fluidInputs.size(); i++) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 33 + i * 18, 18)
+                    .setFluidRenderer(1000, false, 18, 45)
+                    .setOverlay(overlay, 0, 0).addIngredient(VanillaTypes.FLUID, new FluidStack(ForgeRegistries.FLUIDS.tags().getTag(fluidInputs.get(i).getFluidTag()).iterator().next(), 100));
+        }
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 129, 52).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 118, 4)
+                .setFluidRenderer(1000, false, 18, 45)
+                .setOverlay(overlay, 0, 0)
+                .addIngredient(VanillaTypes.FLUID, recipe.getResultFluid());
     }
 }
