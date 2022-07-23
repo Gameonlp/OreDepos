@@ -26,12 +26,11 @@ public class MiningEventHandler {
 
 		if (state.getBlock() instanceof OreDepositBlock) {
 			BlockEntity tileEntity = event.getWorld().getBlockEntity(event.getPos());
-			if (tileEntity instanceof OreDepositTile) {
-				OreDepositTile tileEntityOre = (OreDepositTile) tileEntity;
-				
+			if (tileEntity instanceof OreDepositTile tileEntityOre) {
+
 				if (!event.getWorld().isClientSide() && !destroyed) {
 					Block.dropResources(state, (Level)event.getWorld(), event.getPos(), tileEntityOre, event.getPlayer(), event.getPlayer().getMainHandItem());
-					mainHand.hurt(1, event.getWorld().getRandom(), (ServerPlayer) event.getPlayer());
+					mainHand.hurtAndBreak(1, (ServerPlayer) event.getPlayer(), player -> {});
 				}
 				
 				if (destroyed || tileEntityOre.isZero()) {
