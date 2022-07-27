@@ -1,6 +1,8 @@
 package gameonlp.oredepos.blocks.oredeposit;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -38,5 +40,22 @@ public class OreDepositBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new OreDepositTile(pos, state, fluid, factor);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos blockPos, BlockState newState, boolean moved) {
+        if (!level.isClientSide) {
+            if (level.getBlockEntity(blockPos) instanceof OreDepositTile oreDepositTile) {
+                if (oreDepositTile.getAmount() > 0) {
+                    oreDepositTile.decrement();
+                }
+                if (!oreDepositTile.isRemovable() || oreDepositTile.getAmount() > 0) {
+                    level.setBlock(blockPos, state, 0);
+                    level.blockEvent(blockPos, state.getBlock(), 0, 0);
+                }
+                return;
+            }
+        }
+        super.onRemove(state,level, blockPos,newState, moved);
     }
 }

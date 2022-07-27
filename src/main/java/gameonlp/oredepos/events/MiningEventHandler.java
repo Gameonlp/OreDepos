@@ -18,11 +18,9 @@ public class MiningEventHandler {
 	
 	@SubscribeEvent
     public static void onBlockMined(BreakEvent event) {
-		if (event.getPlayer().isCreative()) return;
-
 		BlockState state = event.getState();
 		ItemStack mainHand = event.getPlayer().getMainHandItem();
-		boolean destroyed = !mainHand.isCorrectToolForDrops(state);
+		boolean destroyed = !mainHand.isCorrectToolForDrops(state) || event.getPlayer().isCreative();
 
 		if (state.getBlock() instanceof OreDepositBlock) {
 			BlockEntity tileEntity = event.getWorld().getBlockEntity(event.getPos());
@@ -34,6 +32,7 @@ public class MiningEventHandler {
 				}
 				
 				if (destroyed || tileEntityOre.isZero()) {
+					tileEntityOre.setRemovable();
 					event.getWorld().removeBlock(event.getPos(), false);
 				} else {
 					tileEntityOre.decrement();

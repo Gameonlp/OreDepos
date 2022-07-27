@@ -10,9 +10,11 @@ public class OreConfig {
     public final ForgeConfigSpec.IntValue minHeight;
     public final ForgeConfigSpec.IntValue maxHeight;
     public final ForgeConfigSpec.IntValue count;
+    private String name;
     public final boolean isModded;
 
-    public OreConfig(ForgeConfigSpec.Builder builder, String name, boolean isModded, boolean enabled, boolean replace, float factor, int veinSize, int minHeight, int maxHeight, int count){
+    public OreConfig(ForgeConfigSpec.Builder builder, String name, boolean isModded, boolean enabled, boolean replace, float factor, int veinSize, int minHeight, int maxHeight, int count) {
+        this.name = name;
         this.isModded = isModded;
         builder.push(name);
         builder.comment("Enable the generation of " + name + " deposits");
@@ -27,12 +29,13 @@ public class OreConfig {
         this.factor = builder.defineInRange(name + "Factor", factor, 0.0, Float.MAX_VALUE);
         builder.comment("Vein size of " + name + " deposits");
         this.veinSize = builder.defineInRange(name + "VeinSize", veinSize, 0, Integer.MAX_VALUE);
-        builder.comment("Minimum height of " + name + " deposits");
-        this.minHeight = builder.defineInRange(name + "MinHeight", minHeight, 0, Integer.MAX_VALUE);
-        builder.comment("Maximum height of " + name + " deposits");
-        this.maxHeight = builder.defineInRange(name + "MaxHeight", maxHeight, 0, Integer.MAX_VALUE);
+        builder.comment("Minimum height of " + name + " deposits (currently NOT working)");
+        this.minHeight = builder.defineInRange(name + "MinHeight", minHeight, -64, Integer.MAX_VALUE);
+        builder.comment("Maximum height of " + name + " deposits (currently NOT working)");
+        this.maxHeight = builder.defineInRange(name + "MaxHeight", maxHeight, -64, Integer.MAX_VALUE);
         builder.comment("Maximum count of " + name + " deposits per chunk");
         this.count = builder.defineInRange(name + "Count", count, 0, Integer.MAX_VALUE);
         builder.pop();
+
     }
 }

@@ -6,6 +6,7 @@ import gameonlp.oredepos.compat.TOPCompat;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.data.DataGen;
 import gameonlp.oredepos.net.PacketManager;
+import gameonlp.oredepos.worldgen.OreGen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,8 +15,8 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,19 +27,16 @@ public class OreDepos {
     public static final String MODID = "oredepos";
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
-    public static volatile boolean configLoaded;
 
     public OreDepos() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(this::doClientStuff);
         modEventBus.addListener(this::enqueueIMC);
+        modEventBus.addListener(this::setup);
 
         modEventBus.addListener(DataGen::generate);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, OreDeposConfig.SERVER_SPEC);
-
-        //modEventBus.addListener((e) -> OreDeposConfig.onConfigLoad()); //probably will not work FIXME
-        //modEventBus.addListener((e) -> OreDeposConfig.onConfigLoad());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OreDeposConfig.COMMON_SPEC);
 
         PacketManager.setup();
 
@@ -60,5 +58,12 @@ public class OreDepos {
         if (ModList.get().isLoaded("theoneprobe")) {
             InterModComms.sendTo("theoneprobe", "getTheOneProbe", TOPCompat::new);
         }
+    }
+
+    @SubscribeEvent
+    public void setup(ModConfigEvent event) {
+        OreGen.Ore x = OreGen.Ore.EMERALD_DEPOSIT;
+        OreGen.NetherOre y = OreGen.NetherOre.ANCIENT_DEBRIS_DEPOSIT;
+        OreDeposConfig.onConfigLoad();
     }
 }

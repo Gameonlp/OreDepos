@@ -44,19 +44,19 @@ public class OreDepositTile extends BlockEntity {
             if (level != null) {
                 LevelData worldInfo = level.getLevelData();
                 float distance = worldPosition.distManhattan(new Vec3i(worldInfo.getXSpawn(), worldInfo.getYSpawn(), worldInfo.getZSpawn()));
-                if (distance < OreDeposConfig.Server.shortDistance.get()) {
-                    min = OreDeposConfig.Server.leastShortDistance.get();
-                    max = OreDeposConfig.Server.mostShortDistance.get();
-                    amount = (int) (min + distance / OreDeposConfig.Server.shortDistance.get() * (level.getRandom().nextInt(max - min)));
-                } else if (distance < OreDeposConfig.Server.mediumDistance.get()) {
-                    min = OreDeposConfig.Server.leastMediumDistance.get();
-                    max = OreDeposConfig.Server.mostMediumDistance.get();
-                    amount = (int) (min + distance / OreDeposConfig.Server.mediumDistance.get() * (level.getRandom().nextInt(max - min)));
-                } else if (distance < OreDeposConfig.Server.longDistance.get()) {
-                    min = OreDeposConfig.Server.leastLongDistance.get();
-                    max = OreDeposConfig.Server.mostLongDistance.get();
-                    amount = (int) (min + distance / OreDeposConfig.Server.longDistance.get() * (level.getRandom().nextInt(max - min)));
-                    if(!OreDeposConfig.Server.longDistanceIncreasesFurther.get()) {
+                if (distance < OreDeposConfig.Common.shortDistance.get()) {
+                    min = OreDeposConfig.Common.leastShortDistance.get();
+                    max = OreDeposConfig.Common.mostShortDistance.get();
+                    amount = (int) (min + distance / OreDeposConfig.Common.shortDistance.get() * (level.getRandom().nextInt(max - min)));
+                } else if (distance < OreDeposConfig.Common.mediumDistance.get()) {
+                    min = OreDeposConfig.Common.leastMediumDistance.get();
+                    max = OreDeposConfig.Common.mostMediumDistance.get();
+                    amount = (int) (min + distance / OreDeposConfig.Common.mediumDistance.get() * (level.getRandom().nextInt(max - min)));
+                } else if (distance < OreDeposConfig.Common.longDistance.get()) {
+                    min = OreDeposConfig.Common.leastLongDistance.get();
+                    max = OreDeposConfig.Common.mostLongDistance.get();
+                    amount = (int) (min + distance / OreDeposConfig.Common.longDistance.get() * (level.getRandom().nextInt(max - min)));
+                    if(!OreDeposConfig.Common.longDistanceIncreasesFurther.get()) {
                         amount = Math.min(max, amount);
                     }
                 }
@@ -77,12 +77,21 @@ public class OreDepositTile extends BlockEntity {
         --amount;
         this.setChanged();
         if (amount <= 0 && level != null){
+            this.setRemovable();
             level.removeBlock(worldPosition, false);
         }
     }
 
     public boolean isZero() {
         return amount == 0;
+    }
+
+    public void setRemovable() {
+        this.remove = true;
+    }
+
+    public boolean isRemovable(){
+        return this.remove;
     }
 
     @Override

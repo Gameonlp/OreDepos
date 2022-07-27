@@ -11,11 +11,17 @@ import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
+import gameonlp.oredepos.worldgen.hacks.ODCountPlacement;
+import gameonlp.oredepos.worldgen.hacks.ODOreFeature;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -38,6 +44,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.tags.ITagManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -49,16 +57,23 @@ public class RegistryManager {
     private static class DepositTemplate {
         private final String name;
         private final Supplier<Block> block;
+
+        private final TagKey<Block> tag;
         private final String needed;
         private final double factor;
 
         private DepositTemplate(String location, String name, double factor){
-            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), factor);
+            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), (ResourceLocation) null, factor);
         }
 
-        private DepositTemplate(String name, Supplier<Block> block, double factor){
+        private DepositTemplate(String name, Supplier<Block> block, String material, double factor){
+            this(name, block, new ResourceLocation("forge", "ores/" + material), factor);
+        }
+
+        private DepositTemplate(String name, Supplier<Block> block, ResourceLocation loc, double factor){
             this.name = name;
             this.block = block;
+            this.tag = loc == null ? null : BlockTags.create(loc);
             this.needed = "oredepos:mining/" + name + "_deposit";
             this.factor = factor;
         }
@@ -73,6 +88,7 @@ public class RegistryManager {
     private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, OreDepos.MODID);
     private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, OreDepos.MODID);
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registry.RECIPE_TYPE_REGISTRY, OreDepos.MODID);
+    private static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER_TYPE = DeferredRegister.create(Registry.PLACEMENT_MODIFIER_REGISTRY, OreDepos.MODID);
 
     //Resource Locations
     public static final ResourceLocation WATER_STILL_RL = new ResourceLocation("block/water_still");
@@ -401,6 +417,12 @@ public class RegistryManager {
     public static final RecipeSerializer<ChemicalPlantRecipe> CHEMICAL_PLANT_RECIPE_SERIALIZER = null;
     public static final RegistryObject<ChemicalPlantRecipe.ChemicalPlantRecipeType> CHEMICAL_PLANT_RECIPE_TYPE = RECIPE_TYPES.register("chemical_plant_recipe_type", ChemicalPlantRecipe.ChemicalPlantRecipeType::new);
 
+    //Features
+    public static final RegistryObject<ODOreFeature> ORE = FEATURES.register("od_ore", () -> new ODOreFeature(OreConfiguration.CODEC));
+
+    // Placement Modifiers
+    public static final RegistryObject<PlacementModifierType<ODCountPlacement>> COUNT = PLACEMENT_MODIFIER_TYPE.register("count_placment", ODCountPlacement.ODCountPlacementType::new);
+
 
     // Other data
     List<Supplier<Block>> deposits;
@@ -493,48 +515,48 @@ public class RegistryManager {
         Supplier<Block> deepslatePlatinumOreBlock = prepareDeepslateDeposit("platinum", Material.STONE, 4, 8);
 
         List<DepositTemplate> depositTemplates = new LinkedList<>();
-        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Server.coal.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_coal_ore", OreDeposConfig.Server.coal.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Server.iron.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_iron_ore", OreDeposConfig.Server.iron.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Server.gold.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_gold_ore", OreDeposConfig.Server.gold.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Server.diamond.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_diamond_ore", OreDeposConfig.Server.diamond.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Server.emerald.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_emerald_ore", OreDeposConfig.Server.emerald.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Server.lapis.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_lapis_ore", OreDeposConfig.Server.lapis.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Server.redstone.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_redstone_ore", OreDeposConfig.Server.redstone.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "copper_ore", OreDeposConfig.Server.copper.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_copper_ore", OreDeposConfig.Server.copper.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "nether_quartz_ore", OreDeposConfig.Server.nether_quartz.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "nether_gold_ore", OreDeposConfig.Server.nether_gold.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "ancient_debris", OreDeposConfig.Server.ancient_debris.factor.get()));
-        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, OreDeposConfig.Server.tin.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_tin_ore", deepslateTinOreBlock, OreDeposConfig.Server.tin.factor.get()));
-        depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, OreDeposConfig.Server.lead.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_lead_ore", deepslateLeadOreBlock, OreDeposConfig.Server.lead.factor.get()));
-        depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, OreDeposConfig.Server.silver.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_silver_ore", deepslateSilverOreBlock, OreDeposConfig.Server.silver.factor.get()));
-        depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, OreDeposConfig.Server.aluminum.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_aluminum_ore", deepslateAluminumOreBlock, OreDeposConfig.Server.aluminum.factor.get()));
-        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, OreDeposConfig.Server.uranium.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_uranium_ore", deepslateUraniumOreBlock, OreDeposConfig.Server.uranium.factor.get()));
-        depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_nickel_ore", deepslateNickelOreBlock, OreDeposConfig.Server.nickel.factor.get()));
-        depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_zinc_ore", deepslateZincOreBlock, OreDeposConfig.Server.zinc.factor.get()));
-        depositTemplates.add(new DepositTemplate("certus_quartz_ore", certusQuartzOreBlock, OreDeposConfig.Server.certus_quartz.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_certus_quartz_ore", deepslateCertusQuartzOreBlock, OreDeposConfig.Server.certus_quartz.factor.get()));
-        depositTemplates.add(new DepositTemplate("sulfur_ore", sulfurOreBlock, OreDeposConfig.Server.sulfur.factor.get()));
-        depositTemplates.add(new DepositTemplate("osmium_ore", osmiumOreBlock, OreDeposConfig.Server.osmium.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_osmium_ore", deepslateOsmiumOreBlock, OreDeposConfig.Server.osmium.factor.get()));
-        depositTemplates.add(new DepositTemplate("ardite_ore", arditeOreBlock, OreDeposConfig.Server.ardite.factor.get()));
-        depositTemplates.add(new DepositTemplate("cobalt_ore", cobaltOreBlock, OreDeposConfig.Server.cobalt.factor.get()));
-        depositTemplates.add(new DepositTemplate("platinum_ore", platinumOreBlock, OreDeposConfig.Server.platinum.factor.get()));
-        depositTemplates.add(new DepositTemplate("deepslate_platinum_ore", deepslatePlatinumOreBlock, OreDeposConfig.Server.platinum.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "coal_ore", OreDeposConfig.Common.coal.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_coal_ore", OreDeposConfig.Common.coal.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "iron_ore", OreDeposConfig.Common.iron.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_iron_ore", OreDeposConfig.Common.iron.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "gold_ore", OreDeposConfig.Common.gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_gold_ore", OreDeposConfig.Common.gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "diamond_ore", OreDeposConfig.Common.diamond.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_diamond_ore", OreDeposConfig.Common.diamond.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "emerald_ore", OreDeposConfig.Common.emerald.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_emerald_ore", OreDeposConfig.Common.emerald.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "lapis_ore", OreDeposConfig.Common.lapis.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_lapis_ore", OreDeposConfig.Common.lapis.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "redstone_ore", OreDeposConfig.Common.redstone.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_redstone_ore", OreDeposConfig.Common.redstone.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "copper_ore", OreDeposConfig.Common.copper.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "deepslate_copper_ore", OreDeposConfig.Common.copper.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "nether_quartz_ore", OreDeposConfig.Common.nether_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "nether_gold_ore", OreDeposConfig.Common.nether_gold.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "ancient_debris", OreDeposConfig.Common.ancient_debris.factor.get()));
+        depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, "tin", OreDeposConfig.Common.tin.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_tin_ore", deepslateTinOreBlock, "tin", OreDeposConfig.Common.tin.factor.get()));
+        depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, "lead", OreDeposConfig.Common.lead.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_lead_ore", deepslateLeadOreBlock, "lead", OreDeposConfig.Common.lead.factor.get()));
+        depositTemplates.add(new DepositTemplate("silver_ore", silverOreBlock, "silver", OreDeposConfig.Common.silver.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_silver_ore", deepslateSilverOreBlock, "silver", OreDeposConfig.Common.silver.factor.get()));
+        depositTemplates.add(new DepositTemplate("aluminum_ore", aluminumOreBlock, "aluminum", OreDeposConfig.Common.aluminum.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_aluminum_ore", deepslateAluminumOreBlock, "aluminum", OreDeposConfig.Common.aluminum.factor.get()));
+        depositTemplates.add(new DepositTemplate("uranium_ore", uraniumOreBlock, "uranium", OreDeposConfig.Common.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_uranium_ore", deepslateUraniumOreBlock, "uranium", OreDeposConfig.Common.uranium.factor.get()));
+        depositTemplates.add(new DepositTemplate("nickel_ore", nickelOreBlock, "nickel", OreDeposConfig.Common.nickel.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_nickel_ore", deepslateNickelOreBlock, "nickel", OreDeposConfig.Common.nickel.factor.get()));
+        depositTemplates.add(new DepositTemplate("zinc_ore", zincOreBlock, "zinc", OreDeposConfig.Common.zinc.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_zinc_ore", deepslateZincOreBlock, "zinc", OreDeposConfig.Common.zinc.factor.get()));
+        depositTemplates.add(new DepositTemplate("certus_quartz_ore", certusQuartzOreBlock, "certus_quartz", OreDeposConfig.Common.certus_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_certus_quartz_ore", deepslateCertusQuartzOreBlock, "certus_quartz", OreDeposConfig.Common.certus_quartz.factor.get()));
+        depositTemplates.add(new DepositTemplate("sulfur_ore", sulfurOreBlock, "sulfur", OreDeposConfig.Common.sulfur.factor.get()));
+        depositTemplates.add(new DepositTemplate("osmium_ore", osmiumOreBlock, "osmium", OreDeposConfig.Common.osmium.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_osmium_ore", deepslateOsmiumOreBlock, "osmium", OreDeposConfig.Common.osmium.factor.get()));
+        depositTemplates.add(new DepositTemplate("ardite_ore", arditeOreBlock, "ardite", OreDeposConfig.Common.ardite.factor.get()));
+        depositTemplates.add(new DepositTemplate("cobalt_ore", cobaltOreBlock, "cobalt", OreDeposConfig.Common.cobalt.factor.get()));
+        depositTemplates.add(new DepositTemplate("platinum_ore", platinumOreBlock, "platinum", OreDeposConfig.Common.platinum.factor.get()));
+        depositTemplates.add(new DepositTemplate("deepslate_platinum_ore", deepslatePlatinumOreBlock, "platinum", OreDeposConfig.Common.platinum.factor.get()));
 
         deposits = new LinkedList<>();
         for (DepositTemplate depositTemplate : depositTemplates) {
@@ -545,7 +567,20 @@ public class RegistryManager {
     private Supplier<Block> registerOreDeposit(DepositTemplate contained){
         Supplier<Block> block = () -> new OreDepositBlock(BlockBehaviour.Properties.of(Material.STONE)
                 .strength(3,5)//TODO make not fixed
-                .lootFrom(contained.block)
+                .lootFrom(() -> {
+                    ITagManager<Block> tags = ForgeRegistries.BLOCKS.tags();
+                    if (tags != null && contained.tag != null){
+                        ITag<Block> tag = tags.getTag(contained.tag);
+                        if (tag.size() >= 1){
+                            for (Block current : tag) {
+                                if (!current.equals(contained.block.get())){
+                                    return current;
+                                }
+                            }
+                        }
+                    }
+                    return contained.block.get();
+                })
                 .requiresCorrectToolForDrops(), contained.needed, contained.factor);
         return registerBlock( contained.name + "_deposit", block);
     }
@@ -624,5 +659,6 @@ public class RegistryManager {
         registerSerializers();
         RECIPE_SERIALIZERS.register(eventBus);
         RECIPE_TYPES.register(eventBus);
+        PLACEMENT_MODIFIER_TYPE.register(eventBus);
     }
 }

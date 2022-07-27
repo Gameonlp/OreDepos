@@ -1,11 +1,14 @@
 package gameonlp.oredepos.config;
 
-import gameonlp.oredepos.OreDepos;
+import gameonlp.oredepos.util.Configurable;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class OreDeposConfig {
-    public static class Server {
+    public static class Common {
         public static ForgeConfigSpec.IntValue shortDistance;
         public static ForgeConfigSpec.IntValue mediumDistance;
         public static ForgeConfigSpec.IntValue longDistance;
@@ -41,7 +44,7 @@ public class OreDeposConfig {
         public static OreConfig cobalt;
         public static OreConfig platinum;
 
-        public Server(ForgeConfigSpec.Builder builder) {
+        public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
             builder.push("Short Distance");
             builder.comment("How many blocks from spawn is short distance stops");
@@ -98,15 +101,24 @@ public class OreDeposConfig {
             builder.pop();
         }
     }
-    public static final Server SERVER;
-    public static final ForgeConfigSpec SERVER_SPEC;
+    public static final Common COMMON;
+    public static final ForgeConfigSpec COMMON_SPEC;
     static {
-        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
-        SERVER_SPEC = specPair.getRight();
-        SERVER = specPair.getLeft();
+        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        COMMON_SPEC = specPair.getRight();
+        COMMON = specPair.getLeft();
+        configurables = new LinkedList<>();
+    }
+
+    private static final List<Configurable> configurables;
+
+    public static void register(Configurable c){
+        configurables.add(c);
     }
 
     public static void onConfigLoad() {
-        OreDepos.configLoaded = true;
+        for (Configurable configurable : configurables) {
+            configurable.done();
+        }
     }
 }
