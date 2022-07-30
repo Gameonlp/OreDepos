@@ -7,7 +7,9 @@ import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.util.Configurable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -17,25 +19,27 @@ import java.util.Random;
 
 public class ODCountPlacement extends RepeatingPlacement implements Configurable { // TODO might be in need of correcting
     public static final Codec<ODCountPlacement> CODEC =
-            IntProvider.codec(0, 256).fieldOf("count").xmap(ODCountPlacement::new, (p_191633_) -> {
-        return p_191633_.count;
-    }).codec();
+            FloatProvider.codec(0, 256).fieldOf("count").xmap(ODCountPlacement::new, (p_191633_) -> p_191633_.count).codec();
     private final OreConfig config;
-    private IntProvider count;
+    private FloatProvider count;
 
-    public ODCountPlacement(IntProvider count){
+    public ODCountPlacement(FloatProvider count){
         this.config = null;
         this.count = count;
     }
     public ODCountPlacement(OreConfig config){
         this.config = config;
-        this.count = ConstantInt.of(config.count.get());
+        this.count = ConstantFloat.of(config.count.get().floatValue());
         OreDeposConfig.register(this);
     }
 
     @Override
     protected int count(Random p_191913_, BlockPos p_191914_) {
-        return this.count.sample(p_191913_);
+        float value = this.count.sample(p_191913_);
+        if (value < 1.0){
+            return value > p_191913_.nextFloat() ? 1 : 0;
+        }
+        return Math.round(value);
     }
 
     @Override
@@ -45,7 +49,7 @@ public class ODCountPlacement extends RepeatingPlacement implements Configurable
 
     @Override
     public void done() {
-        this.count = ConstantInt.of(config.count.get());
+        this.count = ConstantFloat.of(config.count.get().floatValue());
     }
 
     public static class ODCountPlacementType implements PlacementModifierType<ODCountPlacement> {

@@ -9,11 +9,11 @@ public class OreConfig {
     public final ForgeConfigSpec.IntValue veinSize;
     public final ForgeConfigSpec.IntValue minHeight;
     public final ForgeConfigSpec.IntValue maxHeight;
-    public final ForgeConfigSpec.IntValue count;
+    public final ForgeConfigSpec.DoubleValue count;
     private String name;
     public final boolean isModded;
 
-    public OreConfig(ForgeConfigSpec.Builder builder, String name, boolean isModded, boolean enabled, boolean replace, float factor, int veinSize, int minHeight, int maxHeight, int count) {
+    public OreConfig(ForgeConfigSpec.Builder builder, String name, boolean isModded, boolean enabled, boolean replace, float factor, int veinSize, int minHeight, int maxHeight, float count) {
         this.name = name;
         this.isModded = isModded;
         builder.push(name);
@@ -34,7 +34,7 @@ public class OreConfig {
         builder.comment("Maximum height of " + name + " deposits (currently NOT working)");
         this.maxHeight = builder.defineInRange(name + "MaxHeight", maxHeight, -64, Integer.MAX_VALUE);
         builder.comment("Maximum count of " + name + " deposits per chunk");
-        this.count = builder.defineInRange(name + "Count", count, 0, Integer.MAX_VALUE);
+        this.count = builder.defineInRange(name + "Count", count, 0, 256);
         builder.pop();
 
     }

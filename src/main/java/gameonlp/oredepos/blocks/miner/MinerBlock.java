@@ -84,8 +84,7 @@ public class MinerBlock extends BaseEntityBlock {
     public void onRemove(BlockState p_196243_1_, Level world, BlockPos blockPos, BlockState p_196243_4_, boolean dropContents) {
         if (!dropContents){
             BlockEntity tile = world.getBlockEntity(blockPos);
-            if (tile instanceof MinerTile){
-                MinerTile minerTile = (MinerTile) tile;
+            if (tile instanceof MinerTile minerTile){
                 NonNullList<ItemStack> contents = NonNullList.create();
                 for (int i = 0; i < minerTile.slots.getSlots(); i++) {
                     contents.add(minerTile.slots.extractItem(i, Integer.MAX_VALUE, false));
