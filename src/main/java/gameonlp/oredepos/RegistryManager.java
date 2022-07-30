@@ -44,8 +44,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.tags.ITag;
-import net.minecraftforge.registries.tags.ITagManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -61,21 +59,29 @@ public class RegistryManager {
         private final TagKey<Block> tag;
         private final String needed;
         private final double factor;
+        private final float hardness;
+        private final float resistance;
+
+        private DepositTemplate(String location, String name, double factor, float hardness, float resistance){
+            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), null, factor, hardness, resistance);
+        }
 
         private DepositTemplate(String location, String name, double factor){
-            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), (ResourceLocation) null, factor);
+            this(name, () -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(location, name)), null, factor, 3, 5);
         }
 
         private DepositTemplate(String name, Supplier<Block> block, String material, double factor){
-            this(name, block, new ResourceLocation("forge", "ores/" + material), factor);
+            this(name, block, new ResourceLocation("forge", "ores/" + material), factor, 3, 5);
         }
 
-        private DepositTemplate(String name, Supplier<Block> block, ResourceLocation loc, double factor){
+        private DepositTemplate(String name, Supplier<Block> block, ResourceLocation loc, double factor, float hardness, float resistance){
             this.name = name;
             this.block = block;
             this.tag = loc == null ? null : BlockTags.create(loc);
             this.needed = "oredepos:mining/" + name + "_deposit";
             this.factor = factor;
+            this.hardness = hardness;
+            this.resistance = resistance;
         }
     }
 
@@ -533,7 +539,7 @@ public class RegistryManager {
         depositTemplates.add(new DepositTemplate("minecraft", "deepslate_copper_ore", OreDeposConfig.Common.copper.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "nether_quartz_ore", OreDeposConfig.Common.nether_quartz.factor.get()));
         depositTemplates.add(new DepositTemplate("minecraft", "nether_gold_ore", OreDeposConfig.Common.nether_gold.factor.get()));
-        depositTemplates.add(new DepositTemplate("minecraft", "ancient_debris", OreDeposConfig.Common.ancient_debris.factor.get()));
+        depositTemplates.add(new DepositTemplate("minecraft", "ancient_debris", OreDeposConfig.Common.ancient_debris.factor.get(), 20, 1200));
         depositTemplates.add(new DepositTemplate("tin_ore", tinOreBlock, "tin", OreDeposConfig.Common.tin.factor.get()));
         depositTemplates.add(new DepositTemplate("deepslate_tin_ore", deepslateTinOreBlock, "tin", OreDeposConfig.Common.tin.factor.get()));
         depositTemplates.add(new DepositTemplate("lead_ore", leadOreBlock, "lead", OreDeposConfig.Common.lead.factor.get()));
@@ -566,21 +572,8 @@ public class RegistryManager {
 
     private Supplier<Block> registerOreDeposit(DepositTemplate contained){
         Supplier<Block> block = () -> new OreDepositBlock(BlockBehaviour.Properties.of(Material.STONE)
-                .strength(3,5)//TODO make not fixed
-                .lootFrom(() -> {
-                    ITagManager<Block> tags = ForgeRegistries.BLOCKS.tags();
-                    if (tags != null && contained.tag != null){
-                        ITag<Block> tag = tags.getTag(contained.tag);
-                        if (tag.size() >= 1){
-                            for (Block current : tag) {
-                                if (!current.equals(contained.block.get())){
-                                    return current;
-                                }
-                            }
-                        }
-                    }
-                    return contained.block.get();
-                })
+                .strength(contained.hardness, contained.resistance)
+                .lootFrom(contained.block)
                 .requiresCorrectToolForDrops(), contained.needed, contained.factor);
         return registerBlock( contained.name + "_deposit", block);
     }

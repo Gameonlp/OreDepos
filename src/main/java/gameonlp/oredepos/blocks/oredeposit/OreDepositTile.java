@@ -17,8 +17,8 @@ import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 public class OreDepositTile extends BlockEntity {
-    private int amount;
-    private int maxAmount;
+    private long amount;
+    private long maxAmount;
     private String fluid;
     private double factor;
 
@@ -39,31 +39,42 @@ public class OreDepositTile extends BlockEntity {
     @Override
     public void onLoad() {
         if (amount == 0) {
-            int min;
-            int max;
+            long min;
+            long max = 1;
             if (level != null) {
                 LevelData worldInfo = level.getLevelData();
                 float distance = worldPosition.distManhattan(new Vec3i(worldInfo.getXSpawn(), worldInfo.getYSpawn(), worldInfo.getZSpawn()));
-                if (distance < OreDeposConfig.Common.shortDistance.get()) {
-                    min = OreDeposConfig.Common.leastShortDistance.get();
-                    max = OreDeposConfig.Common.mostShortDistance.get();
-                    amount = (int) (min + distance / OreDeposConfig.Common.shortDistance.get() * (level.getRandom().nextInt(max - min)));
-                } else if (distance < OreDeposConfig.Common.mediumDistance.get()) {
-                    min = OreDeposConfig.Common.leastMediumDistance.get();
-                    max = OreDeposConfig.Common.mostMediumDistance.get();
-                    amount = (int) (min + distance / OreDeposConfig.Common.mediumDistance.get() * (level.getRandom().nextInt(max - min)));
-                } else if (distance < OreDeposConfig.Common.longDistance.get()) {
-                    min = OreDeposConfig.Common.leastLongDistance.get();
-                    max = OreDeposConfig.Common.mostLongDistance.get();
-                    amount = (int) (min + distance / OreDeposConfig.Common.longDistance.get() * (level.getRandom().nextInt(max - min)));
-                    if(!OreDeposConfig.Common.longDistanceIncreasesFurther.get()) {
+                try {
+                    if (distance < OreDeposConfig.Common.shortDistance.get()) {
+                        min = OreDeposConfig.Common.leastShortDistance.get();
+                        max = OreDeposConfig.Common.mostShortDistance.get();
+                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.shortDistance.get() * factor), (level.getRandom().nextLong(max - min))));
+                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.shortDistance.get() * factor) * (level.getRandom().nextLong(max - min))));
+                    } else if (distance < OreDeposConfig.Common.mediumDistance.get()) {
+                        min = OreDeposConfig.Common.leastMediumDistance.get();
+                        max = OreDeposConfig.Common.mostMediumDistance.get();
+                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.mediumDistance.get() * factor), (level.getRandom().nextLong(max - min))));
+                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.mediumDistance.get() * factor) * (level.getRandom().nextLong(max - min))));
+                    } else {
+                        min = OreDeposConfig.Common.leastLongDistance.get();
+                        max = OreDeposConfig.Common.mostLongDistance.get();
+                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.longDistance.get() * factor), (level.getRandom().nextLong(max - min))));
+                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.longDistance.get() * factor) * (level.getRandom().nextLong(max - min))));
+                        if (!OreDeposConfig.Common.longDistanceIncreasesFurther.get()) {
+                            amount = Math.min(max, amount);
+                        }
+                    }
+                } catch (ArithmeticException a){
+                    if (!OreDeposConfig.Common.longDistanceIncreasesFurther.get()) {
                         amount = Math.min(max, amount);
+                    } else {
+                        amount = Long.MAX_VALUE;
                     }
                 }
             } else {
                 amount = 1;
             }
-            amount = (int) Math.max(amount * factor, 1);
+            amount = Math.max(amount, 1);
             maxAmount = amount;
         }
     }
@@ -97,8 +108,8 @@ public class OreDepositTile extends BlockEntity {
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putInt("amount", amount);
-        tag.putInt("max_amount", maxAmount);
+        tag.putLong("amount", amount);
+        tag.putLong("max_amount", maxAmount);
         tag.putString("fluid", fluid);
     }
 
@@ -106,16 +117,16 @@ public class OreDepositTile extends BlockEntity {
     public void load(CompoundTag p_230337_2_) {
         super.load(p_230337_2_);
 
-        amount = p_230337_2_.getInt("amount");
-        maxAmount = p_230337_2_.getInt("max_amount");
+        amount = p_230337_2_.getLong("amount");
+        maxAmount = p_230337_2_.getLong("max_amount");
         fluid = p_230337_2_.getString("fluid");
     }
 
-    public int getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public int getMaxAmount() {
+    public long getMaxAmount() {
         return maxAmount;
     }
 }

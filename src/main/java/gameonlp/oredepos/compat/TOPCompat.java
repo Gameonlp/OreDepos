@@ -39,7 +39,7 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
             BlockEntity tileEntity = world.getBlockEntity(data.getPos());
             if (tileEntity instanceof OreDepositTile) {
                 OreDepositTile tileEntityOre = (OreDepositTile) tileEntity;
-                int amount = tileEntityOre.getAmount();
+                long amount = tileEntityOre.getAmount();
 
                 addProbeInfoOre(probeInfo, amount, tileEntityOre.getMaxAmount());
 
@@ -53,7 +53,7 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
             }
         }
 
-        private void addProbeInfoOre(IProbeInfo probeInfo, int amount, int amountMax) {
+        private void addProbeInfoOre(IProbeInfo probeInfo, long amount, long amountMax) {
             if (amount <= 0) return;
             final IProgressStyle progressStyle = probeInfo.defaultProgressStyle()
                     .width(100)
