@@ -11,16 +11,16 @@ public class OreConfig {
     public final ForgeConfigSpec.IntValue maxHeight;
     public final ForgeConfigSpec.DoubleValue count;
     private String name;
-    public final boolean isModded;
+    public final boolean noBaseBlock;
 
-    public OreConfig(ForgeConfigSpec.Builder builder, String name, boolean isModded, boolean enabled, boolean replace, float factor, int veinSize, int minHeight, int maxHeight, float count) {
+    public OreConfig(ForgeConfigSpec.Builder builder, String name, boolean noBaseBlock, boolean enabled, boolean replace, float factor, int veinSize, int minHeight, int maxHeight, float count) {
         this.name = name;
-        this.isModded = isModded;
+        this.noBaseBlock = noBaseBlock;
         builder.push(name);
         builder.comment("Enable the generation of " + name + " deposits");
         this.enabled = builder.define(name + "Enable", enabled);
         builder.comment("Replace the base ore for the generation of " + name + " deposits");
-        if (isModded)
+        if (noBaseBlock)
             builder.comment("Replace the base ore for the generation of " + name + " deposits \n" +
                     "This will generate " + name + " ore (according to the deposit's parameters) and then replace it\n" +
                     "To make this more efficient the ore configuration is also used to get the min and max height for the ore to replace!");

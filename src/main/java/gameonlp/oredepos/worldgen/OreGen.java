@@ -3,7 +3,6 @@ package gameonlp.oredepos.worldgen;
 import gameonlp.oredepos.config.OreConfig;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.worldgen.hacks.ODAbsolute;
 import gameonlp.oredepos.worldgen.hacks.ODCountPlacement;
 import gameonlp.oredepos.worldgen.hacks.ODOreConfiguration;
 import net.minecraft.core.Holder;
@@ -54,7 +53,7 @@ public class OreGen {
             this.replacePlaced = PlacementUtils.register(block.get().getRegistryName() + "_replace_placed",
                     replaceFeature, commonOrePlacement(config, // VeinsPerChunk
                             HeightRangePlacement.triangle(VerticalAnchor.absolute(config.minHeight.get()), VerticalAnchor.absolute(config.maxHeight.get()))));
-            if (config.isModded) {
+            if (config.noBaseBlock) {
                 this.replacableFeature = FeatureUtils.register(replaceBlock.get().getRegistryName() + "_feature", RegistryManager.ORE.get(),
                         new ODOreConfiguration(List.of(OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, replaceBlock.get().defaultBlockState())), config.veinSize.get(), config));
                 this.replacablePlaced = PlacementUtils.register(replaceBlock.get().getRegistryName() + "_placed",
@@ -108,7 +107,7 @@ public class OreGen {
             this.replacePlaced = PlacementUtils.register(block.get().getRegistryName() + "_replace_placed",
                     replaceFeature, commonOrePlacement(config, // VeinsPerChunk
                             HeightRangePlacement.triangle(VerticalAnchor.absolute(config.minHeight.get()), VerticalAnchor.absolute(config.maxHeight.get()))));
-            if (config.isModded) {
+            if (config.noBaseBlock) {
                 this.replacableFeature = FeatureUtils.register(replaceBlock.get().getRegistryName() + "_feature", RegistryManager.ORE.get(),
                         new ODOreConfiguration(List.of(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, replaceBlock.get().defaultBlockState()),
                                 OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, deepslateReplaceBlock.get().defaultBlockState())), config.veinSize.get(), config));
@@ -124,14 +123,14 @@ public class OreGen {
 
     public static void oreGeneration(final BiomeLoadingEvent event) {
         for (Ore ore : Ore.values()) {
-            if (ore.config.isModded) {
+            if (ore.config.noBaseBlock) {
                 generateOre(event, ore, ore.replacablePlaced);
             }
             replaceOre(event, ore);
             generateOre(event, ore, ore.depositPlaced);
         }
         for (NetherOre ore : NetherOre.values()) {
-            if (ore.config.isModded) {
+            if (ore.config.noBaseBlock) {
                 generateOre(event, ore, ore.replacablePlaced);
             }
             replaceOre(event, ore);
