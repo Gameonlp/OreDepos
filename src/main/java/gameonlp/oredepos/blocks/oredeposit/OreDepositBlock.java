@@ -1,6 +1,7 @@
 package gameonlp.oredepos.blocks.oredeposit;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -51,11 +52,19 @@ public class OreDepositBlock extends BaseEntityBlock {
                 }
                 if (!oreDepositTile.isRemovable() || oreDepositTile.getAmount() > 0) {
                     level.setBlock(blockPos, state, 0);
-                    level.blockEvent(blockPos, state.getBlock(), 0, 0);
                 }
                 return;
             }
         }
         super.onRemove(state,level, blockPos,newState, moved);
+        level.blockEvent(blockPos, state.getBlock(), 0, 0);
+    }
+
+    @Override
+    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        if (level != null && level.getBlockEntity(pos) instanceof OreDepositTile tile){
+            tile.setRemovable();
+        }
+        super.onBlockExploded(state, level, pos, explosion);
     }
 }
