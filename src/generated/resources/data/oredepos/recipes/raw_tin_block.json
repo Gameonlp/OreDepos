@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:raw_materials/tin"
+    }
+  },
+  "result": {
+    "item": "oredepos:raw_tin_block"
+  }
+}

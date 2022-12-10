@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:ingots/nickel"
+    }
+  },
+  "result": {
+    "item": "oredepos:nickel_block"
+  }
+}
