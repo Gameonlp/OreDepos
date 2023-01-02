@@ -81,7 +81,7 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
                     .setFluidRenderer(1000, false, 18, 45)
                     .setOverlay(overlay, 0, 0).addIngredient(VanillaTypes.FLUID, new FluidStack(ForgeRegistries.FLUIDS.tags().getTag(fluidInputs.get(i).getFluidTag()).iterator().next(), 100));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 129, 52).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 119, 52).addItemStack(recipe.getResultItem());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 118, 4)
                 .setFluidRenderer(1000, false, 18, 45)
                 .setOverlay(overlay, 0, 0)
