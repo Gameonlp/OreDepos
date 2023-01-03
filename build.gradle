@@ -129,23 +129,37 @@ repositories {
     maven { // JEI
         url 'https://dvs1.progwml6.com/files/maven'
     }
+    maven {
+        url "https://maven.blamejared.com"
+    }
 }
 
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.48'
+    def minecraftVersion= 'net.minecraftforge:forge:1.18.2-40.1.48'
+    minecraft minecraftVersion
 
-    compileOnly fg.deobf("curse.maven:theoneprobe-245211:3671753")
-    runtimeOnly fg.deobf("curse.maven:theoneprobe-245211:3671753")
+    def ctDep = 'com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.197'
+    compileOnly(ctDep)
+    runtimeOnly(fg.deobf(ctDep))
 
-    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.5.174:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.5.174")
+    def oneProbe = "curse.maven:theoneprobe-245211:3671753"
+    compileOnly fg.deobf(oneProbe)
+    runtimeOnly fg.deobf(oneProbe)
+
+    def jei = "mezz.jei:jei-1.18.2:9.5.5.174"
+    compileOnly fg.deobf(jei + ":api")
+    runtimeOnly fg.deobf(jei)
 
     runtimeOnly fg.deobf("curse.maven:cyclic-239286:3777095")
 
     runtimeOnly fg.deobf("curse.maven:ie-231951:3901176")
+
+    annotationProcessor 'com.blamejared.crafttweaker:Crafttweaker_Annotation_Processors-1.18.1:2.0.0.59'
+    annotationProcessor minecraftVersion
+    annotationProcessor ctDep
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"

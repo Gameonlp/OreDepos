@@ -17,15 +17,12 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.LinkedList;
-import java.util.List;
 
 public class ChemicalPlantRecipe implements IBaseRecipe{
     public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "chemical_recipe");
@@ -37,7 +34,7 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
     private final int energy;
     private final int ticks;
 
-    public ChemicalPlantRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, NonNullList<FluidIngredient> fluidIngredients, FluidStack outFluid, ItemStack outItem, int energy, int ticks) {
+    public ChemicalPlantRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, NonNullList<FluidIngredient> fluidIngredients, ItemStack outItem, FluidStack outFluid, int energy, int ticks) {
         this.id = id;
         this.ingredients = ingredients;
         this.fluidIngredients = fluidIngredients;
@@ -193,7 +190,7 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
                 throw new JsonParseException("Too few input fluids");
             }
 
-            return new ChemicalPlantRecipe(p_199425_1_, ingredients, fluidIngredients, fluidStack, itemStack, json.get("energy").getAsInt(), json.get("ticks").getAsInt());
+            return new ChemicalPlantRecipe(p_199425_1_, ingredients, fluidIngredients, itemStack, fluidStack, json.get("energy").getAsInt(), json.get("ticks").getAsInt());
         }
 
         @Nullable
@@ -209,7 +206,7 @@ public class ChemicalPlantRecipe implements IBaseRecipe{
             while (buffer.readBoolean()){
                 fluidIngredients.add(FluidIngredient.fromNetwork(buffer));
             }
-            return new ChemicalPlantRecipe(p_199426_1_, ingredients, fluidIngredients, outFluid, outStack, buffer.readInt(), buffer.readInt());
+            return new ChemicalPlantRecipe(p_199426_1_, ingredients, fluidIngredients, outStack, outFluid, buffer.readInt(), buffer.readInt());
         }
 
         @Override

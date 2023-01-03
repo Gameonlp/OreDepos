@@ -2,18 +2,24 @@ package gameonlp.oredepos.crafting;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import java.rmi.registry.Registry;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class FluidIngredient implements Predicate<FluidStack> {
     private final @NotNull TagKey<Fluid> fluidTag;
+    public static final FluidIngredient EMPTY = new FluidIngredient(FluidTags.create(Fluids.EMPTY.getRegistryName()), 0,null);
     private final int amount;
     //Users may want to only do something with nbt data, we should support that
     private final CompoundTag nbt;
