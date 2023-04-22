@@ -9,16 +9,19 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.world.item.Item.Properties;
 
 public class ModuleItem extends Item {
-    private float energyConsumptionIncrease;
+    private final float energyConsumptionIncrease;
+    private final List<String> accepted;
 
     public ModuleItem(Properties p_i48487_1_, float energyConsumptionIncrease) {
         super(p_i48487_1_.stacksTo(1));
         this.energyConsumptionIncrease = energyConsumptionIncrease;
+        accepted = new LinkedList<>();
     }
 
     public float getEnergyConsumption(float energyDrain) {
@@ -47,6 +50,15 @@ public class ModuleItem extends Item {
 
     public boolean getInversion(boolean inversion){
         return inversion;
+    }
+
+    public boolean isAccepted(String name) {
+        return accepted.contains(name);
+    }
+
+    public ModuleItem accept(String name){
+        accepted.add(name);
+        return this;
     }
 
     @Override

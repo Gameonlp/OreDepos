@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "oredepos:cobalt_block",
-    "minecraft:air"
+    "oredepos:cobalt_block"
   ]
 }

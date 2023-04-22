@@ -3,11 +3,15 @@ package gameonlp.oredepos;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantBlock;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantContainer;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantTile;
+import gameonlp.oredepos.blocks.grinder.GrinderBlock;
+import gameonlp.oredepos.blocks.grinder.GrinderContainer;
+import gameonlp.oredepos.blocks.grinder.GrinderTile;
 import gameonlp.oredepos.blocks.miner.MinerBlock;
 import gameonlp.oredepos.blocks.miner.MinerContainer;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositBlock;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
+import gameonlp.oredepos.crafting.GrinderRecipe;
 import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
@@ -164,6 +168,7 @@ public class RegistryManager {
     //Blocks
     public static RegistryObject<Block> MINER;
     public static RegistryObject<Block> CHEMICAL_PLANT;
+    public static RegistryObject<Block> GRINDER;
     public static final RegistryObject<LiquidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
             () -> new LiquidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
@@ -389,6 +394,7 @@ public class RegistryManager {
     public static RegistryObject<BlockEntityType<OreDepositTile>> ORE_DEPOSIT_TILE;
     public static RegistryObject<BlockEntityType<MinerTile>> MINER_TILE;
     public static RegistryObject<BlockEntityType<ChemicalPlantTile>> CHEMICAL_PLANT_TILE;
+    public static RegistryObject<BlockEntityType<GrinderTile>> GRINDER_TILE;
 
     //Containers
     public static RegistryObject<MenuType<MinerContainer>> MINER_CONTAINER = CONTAINERS.register("miner_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
@@ -400,6 +406,12 @@ public class RegistryManager {
         BlockPos pos = data.readBlockPos();
         Level world = inv.player.getCommandSenderWorld();
         return new ChemicalPlantContainer(windowId, world, pos, inv, inv.player);
+    })));
+
+    public static RegistryObject<MenuType<GrinderContainer>> GRINDER_CONTAINER = CONTAINERS.register("grinder_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
+        BlockPos pos = data.readBlockPos();
+        Level world = inv.player.getCommandSenderWorld();
+        return new GrinderContainer(windowId, world, pos, inv, inv.player);
     })));
 
 
@@ -418,6 +430,10 @@ public class RegistryManager {
     @ObjectHolder("oredepos:chemical_plant_recipe")
     public static final RecipeSerializer<ChemicalPlantRecipe> CHEMICAL_PLANT_RECIPE_SERIALIZER = null;
     public static final RegistryObject<ChemicalPlantRecipe.ChemicalPlantRecipeType> CHEMICAL_PLANT_RECIPE_TYPE = RECIPE_TYPES.register("chemical_plant_recipe_type", ChemicalPlantRecipe.ChemicalPlantRecipeType::new);
+
+    @ObjectHolder("oredepos:grinder_recipe")
+    public static final RecipeSerializer<GrinderRecipe> GRINDER_RECIPE_SERIALIZER = null;
+    public static final RegistryObject<GrinderRecipe.GrinderRecipeType> GRINDER_RECIPE_TYPE = RECIPE_TYPES.register("grinder_recipe_type", GrinderRecipe.GrinderRecipeType::new);
 
     //Features
     public static final RegistryObject<ODOreFeature> ORE = FEATURES.register("od_ore", () -> new ODOreFeature(OreConfiguration.CODEC));
@@ -591,6 +607,9 @@ public class RegistryManager {
         CHEMICAL_PLANT = registerBlock("chemical_plant", () -> new ChemicalPlantBlock(BlockBehaviour.Properties.of(Material.METAL)
                 .strength(3, 10)
                 .requiresCorrectToolForDrops()));
+        GRINDER = registerBlock("grinder", () -> new GrinderBlock(BlockBehaviour.Properties.of(Material.METAL)
+                .strength(3, 10)
+                .requiresCorrectToolForDrops()));
     }
 
     private void registerItems(){
@@ -605,19 +624,53 @@ public class RegistryManager {
         ITEMS.register("netherite_axe_drill_head", () -> new DrillHeadItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), Items.NETHERITE_AXE));
         ITEMS.register("wire", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("circuit", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
-        ITEMS.register("speed_module_1", () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.5f, 0.2f));
-        ITEMS.register("speed_module_2", () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, 0.3f));
-        ITEMS.register("speed_module_3", () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.7f, 0.5f));
-        ITEMS.register("efficiency_module_1", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.3f));
-        ITEMS.register("efficiency_module_2", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.4f));
-        ITEMS.register("efficiency_module_3", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.5f));
-        ITEMS.register("productivity_module_1", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.4f, -0.05f, 0.04f));
-        ITEMS.register("productivity_module_2", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, -0.1f, 0.06f));
-        ITEMS.register("productivity_module_3", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, -0.15f, 0.1f));
-        ITEMS.register("length_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 1, 0, 0, false));
-        ITEMS.register("width_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 1, 0, false));
-        ITEMS.register("depth_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 0, 1, false));
-        ITEMS.register("inversion_module", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.2f, 0, 0, 0, true));
+        ITEMS.register("speed_module_1",
+                () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.5f, 0.2f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("speed_module_2",
+                () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, 0.3f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("speed_module_3",
+                () -> new SpeedModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.7f, 0.5f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("efficiency_module_1", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.3f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("efficiency_module_2", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.4f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("efficiency_module_3", () -> new ModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), -0.5f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("productivity_module_1", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.4f, -0.05f, 0.04f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("productivity_module_2", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.6f, -0.1f, 0.06f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("productivity_module_3", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, -0.15f, 0.1f)
+                        .accept(MinerTile.getName())
+                        .accept(GrinderTile.getName())
+                        .accept(ChemicalPlantTile.getName()));
+        ITEMS.register("length_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 1, 0, 0, false)
+                        .accept(MinerTile.getName()));
+        ITEMS.register("width_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 1, 0, false)
+                        .accept(MinerTile.getName()));
+        ITEMS.register("depth_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 0, 1, false)
+                        .accept(MinerTile.getName()));
+        ITEMS.register("inversion_module", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.2f, 0, 0, 0, true)
+                        .accept(MinerTile.getName()));
         ITEMS.register("certus_quartz", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         ITEMS.register("sulfur", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
@@ -625,11 +678,13 @@ public class RegistryManager {
     private void registerTileEntities(){
         MINER_TILE = TILE_ENTITIES.register("miner_tile", () -> BlockEntityType.Builder.of(MinerTile::new, MINER.get()).build(null));
         CHEMICAL_PLANT_TILE = TILE_ENTITIES.register("chemical_plant_tile", () -> BlockEntityType.Builder.of(ChemicalPlantTile::new, CHEMICAL_PLANT.get()).build(null));
+        GRINDER_TILE = TILE_ENTITIES.register("grinder_tile", () -> BlockEntityType.Builder.of(GrinderTile::new, GRINDER.get()).build(null));
         ORE_DEPOSIT_TILE = TILE_ENTITIES.register("ore_deposit_tile", () -> BlockEntityType.Builder.of(OreDepositTile::new, deposits.stream().map(Supplier::get).toList().toArray(new Block[0])).build(null));
     }
 
     private void registerSerializers(){
         RECIPE_SERIALIZERS.register("chemical_plant_recipe", ChemicalPlantRecipe.Serializer::new);
+        RECIPE_SERIALIZERS.register("grinder_recipe", GrinderRecipe.Serializer::new);
     }
 
     public void register(IEventBus eventBus){

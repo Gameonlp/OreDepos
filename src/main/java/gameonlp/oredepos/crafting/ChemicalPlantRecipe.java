@@ -25,7 +25,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 
 public class ChemicalPlantRecipe implements IBaseRecipe{
-    public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "chemical_recipe");
+    public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "chemical_plant_recipe");
     private final ResourceLocation id;
     private final NonNullList<Ingredient> ingredients;
     private final NonNullList<FluidIngredient> fluidIngredients;

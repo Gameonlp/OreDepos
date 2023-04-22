@@ -97,7 +97,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                 if (slot == 6){
                     return stack.getItem() instanceof DrillHeadItem;
                 }
-                return stack.getItem() instanceof ModuleItem;
+                return stack.getItem() instanceof ModuleItem && ((ModuleItem) stack.getItem()).isAccepted(getName());
             }
         };
     }
@@ -289,14 +289,12 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
                         continue;
                     }
                     BlockEntity depo = level.getBlockEntity(worldPosition.offset(x, y, z));
-                    if (!(depo instanceof OreDepositTile)) {
+                    if (!(depo instanceof OreDepositTile oreDepo)) {
                         continue;
                     }
-                    OreDepositTile oreDepo = (OreDepositTile) depo;
-                    if (!(slots.getStackInSlot(6).getItem() instanceof DrillHeadItem)){
+                    if (!(slots.getStackInSlot(6).getItem() instanceof DrillHeadItem drillHead)){
                         continue;
                     }
-                    DrillHeadItem drillHead = (DrillHeadItem) slots.getStackInSlot(6).getItem();
                     BlockState depoBlock = depo.getBlockState();
                     boolean correctToolForDrops = drillHead.getCorresponding().isCorrectToolForDrops(depoBlock);
                     ITag<Fluid> fluid = oreDepo.fluidNeeded();
@@ -359,6 +357,11 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
     public void setProductivity(float productivity) {
         this.productivity = productivity;
     }
+
+    public static String getName() {
+        return "miner";
+    }
+
     public void setReason(List<Component> reason) {
         this.reason = reason;
     }

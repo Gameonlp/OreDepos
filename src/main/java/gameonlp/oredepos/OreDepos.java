@@ -1,6 +1,7 @@
 package gameonlp.oredepos;
 
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantScreen;
+import gameonlp.oredepos.blocks.grinder.GrinderScreen;
 import gameonlp.oredepos.blocks.miner.MinerScreen;
 import gameonlp.oredepos.compat.TOPCompat;
 import gameonlp.oredepos.config.OreDeposConfig;
@@ -31,7 +32,7 @@ public class OreDepos {
     public OreDepos() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        modEventBus.addListener(this::doClientStuff);
+        modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::enqueueIMC);
         modEventBus.addListener(this::setup);
 
@@ -45,12 +46,14 @@ public class OreDepos {
     }
 
 
-    private void doClientStuff(final FMLClientSetupEvent event) {
+    private void clientSetup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MenuScreens.register(RegistryManager.MINER_CONTAINER.get(),
                     MinerScreen::new);
             MenuScreens.register(RegistryManager.CHEMICAL_PLANT_CONTAINER.get(),
                     ChemicalPlantScreen::new);
+            MenuScreens.register(RegistryManager.GRINDER_CONTAINER.get(),
+                    GrinderScreen::new);
         });
     }
     @SubscribeEvent
