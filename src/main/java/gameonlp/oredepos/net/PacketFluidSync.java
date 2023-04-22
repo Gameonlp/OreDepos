@@ -15,9 +15,9 @@ import java.util.function.Supplier;
 
 public class PacketFluidSync {
 
-    private BlockPos pos;
-    private FluidStack fluid;
-    private int tank;
+    private final BlockPos pos;
+    private final FluidStack fluid;
+    private final int tank;
 
     public PacketFluidSync(BlockPos pos, FluidStack fluid, int tank){
         this.pos = pos;

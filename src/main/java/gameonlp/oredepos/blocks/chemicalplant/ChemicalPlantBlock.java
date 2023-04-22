@@ -89,8 +89,7 @@ public class ChemicalPlantBlock extends BaseEntityBlock {
     public void onRemove(BlockState p_196243_1_, Level world, BlockPos blockPos, BlockState p_196243_4_, boolean dropContents) {
         if (!dropContents){
             BlockEntity tile = world.getBlockEntity(blockPos);
-            if (tile instanceof ChemicalPlantTile){
-                ChemicalPlantTile chemicalPlantTile = (ChemicalPlantTile) tile;
+            if (tile instanceof ChemicalPlantTile chemicalPlantTile){
                 NonNullList<ItemStack> contents = NonNullList.create();
                 for (int i = 0; i < chemicalPlantTile.slots.getSlots(); i++) {
                     contents.add(chemicalPlantTile.slots.extractItem(i, Integer.MAX_VALUE, false));

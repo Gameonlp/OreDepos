@@ -19,10 +19,7 @@ public class DrillHeadItem extends Item {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        if(enchantment.equals(Enchantments.BLOCK_FORTUNE) || enchantment.equals(Enchantments.SILK_TOUCH)){
-            return true;
-        }
-        return false;
+        return enchantment.equals(Enchantments.BLOCK_FORTUNE) || enchantment.equals(Enchantments.SILK_TOUCH);
     }
     @Override
     public boolean isEnchantable(ItemStack p_41456_) {

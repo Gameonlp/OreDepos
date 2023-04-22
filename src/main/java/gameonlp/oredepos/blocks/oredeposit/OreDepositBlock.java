@@ -19,8 +19,8 @@ import java.util.function.Supplier;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class OreDepositBlock extends BaseEntityBlock {
-    private String fluid;
-    private Double factor;
+    private final String fluid;
+    private final Double factor;
 
     public OreDepositBlock(Properties properties, double factor) {
         this(properties, "", factor);

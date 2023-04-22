@@ -13,7 +13,7 @@ import java.util.List;
 import net.minecraft.world.item.Item.Properties;
 
 public class ProductivityModuleItem extends SpeedModuleItem{
-    private float productivityIncrease;
+    private final float productivityIncrease;
 
     public ProductivityModuleItem(Properties p_i48487_1_, float energyConsumptionIncrease, float speedIncrease, float productivityIncrease) {
         super(p_i48487_1_, energyConsumptionIncrease, speedIncrease);

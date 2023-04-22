@@ -10,7 +10,7 @@ public class OreConfig {
     public final ForgeConfigSpec.IntValue minHeight;
     public final ForgeConfigSpec.IntValue maxHeight;
     public final ForgeConfigSpec.DoubleValue count;
-    private String name;
+    private final String name;
     public final boolean noBaseBlock;
 
     public OreConfig(ForgeConfigSpec.Builder builder, String name, boolean noBaseBlock, boolean enabled, boolean replace, float factor, int veinSize, int minHeight, int maxHeight, float count) {

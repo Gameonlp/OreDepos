@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FluidInventory extends SimpleContainer implements IFluidInventory {
-    private List<FluidStack> stacks;
-    private int fluidTanks;
+    private final List<FluidStack> stacks;
+    private final int fluidTanks;
 
     public FluidInventory(int itemStacks, int fluidTanks){
         super(itemStacks);

@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 
 public class PacketTooltipSync {
 
-    private BlockPos pos;
-    private List<Component> tooltip;
+    private final BlockPos pos;
+    private final List<Component> tooltip;
 
     public PacketTooltipSync(BlockPos pos, List<Component> tooltip){
         this.pos = pos;

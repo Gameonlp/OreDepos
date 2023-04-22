@@ -8,8 +8,8 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.network.PacketDistributor;
 
 public class CustomFluidTank extends FluidTank {
-    private BlockEntity tile;
-    private int id;
+    private final BlockEntity tile;
+    private final int id;
 
     public CustomFluidTank(BlockEntity tile, int capacity, int id) {
         super(capacity);

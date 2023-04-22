@@ -23,9 +23,9 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class MinerContainer extends AbstractContainerMenu {
 
-    private BlockEntity tileEntity;
-    private Player player;
-    private IItemHandler playerInventory;
+    private final BlockEntity tileEntity;
+    private final Player player;
+    private final IItemHandler playerInventory;
 
     public IEnergyStorage getEnergy(){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY).orElse(null);

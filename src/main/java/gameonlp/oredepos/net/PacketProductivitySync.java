@@ -13,8 +13,8 @@ import java.util.function.Supplier;
 
 public class PacketProductivitySync {
 
-    private BlockPos pos;
-    private float productivity;
+    private final BlockPos pos;
+    private final float productivity;
 
     public PacketProductivitySync(BlockPos pos, float productivity){
         this.pos = pos;

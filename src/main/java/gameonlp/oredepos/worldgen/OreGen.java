@@ -41,7 +41,7 @@ public class OreGen {
         private final Holder<ConfiguredFeature<OreConfiguration,?>> replacableFeature;
         private final Holder<PlacedFeature> replacablePlaced;
 
-        private NetherOre(Lazy<Block> block, Lazy<Block> replaceBlock, OreConfig config){
+        NetherOre(Lazy<Block> block, Lazy<Block> replaceBlock, OreConfig config){
             this.config = config;
             this.depositFeature = FeatureUtils.register(block.get().getRegistryName() + "_feature", RegistryManager.ORE.get(),
                     new ODOreConfiguration(List.of(OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, block.get().defaultBlockState())), config.veinSize.get(), config));

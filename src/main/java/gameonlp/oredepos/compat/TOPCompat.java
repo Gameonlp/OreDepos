@@ -37,8 +37,7 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             BlockEntity tileEntity = world.getBlockEntity(data.getPos());
-            if (tileEntity instanceof OreDepositTile) {
-                OreDepositTile tileEntityOre = (OreDepositTile) tileEntity;
+            if (tileEntity instanceof OreDepositTile tileEntityOre) {
                 long amount = tileEntityOre.getAmount();
 
                 addProbeInfoOre(probeInfo, amount, tileEntityOre.getMaxAmount());

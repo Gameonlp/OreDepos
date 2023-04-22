@@ -8,8 +8,8 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class EnergyCell implements IEnergyStorage {
     private int energy;
-    private int maxEnergy;
-    private BlockEntity tile;
+    private final int maxEnergy;
+    private final BlockEntity tile;
     private final boolean extractable;
     private final boolean canReceive;
 

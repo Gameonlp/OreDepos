@@ -13,8 +13,8 @@ import java.util.function.Supplier;
 
 public class PacketEnergySync {
 
-    private BlockPos pos;
-    private int energy;
+    private final BlockPos pos;
+    private final int energy;
 
     public PacketEnergySync(BlockPos pos, int energy){
         this.pos = pos;

@@ -13,8 +13,8 @@ import java.util.function.Supplier;
 
 public class PacketProgressSync {
 
-    private BlockPos pos;
-    private float progress;
+    private final BlockPos pos;
+    private final float progress;
 
     public PacketProgressSync(BlockPos pos, float progress){
         this.pos = pos;

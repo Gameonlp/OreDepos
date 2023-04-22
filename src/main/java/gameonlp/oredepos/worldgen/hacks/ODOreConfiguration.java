@@ -12,7 +12,7 @@ import java.util.List;
 public class ODOreConfiguration extends OreConfiguration implements Configurable {
     public int size;
     private final OreConfig config;
-    private boolean replacing;
+    private final boolean replacing;
 
     public ODOreConfiguration(List<TargetBlockState> p_161013_, int p_161014_, OreConfig config) {
         this(p_161013_, p_161014_, config, false);
