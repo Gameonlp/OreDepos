@@ -17,6 +17,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -83,6 +84,10 @@ public class GrinderRecipeBuilder implements RecipeBuilder {
         if (this.advancement.getCriteria().isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + p_126208_);
         }
+    }
+
+    public Ingredient getInput() {
+        return ingredient;
     }
 
     public static class Result implements FinishedRecipe {

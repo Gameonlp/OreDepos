@@ -10,20 +10,21 @@ import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.GrinderRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IGuiHandlerRegistration;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.LinkedList;
+
 @JeiPlugin
 public class ODJeiPlugin implements IModPlugin {
 
+    public static final IIngredientType<TotalEnergy> ENERGY = () -> TotalEnergy.class;
     private final RecipeType<ChemicalPlantRecipe> CHEMICAL_PLANT_TYPE = new RecipeType<>(ChemicalPlantRecipe.TYPE, ChemicalPlantRecipe.class);
     private final RecipeType<GrinderRecipe> GRINDER_TYPE = new RecipeType<>(GrinderRecipe.TYPE, GrinderRecipe.class);
 
@@ -56,6 +57,11 @@ public class ODJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()), CHEMICAL_PLANT_TYPE);
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.GRINDER.get().asItem()), GRINDER_TYPE);
+    }
+
+    @Override
+    public void registerIngredients(IModIngredientRegistration registration) {
+       registration.register(ENERGY, new LinkedList<>(), new EnergyHelper(), new EnergyRenderer());
     }
 
     @Override

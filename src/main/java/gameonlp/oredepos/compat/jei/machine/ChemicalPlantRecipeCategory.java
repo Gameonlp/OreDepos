@@ -1,8 +1,10 @@
 package gameonlp.oredepos.compat.jei.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.compat.jei.EnergyRenderer;
+import gameonlp.oredepos.compat.jei.ODJeiPlugin;
+import gameonlp.oredepos.compat.jei.TotalEnergy;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import mezz.jei.api.constants.VanillaTypes;
@@ -17,7 +19,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
@@ -32,11 +33,17 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     private final IDrawable bg;
     private final IDrawable icon;
     private final IDrawableStatic overlay;
+    private final IDrawableStatic energyBG;
+    private final IDrawableStatic energyOverlay;
+    private IGuiHelper guiHelper;
 
     public ChemicalPlantRecipeCategory(IGuiHelper guiHelper) {
         this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 176, 76);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()));
         this.overlay = guiHelper.createDrawable(TEXTURE, 176, 0, 18, 45);
+        this.energyBG = guiHelper.createDrawable(TEXTURE, 212, 0, 18, 45);
+        this.energyOverlay = guiHelper.createDrawable(TEXTURE, 230, 0, 18, 45);
+        this.guiHelper = guiHelper;
     }
 
     @Override
@@ -81,6 +88,10 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
                     .setFluidRenderer(1000, false, 18, 45)
                     .setOverlay(overlay, 0, 0).addIngredient(VanillaTypes.FLUID, new FluidStack(ForgeRegistries.FLUIDS.tags().getTag(fluidInputs.get(i).getFluidTag()).iterator().next(), 100));
         }
+        int filled = Math.max(0, 45 - (int)(45 * (1 - (recipe.getEnergy() / 400f))));
+        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 136, 4)
+                .setCustomRenderer(ODJeiPlugin.ENERGY, new EnergyRenderer(guiHelper, filled))
+                .addIngredient(ODJeiPlugin.ENERGY, new TotalEnergy(recipe.getEnergy(), recipe.getTicks()));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 119, 52).addItemStack(recipe.getResultItem());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 118, 4)
                 .setFluidRenderer(1000, false, 18, 45)

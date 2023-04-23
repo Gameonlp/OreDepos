@@ -7,13 +7,18 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.*;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import java.rmi.registry.Registry;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -60,15 +65,9 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
                 .save(consumer);
     }
 
-    protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, Item input, Item output){
-        basicGrinderRecipe(consumer, input, output, 2);
-    }
-
-    protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, Item input, Item output, int count){
-        GrinderRecipeBuilder.grinder(Ingredient.of(input), output)
-                .count(count)
-                .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(input).build()))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + output.getRegistryName().getPath() + "_from_" + input.getRegistryName().getPath()));
+    protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, GrinderRecipeBuilder recipeBuilder){
+        recipeBuilder.unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of((ItemLike[]) Arrays.stream(recipeBuilder.getInput().getItems()).map(ItemStack::getItem).toArray()).build()))
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + recipeBuilder.getResult().getRegistryName().getPath()));
     }
 
     @Override
@@ -85,6 +84,17 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
         depositRecipes(consumer, RegistryManager.COBALT_INGOT, RegistryManager.COBALT_BLOCK, TagProvider.INGOTS_COBALT, TagProvider.ORE_COBALT_ITEM, RegistryManager.RAW_COBALT, RegistryManager.RAW_COBALT_BLOCK, TagProvider.RAW_COBALT);
         depositRecipes(consumer, RegistryManager.PLATINUM_INGOT, RegistryManager.PLATINUM_BLOCK, TagProvider.INGOTS_PLATINUM, TagProvider.ORE_PLATINUM_ITEM, RegistryManager.RAW_PLATINUM, RegistryManager.RAW_PLATINUM_BLOCK, TagProvider.RAW_PLATINUM);
 
-        basicGrinderRecipe(consumer, Items.BONE, Items.BONE_MEAL, 4);
+        basicGrinderRecipe(consumer,
+                GrinderRecipeBuilder.grinder(Ingredient.of(Items.BONE), Items.BONE_MEAL)
+                        .count(4));
+        basicGrinderRecipe(consumer,
+                GrinderRecipeBuilder.grinder(Ingredient.of(ItemTags.REDSTONE_ORES), Items.REDSTONE)
+                        .count(5));
+        basicGrinderRecipe(consumer,
+                GrinderRecipeBuilder.grinder(Ingredient.of(ItemTags.LAPIS_ORES), Items.LAPIS_LAZULI)
+                        .count(8));
+        basicGrinderRecipe(consumer,
+                GrinderRecipeBuilder.grinder(Ingredient.of(Items.BLAZE_ROD), Items.BLAZE_POWDER)
+                        .count(4));
     }
 }

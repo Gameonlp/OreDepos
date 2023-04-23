@@ -2,6 +2,9 @@ package gameonlp.oredepos.compat.jei.machine;
 
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.compat.jei.EnergyRenderer;
+import gameonlp.oredepos.compat.jei.ODJeiPlugin;
+import gameonlp.oredepos.compat.jei.TotalEnergy;
 import gameonlp.oredepos.crafting.GrinderRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import mezz.jei.api.constants.VanillaTypes;
@@ -29,12 +32,12 @@ public class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 
     private final IDrawable bg;
     private final IDrawable icon;
-    private final IDrawableStatic overlay;
+    private IGuiHelper guiHelper;
 
     public GrinderRecipeCategory(IGuiHelper guiHelper) {
-        this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 84, 33);
+        this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 126, 55);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.GRINDER.get().asItem()));
-        this.overlay = guiHelper.createDrawable(TEXTURE, 176, 0, 18, 45);
+        this.guiHelper = guiHelper;
     }
 
     @Override
@@ -70,7 +73,11 @@ public class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, GrinderRecipe recipe, IFocusGroup focuses) {
         NonNullList<Ingredient> inputs = recipe.getIngredients();
-        builder.addSlot(RecipeIngredientRole.INPUT, 9, 9).addItemStack(inputs.get(0).getItems()[0]);
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 60, 9).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.INPUT, 17, 19).addItemStack(inputs.get(0).getItems()[0]);
+        int filled = Math.max(0, 45 - (int)(45 * (1 - (recipe.getEnergy() / 400f))));
+        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 94, 4)
+                .setCustomRenderer(ODJeiPlugin.ENERGY, new EnergyRenderer(guiHelper, filled))
+                .addIngredient(ODJeiPlugin.ENERGY, new TotalEnergy(recipe.getEnergy(), recipe.getTicks()));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 68, 19).addItemStack(recipe.getResultItem());
     }
 }
