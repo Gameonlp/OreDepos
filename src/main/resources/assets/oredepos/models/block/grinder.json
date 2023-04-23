@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures":
+  {
+    "particle": "oredepos:block/miner",
+    "up": "oredepos:block/grinder_up",
+    "down": "oredepos:block/miner",
+    "north": "oredepos:block/grinder_side",
+    "south": "oredepos:block/grinder_side",
+    "east": "oredepos:block/grinder_side",
+    "west": "oredepos:block/grinder_side"
+  }
+}

@@ -45,8 +45,8 @@ public class GrinderContainer extends AbstractContainerMenu {
 
         if(tileEntity != null) {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, 0, 96, 52));
-                addSlot(new SlotItemHandler(h, 1, 50, 41));
+                addSlot(new SlotItemHandler(h, 0, 76, 35));
+                addSlot(new SlotItemHandler(h, 1, 30, 35));
                 addSlot(new SlotItemHandler(h, 2, 116, 52));
                 addSlot(new SlotItemHandler(h, 3, 134, 52));
                 addSlot(new SlotItemHandler(h, 4, 152, 52));

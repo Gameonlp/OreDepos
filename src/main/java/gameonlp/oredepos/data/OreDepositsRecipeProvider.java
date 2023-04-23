@@ -61,7 +61,12 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
     }
 
     protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, Item input, Item output){
+        basicGrinderRecipe(consumer, input, output, 2);
+    }
+
+    protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, Item input, Item output, int count){
         GrinderRecipeBuilder.grinder(Ingredient.of(input), output)
+                .count(count)
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(input).build()))
                 .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + output.getRegistryName().getPath() + "_from_" + input.getRegistryName().getPath()));
     }
@@ -80,6 +85,6 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
         depositRecipes(consumer, RegistryManager.COBALT_INGOT, RegistryManager.COBALT_BLOCK, TagProvider.INGOTS_COBALT, TagProvider.ORE_COBALT_ITEM, RegistryManager.RAW_COBALT, RegistryManager.RAW_COBALT_BLOCK, TagProvider.RAW_COBALT);
         depositRecipes(consumer, RegistryManager.PLATINUM_INGOT, RegistryManager.PLATINUM_BLOCK, TagProvider.INGOTS_PLATINUM, TagProvider.ORE_PLATINUM_ITEM, RegistryManager.RAW_PLATINUM, RegistryManager.RAW_PLATINUM_BLOCK, TagProvider.RAW_PLATINUM);
 
-        basicGrinderRecipe(consumer, Items.BONE, Items.BONE_MEAL);
+        basicGrinderRecipe(consumer, Items.BONE, Items.BONE_MEAL, 4);
     }
 }

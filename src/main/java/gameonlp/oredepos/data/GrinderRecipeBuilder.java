@@ -25,27 +25,28 @@ import net.minecraft.world.level.ItemLike;
 public class GrinderRecipeBuilder implements RecipeBuilder {
     private final Ingredient ingredient;
     private final Item result;
-    private final int count;
+    private int count;
     private int energy;
     private int ticks;
     private final Advancement.Builder advancement = Advancement.Builder.advancement();
     @Nullable
     private String group;
 
-    public GrinderRecipeBuilder(Ingredient ingredient, ItemLike result, int count) {
+    public GrinderRecipeBuilder(Ingredient ingredient, ItemLike result) {
         this.ingredient = ingredient;
         this.result = result.asItem();
-        this.count = count;
+        this.count = 2;
         this.energy = 40;
         this.ticks = 20;
     }
 
     public static GrinderRecipeBuilder grinder(Ingredient ingredient, ItemLike result) {
-        return new GrinderRecipeBuilder(ingredient, result, 2);
+        return new GrinderRecipeBuilder(ingredient, result);
     }
 
-    public static GrinderRecipeBuilder grinder(Ingredient ingredient, ItemLike result, int count) {
-        return new GrinderRecipeBuilder(ingredient, result, count);
+    public GrinderRecipeBuilder count(int count) {
+        this.count = count;
+        return this;
     }
 
     public GrinderRecipeBuilder energy(int energy) {

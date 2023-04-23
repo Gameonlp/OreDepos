@@ -173,6 +173,8 @@ public class RegistryManager {
             () -> new LiquidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
 
+    @ObjectHolder("oredepos:grinder")
+    public static final Block GRINDER_BLOCK = null;
     @ObjectHolder("minecraft:coal_ore")
     public static final Block COAL_ORE = null;
     @ObjectHolder("oredepos:coal_ore_deposit")

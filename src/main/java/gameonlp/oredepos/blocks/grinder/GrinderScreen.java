@@ -44,8 +44,8 @@ public class GrinderScreen extends AbstractContainerScreen<GrinderContainer> {
         int filled = 45 - (int)(45 * (1 - (currentEnergy / maxEnergy)));
         this.blit(matrixStack, i + 151, j + 4 + 45 - filled, 194, 45 - filled, 18, filled);
         this.blit(matrixStack, i + 151, j + 4, 230, 0, 18, 45);
-        RenderHelper.renderBar(matrixStack, i + 126, j + 5, 6, 43, tile.progress / tile.maxProgress, 0xFF29D825);
-        RenderHelper.renderBar(matrixStack, i + 134, j + 5, 6, 43, tile.productivity, 0xFFBB18BB);
+        RenderHelper.renderBar(matrixStack, i + 117, j + 5, 6, 43, tile.progress / tile.maxProgress, 0xFF29D825);
+        RenderHelper.renderBar(matrixStack, i + 125, j + 5, 6, 43, tile.productivity, 0xFFBB18BB);
     }
 
     @Override

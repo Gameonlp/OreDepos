@@ -32,7 +32,7 @@ public class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     private final IDrawableStatic overlay;
 
     public GrinderRecipeCategory(IGuiHelper guiHelper) {
-        this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 176, 76);
+        this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 84, 33);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.GRINDER.get().asItem()));
         this.overlay = guiHelper.createDrawable(TEXTURE, 176, 0, 18, 45);
     }
@@ -70,7 +70,7 @@ public class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, GrinderRecipe recipe, IFocusGroup focuses) {
         NonNullList<Ingredient> inputs = recipe.getIngredients();
-        builder.addSlot(RecipeIngredientRole.INPUT, 73, 23).addItemStack(inputs.get(0).getItems()[0]);
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 119, 52).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.INPUT, 9, 9).addItemStack(inputs.get(0).getItems()[0]);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 60, 9).addItemStack(recipe.getResultItem());
     }
 }

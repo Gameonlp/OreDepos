@@ -4,6 +4,7 @@ import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.RegistryManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,7 @@ import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 public class OreDepositTile extends BlockEntity {
+    private int cooldown;
     private long amount;
     private long maxAmount;
     private String fluid;
@@ -102,7 +104,7 @@ public class OreDepositTile extends BlockEntity {
     }
 
     public boolean isRemovable(){
-        return this.remove;
+        return this.remove || this.cooldown != 0;
     }
 
     @Override
@@ -128,5 +130,20 @@ public class OreDepositTile extends BlockEntity {
 
     public long getMaxAmount() {
         return maxAmount;
+    }
+
+    public static <E extends BlockEntity> void serverTick(Level level, BlockPos blockPos, BlockState blockState, OreDepositTile e) {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+        if (e.cooldown == 0) {
+            return;
+        }
+        e.cooldown--;
+    }
+
+    public void regenerate(BlockPos blockPos, BlockState state) {
+        level.setBlock(blockPos, state, 0);
+        cooldown = 2;
     }
 }

@@ -1,5 +1,6 @@
 package gameonlp.oredepos.blocks.oredeposit;
 
+import gameonlp.oredepos.RegistryManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -7,6 +8,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -50,8 +53,8 @@ public class OreDepositBlock extends BaseEntityBlock {
                 if (oreDepositTile.getAmount() > 0) {
                     oreDepositTile.decrement();
                 }
-                if (!oreDepositTile.isRemovable() || oreDepositTile.getAmount() > 0) {
-                    level.setBlock(blockPos, state, 0);
+                if (!oreDepositTile.isRemovable() && oreDepositTile.getAmount() > 0) {
+                    oreDepositTile.regenerate(blockPos, state);
                 }
                 return;
             }
@@ -66,5 +69,11 @@ public class OreDepositBlock extends BaseEntityBlock {
             tile.setRemovable();
         }
         super.onBlockExploded(state, level, pos, explosion);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return level.isClientSide() ? null : createTickerHelper(type, RegistryManager.ORE_DEPOSIT_TILE.get(), OreDepositTile::serverTick);
     }
 }
