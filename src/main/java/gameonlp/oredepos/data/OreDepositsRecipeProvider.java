@@ -66,8 +66,27 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
     }
 
     protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, GrinderRecipeBuilder recipeBuilder){
-        recipeBuilder.unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of((ItemLike[]) Arrays.stream(recipeBuilder.getInput().getItems()).map(ItemStack::getItem).toArray()).build()))
+        ItemStack[] stacks = recipeBuilder
+                .getInput()
+                .getItems();
+        ItemLike[] items = new ItemLike[stacks.length];
+        for (int i = 0; i < stacks.length; i++) {
+            items[i] = stacks[i].getItem();
+        }
+        recipeBuilder.unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items).build()))
                 .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + recipeBuilder.getResult().getRegistryName().getPath()));
+    }
+
+    protected void basicSmelterRecipe(Consumer<FinishedRecipe> consumer, SmelterRecipeBuilder recipeBuilder){
+        ItemStack[] stacks = recipeBuilder
+                .getInput()
+                .getItems();
+        ItemLike[] items = new ItemLike[stacks.length];
+        for (int i = 0; i < stacks.length; i++) {
+            items[i] = stacks[i].getItem();
+        }
+        recipeBuilder.unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items).build()))
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "smelting_" + recipeBuilder.getResult().getRegistryName().getPath()));
     }
 
     @Override

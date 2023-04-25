@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "input": [
+    {
+      "tag": "minecraft:redstone_ores"
+    }
+  ],
+  "result": {
+    "item": "minecraft:redstone",
+    "count": 5
+  },
+  "energy": 40,
+  "ticks": 20
+}

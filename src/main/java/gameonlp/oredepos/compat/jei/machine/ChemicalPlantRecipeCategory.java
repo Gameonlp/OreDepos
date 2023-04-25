@@ -2,9 +2,9 @@ package gameonlp.oredepos.compat.jei.machine;
 
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.compat.jei.EnergyRenderer;
+import gameonlp.oredepos.compat.jei.util.EnergyRenderer;
 import gameonlp.oredepos.compat.jei.ODJeiPlugin;
-import gameonlp.oredepos.compat.jei.TotalEnergy;
+import gameonlp.oredepos.compat.jei.util.TotalEnergy;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import mezz.jei.api.constants.VanillaTypes;

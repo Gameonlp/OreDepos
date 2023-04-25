@@ -1,4 +1,4 @@
-package gameonlp.oredepos.compat.jei;
+package gameonlp.oredepos.compat.jei.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

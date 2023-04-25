@@ -9,6 +9,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,6 +59,11 @@ public class ModuleItem extends Item {
 
     public ModuleItem accept(String name){
         accepted.add(name);
+        return this;
+    }
+
+    public ModuleItem acceptAll(Collection<String> names){
+        accepted.addAll(names);
         return this;
     }
 

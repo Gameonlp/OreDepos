@@ -3,6 +3,7 @@ package gameonlp.oredepos;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantScreen;
 import gameonlp.oredepos.blocks.grinder.GrinderScreen;
 import gameonlp.oredepos.blocks.miner.MinerScreen;
+import gameonlp.oredepos.blocks.smelter.SmelterScreen;
 import gameonlp.oredepos.compat.TOPCompat;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.data.DataGen;
@@ -54,6 +55,8 @@ public class OreDepos {
                     ChemicalPlantScreen::new);
             MenuScreens.register(RegistryManager.GRINDER_CONTAINER.get(),
                     GrinderScreen::new);
+            MenuScreens.register(RegistryManager.SMELTER_CONTAINER.get(),
+                    SmelterScreen::new);
         });
     }
     @SubscribeEvent

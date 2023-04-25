@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "input": [
+    {
+      "tag": "minecraft:lapis_ores"
+    }
+  ],
+  "result": {
+    "item": "minecraft:lapis_lazuli",
+    "count": 8
+  },
+  "energy": 40,
+  "ticks": 20
+}

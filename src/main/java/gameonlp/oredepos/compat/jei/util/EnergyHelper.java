@@ -1,6 +1,7 @@
-package gameonlp.oredepos.compat.jei;
+package gameonlp.oredepos.compat.jei.util;
 
 import gameonlp.oredepos.OreDepos;
+import gameonlp.oredepos.compat.jei.ODJeiPlugin;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;

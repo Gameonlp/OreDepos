@@ -5,7 +5,7 @@ import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.compat.jei.util.EnergyRenderer;
 import gameonlp.oredepos.compat.jei.ODJeiPlugin;
 import gameonlp.oredepos.compat.jei.util.TotalEnergy;
-import gameonlp.oredepos.crafting.GrinderRecipe;
+import gameonlp.oredepos.crafting.SmelterRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -22,38 +22,38 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 
-public class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
+public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipe> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(OreDepos.MODID, "textures/gui/grinder_gui_jei.png");
+            new ResourceLocation(OreDepos.MODID, "textures/gui/smelter_gui_jei.png");
 
     private final IDrawable bg;
     private final IDrawable icon;
     private IGuiHelper guiHelper;
 
-    public GrinderRecipeCategory(IGuiHelper guiHelper) {
+    public SmelterRecipeCategory(IGuiHelper guiHelper) {
         this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 126, 55);
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.GRINDER.get().asItem()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.SMELTER.get().asItem()));
         this.guiHelper = guiHelper;
     }
 
     @Override
     public ResourceLocation getUid() {
-        return GrinderRecipe.TYPE;
+        return SmelterRecipe.TYPE;
     }
 
     @Override
-    public RecipeType<GrinderRecipe> getRecipeType() {
-        return new RecipeType<>(GrinderRecipe.TYPE, GrinderRecipe.class);
+    public RecipeType<SmelterRecipe> getRecipeType() {
+        return new RecipeType<>(SmelterRecipe.TYPE, SmelterRecipe.class);
     }
 
     @Override
-    public Class<? extends GrinderRecipe> getRecipeClass() {
-        return GrinderRecipe.class;
+    public Class<? extends SmelterRecipe> getRecipeClass() {
+        return SmelterRecipe.class;
     }
 
     @Override
     public Component getTitle() {
-        return new TextComponent(RegistryManager.GRINDER.get().getName().getString());
+        return new TextComponent(RegistryManager.SMELTER.get().getName().getString());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, GrinderRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, SmelterRecipe recipe, IFocusGroup focuses) {
         NonNullList<Ingredient> inputs = recipe.getIngredients();
         builder.addSlot(RecipeIngredientRole.INPUT, 17, 19).addItemStack(inputs.get(0).getItems()[0]);
         int filled = Math.max(0, 45 - (int)(45 * (1 - (recipe.getEnergy() / 400f))));

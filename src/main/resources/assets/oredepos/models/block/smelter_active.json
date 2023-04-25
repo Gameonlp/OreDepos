@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures":
+  {
+    "particle": "oredepos:block/smelter",
+    "up": "oredepos:block/smelter_up_active",
+    "down": "oredepos:block/smelter",
+    "north": "oredepos:block/smelter_side_active",
+    "south": "oredepos:block/smelter_side_active",
+    "east": "oredepos:block/smelter_side_active",
+    "west": "oredepos:block/smelter_side_active"
+  }
+}

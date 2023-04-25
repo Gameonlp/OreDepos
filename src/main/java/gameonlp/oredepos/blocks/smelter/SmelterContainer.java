@@ -1,9 +1,13 @@
-package gameonlp.oredepos.blocks.grinder;
+package gameonlp.oredepos.blocks.smelter;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicContainer;
+import gameonlp.oredepos.blocks.smelter.SmelterTile;
 import gameonlp.oredepos.items.ModuleItem;
-import gameonlp.oredepos.net.*;
+import gameonlp.oredepos.net.PacketEnergySync;
+import gameonlp.oredepos.net.PacketManager;
+import gameonlp.oredepos.net.PacketProductivitySync;
+import gameonlp.oredepos.net.PacketProgressSync;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,21 +25,21 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.PacketDistributor;
 
-public class GrinderContainer extends BasicContainer {
+public class SmelterContainer extends BasicContainer {
     public IEnergyStorage getEnergy(){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY).orElse(null);
     }
 
     @Override
     protected boolean correctTile() {
-        return tileEntity instanceof GrinderTile;
+        return tileEntity instanceof SmelterTile;
     }
 
     @Override
     protected void sendInitialSync() {
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((GrinderTile)tileEntity).energyCell.getEnergyStored()));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((GrinderTile) tileEntity).progress));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((GrinderTile) tileEntity).productivity));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((SmelterTile)tileEntity).energyCell.getEnergyStored()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((SmelterTile) tileEntity).progress));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((SmelterTile) tileEntity).productivity));
     }
 
     @Override
@@ -49,15 +53,14 @@ public class GrinderContainer extends BasicContainer {
         });
     }
 
-    public GrinderContainer(int windowId, Level world, BlockPos pos,
+    public SmelterContainer(int windowId, Level world, BlockPos pos,
                             Inventory playerInventory, Player player) {
-        super(windowId, world, pos, playerInventory, player, 1, RegistryManager.GRINDER_CONTAINER.get());
+        super(windowId, world, pos, playerInventory, player, 1, RegistryManager.SMELTER_CONTAINER.get());
     }
     @Override
     public boolean stillValid(Player p_75145_1_) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.GRINDER.get());
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.SMELTER.get());
     }
-
     public BlockEntity getTileEntity() {
         return tileEntity;
     }

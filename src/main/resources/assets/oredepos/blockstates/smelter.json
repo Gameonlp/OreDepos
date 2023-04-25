@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "working=inactive": { "model": "oredepos:block/smelter" },
+    "working=active": { "model": "oredepos:block/smelter_active" }
+  }
+}

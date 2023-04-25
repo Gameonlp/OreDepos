@@ -226,22 +226,24 @@ public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile,
             if (!mod3.isEmpty()){
                 modules.add((ModuleItem) mod3.getItem());
             }
-            float drain = (float) currentRecipe.getEnergy() / currentRecipe.getTicks();
+            float drain = (float) currentRecipe.getEnergy();
             for (ModuleItem module : modules){
                 drain = module.getEnergyConsumption(drain);
             }
+            int time = currentRecipe.getTicks();
+            float progressRatio = time / maxProgress;
             if (energyCell.getEnergyStored() >= drain) {
                 energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
                 float progressIncrease = 1.0f;
                 for (ModuleItem module : modules){
                     progressIncrease = module.getProgress(progressIncrease);
                 }
-                progress += progressIncrease;
+                progress += (progressIncrease / progressRatio);
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 this.setChanged();
             }
-            if (progress >= currentRecipe.getTicks()) {
-                progress -= currentRecipe.getTicks();
+            if (progress >= maxProgress) {
+                progress -= 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 NonNullList<Ingredient> ingredients = currentRecipe.getIngredients();
                 for (Ingredient ingredient : ingredients) {

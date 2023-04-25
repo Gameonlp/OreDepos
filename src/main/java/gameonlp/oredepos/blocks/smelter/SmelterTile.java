@@ -1,42 +1,37 @@
-package gameonlp.oredepos.blocks.grinder;
+package gameonlp.oredepos.blocks.smelter;
 
 import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
-import gameonlp.oredepos.crafting.FluidIngredient;
+import gameonlp.oredepos.blocks.Working;
 import gameonlp.oredepos.crafting.FluidInventory;
-import gameonlp.oredepos.crafting.GrinderRecipe;
+import gameonlp.oredepos.crafting.SmelterRecipe;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
 import gameonlp.oredepos.net.PacketProgressSync;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
-import gameonlp.oredepos.tile.FluidHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
-import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.util.EnergyCell;
 import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -45,7 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class GrinderTile extends BlockEntity implements EnergyHandlerTile, ModuleAcceptorTile {
+public class SmelterTile extends BlockEntity implements EnergyHandlerTile, ModuleAcceptorTile {
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
     ItemStackHandler slots = createItemHandler();
@@ -60,14 +55,19 @@ public class GrinderTile extends BlockEntity implements EnergyHandlerTile, Modul
     float maxProgress = 30;
     float productivity;
 
-    GrinderRecipe currentRecipe = null;
+    SmelterRecipe currentRecipe = null;
+    AbstractCookingRecipe vanillaRecipe = null;
 
-    protected GrinderTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
+    protected SmelterTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
     }
 
-    public GrinderTile(BlockPos pos, BlockState state) {
-        this(RegistryManager.GRINDER_TILE.get(), pos, state);
+    public SmelterTile(BlockPos pos, BlockState state) {
+        this(RegistryManager.SMELTER_TILE.get(), pos, state);
+    }
+
+    public static int getVanillaDrain() {
+        return 40;
     }
 
     private ItemStackHandler createItemHandler() {
@@ -129,27 +129,45 @@ public class GrinderTile extends BlockEntity implements EnergyHandlerTile, Modul
         slots.deserializeNBT(p_230337_2_.getCompound("slots"));
     }
 
-    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, GrinderTile e) {
+    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, SmelterTile e) {
         e.tick();
     }
+
     private void tick() {
         if (level == null || level.isClientSide()){
             return;
         }
+        if (currentRecipe == null && vanillaRecipe == null && !getBlockState().getValue(Working.WORKING).equals(Working.INACTIVE)) {
+            level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
+        }
         FluidInventory fluidInventory = new FluidInventory(1, 0);
         fluidInventory.setItem(0, slots.getStackInSlot(1));
-        if (currentRecipe == null) {
-            Optional<GrinderRecipe> recipe = level.getRecipeManager().getRecipeFor(RegistryManager.GRINDER_RECIPE_TYPE.get(), fluidInventory, level);
-            recipe.ifPresent(grinderRecipe -> currentRecipe = grinderRecipe);
+        if (currentRecipe == null && vanillaRecipe == null) {
+            currentRecipe = level.getRecipeManager().getRecipeFor(RegistryManager.SMELTER_RECIPE_TYPE.get(), fluidInventory, level).orElse(null);
+            if (currentRecipe == null) {
+                vanillaRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, fluidInventory, level).orElse(null);
+                if (vanillaRecipe == null) {
+                    vanillaRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, fluidInventory, level).orElse(null);
+                }
+                if (vanillaRecipe == null) {
+                    vanillaRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMOKING, fluidInventory, level).orElse(null);
+                }
+            }
         }
-        if (currentRecipe != null){
-            if (!currentRecipe.matches(fluidInventory, level)){
+        if (currentRecipe != null || vanillaRecipe != null){
+            if (!getBlockState().getValue(Working.WORKING).equals(Working.ACTIVE)) {
+                level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.ACTIVE));
+            }
+            if ((currentRecipe != null && !currentRecipe.matches(fluidInventory, level)) || (vanillaRecipe != null && !vanillaRecipe.matches(fluidInventory, level))){
                 progress = 0;
                 currentRecipe = null;
+                vanillaRecipe = null;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
+                level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
                 return;
             }
-            if (slots.insertItem(0, currentRecipe.getResultItem(), true) != ItemStack.EMPTY){
+            if (slots.insertItem(0, (currentRecipe != null ? currentRecipe : vanillaRecipe).getResultItem(), true) != ItemStack.EMPTY) {
+                level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
                 return;
             }
             List<ModuleItem> modules = new LinkedList<>();
@@ -165,11 +183,16 @@ public class GrinderTile extends BlockEntity implements EnergyHandlerTile, Modul
             if (!mod3.isEmpty()){
                 modules.add((ModuleItem) mod3.getItem());
             }
-            float drain = (float) currentRecipe.getEnergy();
+            float drain;
+            if (currentRecipe != null) {
+                drain = (float) currentRecipe.getEnergy();
+            } else {
+                drain = getVanillaDrain();
+            }
             for (ModuleItem module : modules){
                 drain = module.getEnergyConsumption(drain);
             }
-            int time = currentRecipe.getTicks();
+            int time = (currentRecipe != null ? currentRecipe.getTicks() : vanillaRecipe.getCookingTime());
             float progressRatio = time / maxProgress;
             if (energyCell.getEnergyStored() >= drain) {
                 energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
@@ -184,13 +207,13 @@ public class GrinderTile extends BlockEntity implements EnergyHandlerTile, Modul
             if (progress >= maxProgress) {
                 progress = 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
-                NonNullList<Ingredient> ingredients = currentRecipe.getIngredients();
+                NonNullList<Ingredient> ingredients = currentRecipe != null ? currentRecipe.getIngredients() : vanillaRecipe.getIngredients();
                 for (Ingredient ingredient : ingredients) {
                     if (ingredient.test(slots.getStackInSlot(1))) {
                         slots.extractItem(1, 1, false);
                     }
                 }
-                ItemStack outStack = currentRecipe.getResultItem();
+                ItemStack outStack = (currentRecipe != null ? currentRecipe : vanillaRecipe).getResultItem();
                 if (productivity >= 1){
                     productivity -= 1;
                     PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
@@ -222,6 +245,6 @@ public class GrinderTile extends BlockEntity implements EnergyHandlerTile, Modul
     }
 
     public static String getName() {
-        return "grinder";
+        return "smelter";
     }
 }
