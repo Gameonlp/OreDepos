@@ -87,8 +87,8 @@ public class GrinderBlock extends BaseEntityBlock {
             BlockEntity tile = world.getBlockEntity(blockPos);
             if (tile instanceof GrinderTile grinderTile){
                 NonNullList<ItemStack> contents = NonNullList.create();
-                for (int i = 0; i < grinderTile.slots.getSlots(); i++) {
-                    contents.add(grinderTile.slots.extractItem(i, Integer.MAX_VALUE, false));
+                for (int i = 0; i < grinderTile.getSlots().getSlots(); i++) {
+                    contents.add(grinderTile.getSlots().extractItem(i, Integer.MAX_VALUE, false));
                 }
                 Containers.dropContents(world, blockPos, contents);
             }

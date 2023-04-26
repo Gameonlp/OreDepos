@@ -1,6 +1,7 @@
 package gameonlp.oredepos.blocks.chemicalplant;
 
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.blocks.BasicMachineTile;
 import gameonlp.oredepos.blocks.miner.MinerTile;
 import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
@@ -42,12 +43,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
+public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
-    ItemStackHandler slots = createItemHandler();
 
-    PlayerInOutStackHandler handler = new PlayerInOutStackHandler(this, slots, 1);
+    PlayerInOutStackHandler handler;
 
     int fluidCapacity = 4000;
     FluidTank fluidTank = new CustomFluidTank(this, fluidCapacity, 0);
@@ -69,6 +69,8 @@ public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile,
 
     protected ChemicalPlantTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
+        slots = createItemHandler();
+        handler = new PlayerInOutStackHandler(this, slots, 1);
     }
 
     public ChemicalPlantTile(BlockPos pos, BlockState state) {
@@ -213,19 +215,7 @@ public class ChemicalPlantTile extends BlockEntity implements EnergyHandlerTile,
             if (fluidTank.fill(currentRecipe.getResultFluid(), IFluidHandler.FluidAction.SIMULATE) != currentRecipe.getResultFluid().getAmount()) {
                 return;
             }
-            List<ModuleItem> modules = new LinkedList<>();
-            ItemStack mod1 = slots.getStackInSlot(3);
-            ItemStack mod2 = slots.getStackInSlot(4);
-            ItemStack mod3 =  slots.getStackInSlot(5);
-            if (!mod1.isEmpty()){
-                modules.add((ModuleItem) mod1.getItem());
-            }
-            if (!mod2.isEmpty()){
-                modules.add((ModuleItem) mod2.getItem());
-            }
-            if (!mod3.isEmpty()){
-                modules.add((ModuleItem) mod3.getItem());
-            }
+            List<ModuleItem> modules = getModuleItems(3);
             float drain = (float) currentRecipe.getEnergy();
             for (ModuleItem module : modules){
                 drain = module.getEnergyConsumption(drain);

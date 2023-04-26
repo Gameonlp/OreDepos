@@ -86,8 +86,8 @@ public class MinerBlock extends BaseEntityBlock {
             BlockEntity tile = world.getBlockEntity(blockPos);
             if (tile instanceof MinerTile minerTile){
                 NonNullList<ItemStack> contents = NonNullList.create();
-                for (int i = 0; i < minerTile.slots.getSlots(); i++) {
-                    contents.add(minerTile.slots.extractItem(i, Integer.MAX_VALUE, false));
+                for (int i = 0; i < minerTile.getSlots().getSlots(); i++) {
+                    contents.add(minerTile.getSlots().extractItem(i, Integer.MAX_VALUE, false));
                 }
                 Containers.dropContents(world, blockPos, contents);
             }

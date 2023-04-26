@@ -92,8 +92,8 @@ public class SmelterBlock extends BaseEntityBlock {
                 BlockEntity tile = world.getBlockEntity(blockPos);
                 if (tile instanceof SmelterTile smelterTile) {
                     NonNullList<ItemStack> contents = NonNullList.create();
-                    for (int i = 0; i < smelterTile.slots.getSlots(); i++) {
-                        contents.add(smelterTile.slots.extractItem(i, Integer.MAX_VALUE, false));
+                    for (int i = 0; i < smelterTile.getSlots().getSlots(); i++) {
+                        contents.add(smelterTile.getSlots().extractItem(i, Integer.MAX_VALUE, false));
                     }
                     Containers.dropContents(world, blockPos, contents);
                 }

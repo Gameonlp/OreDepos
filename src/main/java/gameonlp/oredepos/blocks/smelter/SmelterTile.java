@@ -1,6 +1,7 @@
 package gameonlp.oredepos.blocks.smelter;
 
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.blocks.BasicMachineTile;
 import gameonlp.oredepos.blocks.Working;
 import gameonlp.oredepos.crafting.FluidInventory;
 import gameonlp.oredepos.crafting.SmelterRecipe;
@@ -40,12 +41,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class SmelterTile extends BlockEntity implements EnergyHandlerTile, ModuleAcceptorTile {
+public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, ModuleAcceptorTile {
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
-    ItemStackHandler slots = createItemHandler();
 
-    PlayerInOutStackHandler handler = new PlayerInOutStackHandler(this, slots, 1);
+    PlayerInOutStackHandler handler;
 
     LazyOptional<ItemStackHandler> machineItemHandler = LazyOptional.of(() -> handler.getMachineAccessible());
     LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> handler.getPlayerAccessible());
@@ -60,6 +60,8 @@ public class SmelterTile extends BlockEntity implements EnergyHandlerTile, Modul
 
     protected SmelterTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
+        slots = createItemHandler();
+        handler = new PlayerInOutStackHandler(this, slots, 1);
     }
 
     public SmelterTile(BlockPos pos, BlockState state) {
@@ -170,19 +172,7 @@ public class SmelterTile extends BlockEntity implements EnergyHandlerTile, Modul
                 level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
                 return;
             }
-            List<ModuleItem> modules = new LinkedList<>();
-            ItemStack mod1 = slots.getStackInSlot(2);
-            ItemStack mod2 = slots.getStackInSlot(3);
-            ItemStack mod3 =  slots.getStackInSlot(4);
-            if (!mod1.isEmpty()){
-                modules.add((ModuleItem) mod1.getItem());
-            }
-            if (!mod2.isEmpty()){
-                modules.add((ModuleItem) mod2.getItem());
-            }
-            if (!mod3.isEmpty()){
-                modules.add((ModuleItem) mod3.getItem());
-            }
+            List<ModuleItem> modules = getModuleItems(2);
             float drain;
             if (currentRecipe != null) {
                 drain = (float) currentRecipe.getEnergy();

@@ -1,6 +1,7 @@
 package gameonlp.oredepos.blocks.miner;
 
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.blocks.BasicMachineTile;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
 import gameonlp.oredepos.net.PacketProgressSync;
@@ -52,12 +53,11 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
+public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
 
     final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
-    ItemStackHandler slots = createItemHandler();
 
-    PlayerInOutStackHandler handler = new PlayerInOutStackHandler(this, slots, 6);
+    PlayerInOutStackHandler handler;
     int fluidCapacity = 4000;
     FluidTank fluidTank = new CustomFluidTank(this, fluidCapacity, 0);
 
@@ -75,6 +75,8 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
 
     protected MinerTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
+        slots = createItemHandler();
+        handler = new PlayerInOutStackHandler(this, slots, 6);
     }
 
     public MinerTile(BlockPos pos, BlockState state) {
@@ -186,19 +188,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
             }
         }
         clearReason();
-        List<ModuleItem> modules = new LinkedList<>();
-        ItemStack mod1 = slots.getStackInSlot(7);
-        ItemStack mod2 = slots.getStackInSlot(8);
-        ItemStack mod3 =  slots.getStackInSlot(9);
-        if (!mod1.isEmpty()){
-            modules.add((ModuleItem) mod1.getItem());
-        }
-        if (!mod2.isEmpty()){
-            modules.add((ModuleItem) mod2.getItem());
-        }
-        if (!mod3.isEmpty()){
-            modules.add((ModuleItem) mod3.getItem());
-        }
+        List<ModuleItem> modules = getModuleItems(7);
         List<OreDepositTile> deposits = new LinkedList<>();
         int lengthPriorReason = this.reason.size();
 
@@ -238,7 +228,7 @@ public class MinerTile extends BlockEntity implements EnergyHandlerTile, FluidHa
             this.setChanged();
         }
         if (progress >= maxProgress) {
-            progress -= maxProgress;
+            progress = 0;
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             OreDepositTile depo = deposits.get(level.getRandom().nextInt(deposits.size()));
             List<ItemStack> drops = Block.getDrops(depo.getBlockState(), (ServerLevel) level, worldPosition, depo, null, slots.getStackInSlot(6));

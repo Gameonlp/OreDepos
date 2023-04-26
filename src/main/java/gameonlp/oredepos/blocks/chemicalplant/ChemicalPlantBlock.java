@@ -91,8 +91,8 @@ public class ChemicalPlantBlock extends BaseEntityBlock {
             BlockEntity tile = world.getBlockEntity(blockPos);
             if (tile instanceof ChemicalPlantTile chemicalPlantTile){
                 NonNullList<ItemStack> contents = NonNullList.create();
-                for (int i = 0; i < chemicalPlantTile.slots.getSlots(); i++) {
-                    contents.add(chemicalPlantTile.slots.extractItem(i, Integer.MAX_VALUE, false));
+                for (int i = 0; i < chemicalPlantTile.getSlots().getSlots(); i++) {
+                    contents.add(chemicalPlantTile.getSlots().extractItem(i, Integer.MAX_VALUE, false));
                 }
                 Containers.dropContents(world, blockPos, contents);
             }

@@ -83,7 +83,7 @@ public abstract class BasicContainer extends AbstractContainerMenu {
         int playerStart = 0;
         int playerEnd = 36;
         int tileStart = playerEnd + 1;
-        int tileEnd = playerEnd + slots.size();
+        int tileEnd = slots.size();
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
