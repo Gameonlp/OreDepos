@@ -237,11 +237,13 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
                 }
                 ItemStack outStack = currentRecipe.getResultItem();
                 FluidStack outFluid = currentRecipe.getResultFluid();
-                if (productivity >= 1){
+                int stackCount = outStack.getCount();
+                int fluidAmount = outFluid.getAmount();
+                while (productivity >= 1){
                     productivity -= 1;
                     PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                    outStack.setCount(outStack.getCount() * 2);
-                    outFluid.setAmount(outFluid.getAmount() * 2);
+                    outStack.setCount(stackCount + outStack.getCount());
+                    outFluid.setAmount(fluidAmount + outFluid.getAmount());
                 }
                 fluidTank.fill(outFluid, IFluidHandler.FluidAction.EXECUTE);
                 slots.insertItem(0, outStack, false);

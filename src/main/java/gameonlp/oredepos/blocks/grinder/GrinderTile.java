@@ -151,10 +151,11 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
                     }
                 }
                 ItemStack outStack = currentRecipe.getResultItem();
-                if (productivity >= 1){
+                int count = outStack.getCount();
+                while (productivity >= 1){
                     productivity -= 1;
                     PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                    outStack.setCount(outStack.getCount() * 2);
+                    outStack.setCount(outStack.getCount() + count);
                 }
                 slots.insertItem(0, outStack, false);
                 increaseProductivity(modules);

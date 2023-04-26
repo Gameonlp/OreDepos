@@ -48,10 +48,7 @@ import net.minecraftforge.registries.tags.ITag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
 
@@ -232,11 +229,15 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             OreDepositTile depo = deposits.get(level.getRandom().nextInt(deposits.size()));
             List<ItemStack> drops = Block.getDrops(depo.getBlockState(), (ServerLevel) level, worldPosition, depo, null, slots.getStackInSlot(6));
+            Map<ItemStack, Integer> counts = new HashMap<>();
+            for (ItemStack drop : drops) {
+                counts.put(drop, drop.getCount());
+            }
             if (productivity >= 1){
                 productivity -= 1;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
                 for (ItemStack drop : drops) {
-                    drop.setCount(drop.getCount() * 2);
+                    drop.setCount(drop.getCount() + counts.get(drop));
                 }
             }
             ItemStack leftover = ItemStack.EMPTY;
