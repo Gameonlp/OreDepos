@@ -23,9 +23,9 @@ public class SmelterRecipe implements IBaseRecipe{
     private final NonNullList<Ingredient> ingredients;
     private final ItemStack outItem;
     private final int energy;
-    private final int ticks;
+    private final float ticks;
 
-    public SmelterRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, ItemStack outItem, int energy, int ticks) {
+    public SmelterRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, ItemStack outItem, int energy, float ticks) {
         this.id = id;
         this.ingredients = ingredients;
         this.outItem = outItem;
@@ -96,7 +96,7 @@ public class SmelterRecipe implements IBaseRecipe{
         return ingredients;
     }
 
-    public int getTicks() {
+    public float getTicks() {
         return ticks;
     }
 
@@ -138,7 +138,7 @@ public class SmelterRecipe implements IBaseRecipe{
             while (buffer.readBoolean()){
                 ingredients.add(Ingredient.fromNetwork(buffer));
             }
-            return new SmelterRecipe(p_199426_1_, ingredients, outStack, buffer.readInt(), buffer.readInt());
+            return new SmelterRecipe(p_199426_1_, ingredients, outStack, buffer.readInt(), buffer.readFloat());
         }
 
         @Override
@@ -146,7 +146,7 @@ public class SmelterRecipe implements IBaseRecipe{
             buffer.writeItemStack(recipe.outItem, true);
             buffer.writeBoolean(false);
             buffer.writeInt(recipe.energy);
-            buffer.writeInt(recipe.ticks);
+            buffer.writeFloat(recipe.ticks);
         }
     }
 }

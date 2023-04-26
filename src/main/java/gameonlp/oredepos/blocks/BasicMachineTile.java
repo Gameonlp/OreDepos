@@ -72,7 +72,7 @@ public abstract class BasicMachineTile extends BlockEntity implements ModuleAcce
         return drain;
     }
 
-    protected void increaseProgress(List<ModuleItem> modules, float drain, int time) {
+    protected void increaseProgress(List<ModuleItem> modules, float drain, float time) {
         float progressRatio = time / maxProgress;
         if (energyCell.getEnergyStored() >= drain) {
             energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));

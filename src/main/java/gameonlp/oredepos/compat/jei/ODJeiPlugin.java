@@ -60,7 +60,7 @@ public class ODJeiPlugin implements IModPlugin {
                     smeltingRecipe.getIngredients(),
                     smeltingRecipe.getResultItem(),
                     SmelterTile.getVanillaDrain(),
-                    smeltingRecipe.getCookingTime()));
+                    smeltingRecipe.getCookingTime() * SmelterTile.getVanillaSpeedFactor()));
         }
         registration.addRecipes(SMELTER_TYPE, smelterRecipes);
     }

@@ -59,7 +59,7 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
     }
 
     public static int getVanillaDrain() {
-        return 40;
+        return 10;
     }
 
     private ItemStackHandler createItemHandler() {
@@ -164,7 +164,7 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
             }
             List<ModuleItem> modules = getModuleItems(2);
             float drain = getDrain(modules, currentRecipe != null ? (float) currentRecipe.getEnergy() : getVanillaDrain());
-            increaseProgress(modules, drain, (currentRecipe != null ? currentRecipe.getTicks() : vanillaRecipe.getCookingTime()));
+            increaseProgress(modules, drain, (currentRecipe != null ? currentRecipe.getTicks() : vanillaRecipe.getCookingTime() * getVanillaSpeedFactor()));
             if (progress >= maxProgress) {
                 progress = 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
@@ -175,15 +175,20 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
                     }
                 }
                 ItemStack outStack = resultItem;
-                if (productivity >= 1){
+                int count = outStack.getCount();
+                while (productivity >= 1){
                     productivity -= 1;
                     PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                    outStack.setCount(outStack.getCount() * 2);
+                    outStack.setCount(outStack.getCount() + count);
                 }
                 slots.insertItem(0, outStack, false);
                 increaseProductivity(modules);
             }
         }
+    }
+
+    public static float getVanillaSpeedFactor() {
+        return 0.5f;
     }
 
     public static String getName() {
