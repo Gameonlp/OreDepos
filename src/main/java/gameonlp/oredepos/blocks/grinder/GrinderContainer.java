@@ -33,9 +33,9 @@ public class GrinderContainer extends BasicContainer {
 
     @Override
     protected void sendInitialSync() {
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((GrinderTile)tileEntity).energyCell.getEnergyStored()));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((GrinderTile) tileEntity).progress));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((GrinderTile) tileEntity).productivity));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((GrinderTile) tileEntity).getEnergyCell().getEnergyStored()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((GrinderTile) tileEntity).getProgress()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((GrinderTile) tileEntity).getProductivity()));
     }
 
     @Override

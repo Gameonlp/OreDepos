@@ -42,9 +42,9 @@ public class ChemicalPlantContainer extends BasicContainer {
         PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((ChemicalPlantTile)tileEntity).fluidTank.getFluid(), 0));
         PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((ChemicalPlantTile)tileEntity).primaryInputTank.getFluid(), 1));
         PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((ChemicalPlantTile)tileEntity).secondaryInputTank.getFluid(), 2));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((ChemicalPlantTile)tileEntity).energyCell.getEnergyStored()));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((ChemicalPlantTile) tileEntity).progress));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((ChemicalPlantTile) tileEntity).productivity));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((ChemicalPlantTile) tileEntity).getEnergyCell().getEnergyStored()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((ChemicalPlantTile) tileEntity).getProgress()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((ChemicalPlantTile) tileEntity).getProductivity()));
     }
 
     @Override

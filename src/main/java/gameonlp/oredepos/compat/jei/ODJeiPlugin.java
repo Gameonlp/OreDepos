@@ -74,8 +74,8 @@ public class ODJeiPlugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(ChemicalPlantScreen.class, 71, 33, 20, 14, CHEMICAL_PLANT_TYPE);
-        registration.addRecipeClickArea(GrinderScreen.class, 51, 30, 20, 14, GRINDER_TYPE);
-        registration.addRecipeClickArea(SmelterScreen.class, 51, 30, 20, 14, SMELTER_TYPE);
+        registration.addRecipeClickArea(GrinderScreen.class, 51, 35, 20, 14, GRINDER_TYPE);
+        registration.addRecipeClickArea(SmelterScreen.class, 51, 35, 20, 14, SMELTER_TYPE);
     }
 
         @Override

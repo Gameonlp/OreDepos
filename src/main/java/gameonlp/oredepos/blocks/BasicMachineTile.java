@@ -1,58 +1,49 @@
 package gameonlp.oredepos.blocks;
 
-import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
-import gameonlp.oredepos.items.DrillHeadItem;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
 import gameonlp.oredepos.net.PacketProgressSync;
-import gameonlp.oredepos.net.PacketTooltipSync;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
-import gameonlp.oredepos.tile.FluidHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
-import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.util.EnergyCell;
-import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BasicMachineTile extends BlockEntity {
+public abstract class BasicMachineTile extends BlockEntity implements ModuleAcceptorTile, EnergyHandlerTile {
 
+    protected EnergyCell energyCell;
     protected ItemStackHandler slots;
+    protected float progress;
+
+    public float getProductivity() {
+        return productivity;
+    }
+
+    protected float productivity;
+
+    public EnergyCell getEnergyCell() {
+        return energyCell;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public float getMaxProgress() {
+        return maxProgress;
+    }
+
+    protected float maxProgress = 30;
 
     protected BasicMachineTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
@@ -72,5 +63,48 @@ public abstract class BasicMachineTile extends BlockEntity {
             }
         }
         return modules;
+    }
+
+    protected float getDrain(List<ModuleItem> modules, float drain) {
+        for (ModuleItem module : modules){
+            drain = module.getEnergyConsumption(drain);
+        }
+        return drain;
+    }
+
+    protected void increaseProgress(List<ModuleItem> modules, float drain, int time) {
+        float progressRatio = time / maxProgress;
+        if (energyCell.getEnergyStored() >= drain) {
+            energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
+            float progressIncrease = 1.0f;
+            for (ModuleItem module : modules){
+                progressIncrease = module.getProgress(progressIncrease);
+            }
+            progress += (progressIncrease / progressRatio);
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
+            this.setChanged();
+        }
+    }
+
+    protected void increaseProductivity(List<ModuleItem> modules) {
+        float productivityIncrease = 0.0f;
+        for (ModuleItem module : modules) {
+            productivityIncrease = module.getProductivity(productivityIncrease);
+        }
+        productivity += productivityIncrease;
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
+        this.setChanged();
+    }
+
+    public void setEnergy(int energy) {
+        this.energyCell.setEnergy(energy);
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
+    }
+
+    public void setProductivity(float productivity) {
+        this.productivity = productivity;
     }
 }

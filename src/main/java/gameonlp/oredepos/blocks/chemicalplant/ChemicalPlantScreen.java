@@ -38,8 +38,8 @@ public class ChemicalPlantScreen extends AbstractContainerScreen<ChemicalPlantCo
         int i = this.leftPos;
         int j = this.topPos;
         this.blit(matrixStack, i, j, 0, 0, 175, 164);
-        float currentEnergy = tile.energyCell.getEnergyStored();
-        int maxEnergy = tile.energyCell.getMaxEnergyStored();
+        float currentEnergy = tile.getEnergyCell().getEnergyStored();
+        int maxEnergy = tile.getEnergyCell().getMaxEnergyStored();
         this.blit(matrixStack, i + 151, j + 4, 212, 0, 18, 45);
         int filled = 45 - (int)(45 * (1 - (currentEnergy / maxEnergy)));
         this.blit(matrixStack, i + 151, j + 4 + 45 - filled, 194, 45 - filled, 18, filled);
@@ -47,8 +47,8 @@ public class ChemicalPlantScreen extends AbstractContainerScreen<ChemicalPlantCo
         renderTank(tile.primaryInputTank, matrixStack, i, 11, j, 18, 10);
         renderTank(tile.secondaryInputTank, matrixStack, i, 29, j, 18, 28);
         renderTank(tile.fluidTank, matrixStack, i, 96, j, 4, 95);
-        RenderHelper.renderBar(matrixStack, i + 126, j + 5, 6, 43, tile.progress / tile.maxProgress, 0xFF29D825);
-        RenderHelper.renderBar(matrixStack, i + 134, j + 5, 6, 43, tile.productivity, 0xFFBB18BB);
+        RenderHelper.renderBar(matrixStack, i + 126, j + 5, 6, 43, tile.getProgress() / tile.getMaxProgress(), 0xFF29D825);
+        RenderHelper.renderBar(matrixStack, i + 134, j + 5, 6, 43, tile.getProductivity(), 0xFFBB18BB);
     }
 
     private void renderTank(FluidTank tank, PoseStack matrixStack, int i, int x, int j, int x1, int x2) {
@@ -85,7 +85,7 @@ public class ChemicalPlantScreen extends AbstractContainerScreen<ChemicalPlantCo
                                     .append(tile.fluidTank.getFluid().getDisplayName())), x, y);
         }
         if (x >= i + 151 && x <= i + 169 && y >= j + 4 && y <= j + 49) {
-            renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.energyCell.getEnergyStored() + "/" + tile.energyCell.getMaxEnergyStored())), x, y);
+            renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
         }
     }
 }

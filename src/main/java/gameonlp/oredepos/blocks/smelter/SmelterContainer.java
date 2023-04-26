@@ -37,9 +37,9 @@ public class SmelterContainer extends BasicContainer {
 
     @Override
     protected void sendInitialSync() {
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((SmelterTile)tileEntity).energyCell.getEnergyStored()));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((SmelterTile) tileEntity).progress));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((SmelterTile) tileEntity).productivity));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((SmelterTile) tileEntity).getEnergyCell().getEnergyStored()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((SmelterTile) tileEntity).getProgress()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((SmelterTile) tileEntity).getProductivity()));
     }
 
     @Override

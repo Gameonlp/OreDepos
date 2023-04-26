@@ -44,9 +44,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
-
-    final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
-
     PlayerInOutStackHandler handler;
 
     int fluidCapacity = 4000;
@@ -61,16 +58,14 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
     LazyOptional<IFluidHandler> secondaryFluidHandler = LazyOptional.of(() -> secondaryInputTank);
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
 
-    float progress;
-    float maxProgress = 30;
-    float productivity;
-
     ChemicalPlantRecipe currentRecipe = null;
 
     protected ChemicalPlantTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
         handler = new PlayerInOutStackHandler(this, slots, 1);
+        energyCell = new EnergyCell(this, false, true, 16000);
+        maxProgress = 30;
     }
 
     public ChemicalPlantTile(BlockPos pos, BlockState state) {
@@ -216,22 +211,8 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
                 return;
             }
             List<ModuleItem> modules = getModuleItems(3);
-            float drain = (float) currentRecipe.getEnergy();
-            for (ModuleItem module : modules){
-                drain = module.getEnergyConsumption(drain);
-            }
-            int time = currentRecipe.getTicks();
-            float progressRatio = time / maxProgress;
-            if (energyCell.getEnergyStored() >= drain) {
-                energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
-                float progressIncrease = 1.0f;
-                for (ModuleItem module : modules){
-                    progressIncrease = module.getProgress(progressIncrease);
-                }
-                progress += (progressIncrease / progressRatio);
-                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
-                this.setChanged();
-            }
+            float drain = getDrain(modules, (float) currentRecipe.getEnergy());
+            increaseProgress(modules, drain, currentRecipe.getTicks());
             if (progress >= maxProgress) {
                 progress -= 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
@@ -264,20 +245,9 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
                 }
                 fluidTank.fill(outFluid, IFluidHandler.FluidAction.EXECUTE);
                 slots.insertItem(0, outStack, false);
-                float productivityIncrease = 0.0f;
-                for (ModuleItem module : modules) {
-                    productivityIncrease = module.getProductivity(productivityIncrease);
-                }
-                productivity += productivityIncrease;
-                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                this.setChanged();
+                increaseProductivity(modules);
             }
         }
-    }
-
-    @Override
-    public void setEnergy(int energy) {
-        this.energyCell.setEnergy(energy);
     }
 
     @Override
@@ -292,15 +262,6 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
             case 2:
                 this.secondaryInputTank.setFluid(fluid);
         }
-    }
-
-    @Override
-    public void setProgress(float progress) {
-        this.progress = progress;
-    }
-    @Override
-    public void setProductivity(float productivity) {
-        this.productivity = productivity;
     }
 
     public static String getName() {

@@ -2,8 +2,6 @@ package gameonlp.oredepos.blocks.grinder;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
-import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
-import gameonlp.oredepos.crafting.FluidIngredient;
 import gameonlp.oredepos.crafting.FluidInventory;
 import gameonlp.oredepos.crafting.GrinderRecipe;
 import gameonlp.oredepos.items.ModuleItem;
@@ -11,9 +9,7 @@ import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
 import gameonlp.oredepos.net.PacketProgressSync;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
-import gameonlp.oredepos.tile.FluidHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
-import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.util.EnergyCell;
 import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
@@ -23,18 +19,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
@@ -42,13 +32,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, ModuleAcceptorTile {
-
-    final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
 
     PlayerInOutStackHandler handler;
 
@@ -56,16 +43,13 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
     LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> handler.getPlayerAccessible());
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
 
-    float progress;
-    float maxProgress = 30;
-    float productivity;
-
     GrinderRecipe currentRecipe = null;
 
     protected GrinderTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
         handler = new PlayerInOutStackHandler(this, slots, 1);
+        energyCell = new EnergyCell(this, false, true, 16000);
     }
 
     public GrinderTile(BlockPos pos, BlockState state) {
@@ -155,22 +139,8 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
                 return;
             }
             List<ModuleItem> modules = getModuleItems(2);
-            float drain = (float) currentRecipe.getEnergy();
-            for (ModuleItem module : modules){
-                drain = module.getEnergyConsumption(drain);
-            }
-            int time = currentRecipe.getTicks();
-            float progressRatio = time / maxProgress;
-            if (energyCell.getEnergyStored() >= drain) {
-                energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
-                float progressIncrease = 1.0f;
-                for (ModuleItem module : modules){
-                    progressIncrease = module.getProgress(progressIncrease);
-                }
-                progress += (progressIncrease / progressRatio);
-                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
-                this.setChanged();
-            }
+            float drain = getDrain(modules, (float) currentRecipe.getEnergy());
+            increaseProgress(modules, drain, currentRecipe.getTicks());
             if (progress >= maxProgress) {
                 progress = 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
@@ -187,28 +157,9 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
                     outStack.setCount(outStack.getCount() * 2);
                 }
                 slots.insertItem(0, outStack, false);
-                float productivityIncrease = 0.0f;
-                for (ModuleItem module : modules) {
-                    productivityIncrease = module.getProductivity(productivityIncrease);
-                }
-                productivity += productivityIncrease;
-                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                this.setChanged();
+                increaseProductivity(modules);
             }
         }
-    }
-
-    @Override
-    public void setEnergy(int energy) {
-        this.energyCell.setEnergy(energy);
-    }
-    @Override
-    public void setProgress(float progress) {
-        this.progress = progress;
-    }
-    @Override
-    public void setProductivity(float productivity) {
-        this.productivity = productivity;
     }
 
     public static String getName() {

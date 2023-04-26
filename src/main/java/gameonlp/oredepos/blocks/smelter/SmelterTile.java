@@ -16,13 +16,10 @@ import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,28 +29,19 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, ModuleAcceptorTile {
-
-    final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
 
     PlayerInOutStackHandler handler;
 
     LazyOptional<ItemStackHandler> machineItemHandler = LazyOptional.of(() -> handler.getMachineAccessible());
     LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> handler.getPlayerAccessible());
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
-
-    float progress;
-    float maxProgress = 30;
-    float productivity;
 
     SmelterRecipe currentRecipe = null;
     AbstractCookingRecipe vanillaRecipe = null;
@@ -62,6 +50,8 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
         handler = new PlayerInOutStackHandler(this, slots, 1);
+        energyCell = new EnergyCell(this, false, true, 16000);
+        maxProgress = 30;
     }
 
     public SmelterTile(BlockPos pos, BlockState state) {
@@ -160,7 +150,11 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
             if (!getBlockState().getValue(Working.WORKING).equals(Working.ACTIVE)) {
                 level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.ACTIVE));
             }
-            if ((currentRecipe != null && !currentRecipe.matches(fluidInventory, level)) || (vanillaRecipe != null && !vanillaRecipe.matches(fluidInventory, level))){
+            ItemStack resultItem = (currentRecipe != null ? currentRecipe : vanillaRecipe).getResultItem().copy();
+            if ((currentRecipe != null && !currentRecipe.matches(fluidInventory, level))
+                    || (vanillaRecipe != null && !vanillaRecipe.matches(fluidInventory, level))
+                    || resultItem.isEmpty()
+                    || slots.insertItem(0, resultItem, true) != ItemStack.EMPTY) {
                 progress = 0;
                 currentRecipe = null;
                 vanillaRecipe = null;
@@ -168,32 +162,9 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
                 level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
                 return;
             }
-            if (slots.insertItem(0, (currentRecipe != null ? currentRecipe : vanillaRecipe).getResultItem(), true) != ItemStack.EMPTY) {
-                level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
-                return;
-            }
             List<ModuleItem> modules = getModuleItems(2);
-            float drain;
-            if (currentRecipe != null) {
-                drain = (float) currentRecipe.getEnergy();
-            } else {
-                drain = getVanillaDrain();
-            }
-            for (ModuleItem module : modules){
-                drain = module.getEnergyConsumption(drain);
-            }
-            int time = (currentRecipe != null ? currentRecipe.getTicks() : vanillaRecipe.getCookingTime());
-            float progressRatio = time / maxProgress;
-            if (energyCell.getEnergyStored() >= drain) {
-                energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
-                float progressIncrease = 1.0f;
-                for (ModuleItem module : modules){
-                    progressIncrease = module.getProgress(progressIncrease);
-                }
-                progress += (progressIncrease / progressRatio);
-                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
-                this.setChanged();
-            }
+            float drain = getDrain(modules, currentRecipe != null ? (float) currentRecipe.getEnergy() : getVanillaDrain());
+            increaseProgress(modules, drain, (currentRecipe != null ? currentRecipe.getTicks() : vanillaRecipe.getCookingTime()));
             if (progress >= maxProgress) {
                 progress = 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
@@ -203,35 +174,16 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
                         slots.extractItem(1, 1, false);
                     }
                 }
-                ItemStack outStack = (currentRecipe != null ? currentRecipe : vanillaRecipe).getResultItem();
+                ItemStack outStack = resultItem;
                 if (productivity >= 1){
                     productivity -= 1;
                     PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
                     outStack.setCount(outStack.getCount() * 2);
                 }
                 slots.insertItem(0, outStack, false);
-                float productivityIncrease = 0.0f;
-                for (ModuleItem module : modules) {
-                    productivityIncrease = module.getProductivity(productivityIncrease);
-                }
-                productivity += productivityIncrease;
-                PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                this.setChanged();
+                increaseProductivity(modules);
             }
         }
-    }
-
-    @Override
-    public void setEnergy(int energy) {
-        this.energyCell.setEnergy(energy);
-    }
-    @Override
-    public void setProgress(float progress) {
-        this.progress = progress;
-    }
-    @Override
-    public void setProductivity(float productivity) {
-        this.productivity = productivity;
     }
 
     public static String getName() {
