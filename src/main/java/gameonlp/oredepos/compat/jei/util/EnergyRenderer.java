@@ -59,7 +59,7 @@ public class EnergyRenderer implements IIngredientRenderer<TotalEnergy> {
 
     @Override
     public List<Component> getTooltip(TotalEnergy ingredient, TooltipFlag tooltipFlag) {
-        return Collections.singletonList(new TextComponent(ingredient.energy() + ingredient.ticks() + "FE over " + String.format("%.2f", ingredient.ticks() / 20f) + "s (" + ingredient.energy() + "FE/t)"));
+        return Collections.singletonList(new TextComponent(ingredient.energy() * ingredient.ticks() + "FE over " + String.format("%.2f", ingredient.ticks() / 20f) + "s (" + ingredient.energy() + "FE/t)"));
     }
 
     @Override
