@@ -317,6 +317,9 @@ public class TagProvider {
                     RegistryManager.ANCIENT_DEBRIS_DEPOSIT,
 
                     RegistryManager.MINER.get(),
+                    RegistryManager.GRINDER.get(),
+                    RegistryManager.SMELTER.get(),
+                    RegistryManager.CRAFTER.get(),
                     RegistryManager.CHEMICAL_PLANT.get()
             );
 

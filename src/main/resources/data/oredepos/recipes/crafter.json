@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "131",
+    "212",
+    "141"
+  ],
+  "key": {
+    "1": {
+      "item": "oredepos:circuit"
+    },
+    "2": {
+      "item": "minecraft:iron_ingot"
+    },
+    "3": {
+      "item": "minecraft:gold_block"
+    },
+    "4": {
+      "item": "oredepos:wire"
+    }
+  },
+  "result": {
+    "item": "oredepos:crafter",
+    "count": 1
+  }
+}

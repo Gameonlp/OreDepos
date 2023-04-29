@@ -91,6 +91,9 @@
     "oredepos:nether_gold_ore_deposit",
     "oredepos:ancient_debris_deposit",
     "oredepos:miner",
+    "oredepos:grinder",
+    "oredepos:smelter",
+    "oredepos:crafter",
     "oredepos:chemical_plant"
   ]
 }
