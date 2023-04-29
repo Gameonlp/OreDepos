@@ -5,7 +5,7 @@ import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.compat.jei.util.EnergyRenderer;
 import gameonlp.oredepos.compat.jei.ODJeiPlugin;
 import gameonlp.oredepos.compat.jei.util.TotalEnergy;
-import gameonlp.oredepos.crafting.SmelterRecipe;
+import gameonlp.oredepos.crafting.smelter.SmelterRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;

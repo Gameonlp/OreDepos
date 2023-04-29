@@ -4,7 +4,7 @@ import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
 import gameonlp.oredepos.blocks.Working;
 import gameonlp.oredepos.crafting.FluidInventory;
-import gameonlp.oredepos.crafting.SmelterRecipe;
+import gameonlp.oredepos.crafting.smelter.SmelterRecipe;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;

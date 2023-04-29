@@ -1,4 +1,4 @@
-package gameonlp.oredepos.crafting;
+package gameonlp.oredepos.crafting.smelter;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;

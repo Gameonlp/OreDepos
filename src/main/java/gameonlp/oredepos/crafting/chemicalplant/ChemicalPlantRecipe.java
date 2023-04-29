@@ -1,4 +1,4 @@
-package gameonlp.oredepos.crafting;
+package gameonlp.oredepos.crafting.chemicalplant;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -7,6 +7,9 @@ import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.crafting.FluidIngredient;
+import gameonlp.oredepos.crafting.IBaseRecipe;
+import gameonlp.oredepos.crafting.IFluidInventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -24,7 +27,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public class ChemicalPlantRecipe implements IBaseRecipe{
+public class ChemicalPlantRecipe implements IBaseRecipe {
     public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "chemical_plant_recipe");
     private final ResourceLocation id;
     private final NonNullList<Ingredient> ingredients;

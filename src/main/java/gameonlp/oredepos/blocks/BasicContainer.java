@@ -31,6 +31,11 @@ public abstract class BasicContainer extends AbstractContainerMenu {
 
     public BasicContainer(int windowId, Level world, BlockPos pos,
                           Inventory playerInventory, Player player, int moduleOffset, @NotNull MenuType<?> menuType) {
+        this(windowId, world, pos, playerInventory, player, moduleOffset, menuType, 8, 84);
+    }
+
+    public BasicContainer(int windowId, Level world, BlockPos pos,
+                          Inventory playerInventory, Player player, int moduleOffset, @NotNull MenuType<?> menuType, int leftCol, int topRow) {
         super(menuType, windowId);
         this.moduleOffset = moduleOffset;
         this.tileEntity = world.getBlockEntity(pos);
@@ -39,7 +44,7 @@ public abstract class BasicContainer extends AbstractContainerMenu {
         }
         this.player = player;
         this.playerInventory = new InvWrapper(playerInventory);
-        layoutPlayerInventorySlots(8, 84);
+        layoutPlayerInventorySlots(leftCol, topRow);
 
         if(tileEntity != null) {
             setUpSlots();

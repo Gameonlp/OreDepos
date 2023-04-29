@@ -1,4 +1,4 @@
-package gameonlp.oredepos.crafting;
+package gameonlp.oredepos.crafting.smelter;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -6,6 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.crafting.FluidIngredient;
+import gameonlp.oredepos.crafting.IBaseRecipe;
+import gameonlp.oredepos.crafting.IFluidInventory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +20,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public class SmelterRecipe implements IBaseRecipe{
+public class SmelterRecipe implements IBaseRecipe {
     public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "smelter_recipe");
     private final ResourceLocation id;
     private final NonNullList<Ingredient> ingredients;

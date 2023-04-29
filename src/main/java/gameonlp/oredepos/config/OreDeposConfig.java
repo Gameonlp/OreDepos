@@ -1,7 +1,9 @@
 package gameonlp.oredepos.config;
 
 import gameonlp.oredepos.util.Configurable;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.LinkedList;
@@ -43,11 +45,13 @@ public class OreDeposConfig {
         public static OreConfig ardite;
         public static OreConfig cobalt;
         public static OreConfig platinum;
+        public static ForgeConfigSpec.IntValue crafterDrain;
+        public static ForgeConfigSpec.ConfigValue<List<? extends String>> blackListedItems;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
             builder.push("Short Distance");
-            builder.comment("How many blocks from spawn is short distance stops");
+            builder.comment("How many blocks from spawn until short distance stops");
             shortDistance = builder.defineInRange("shortDistance", 1000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at least in a short distance deposit");
             leastShortDistance = builder.defineInRange("leastShortDistance", 100, 0, Long.MAX_VALUE);
@@ -55,7 +59,7 @@ public class OreDeposConfig {
             mostShortDistance = builder.defineInRange("mostShortDistance", 200, 0, Long.MAX_VALUE);
             builder.pop();
             builder.push("Medium Distance");
-            builder.comment("How many blocks from spawn is medium distance stops");
+            builder.comment("How many blocks from spawn until medium distance stops");
             mediumDistance = builder.defineInRange("mediumDistance", 10000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at least in a medium distance deposit");
             leastMediumDistance = builder.defineInRange("leastMediumDistance", 1000, 0, Long.MAX_VALUE);
@@ -63,7 +67,7 @@ public class OreDeposConfig {
             mostMediumDistance = builder.defineInRange("mostMediumDistance", 2000, 0, Long.MAX_VALUE);
             builder.pop();
             builder.push("Long Distance");
-            builder.comment("How many blocks from spawn long distance is at a maximum");
+            builder.comment("How many blocks from spawn until long distance is at a maximum");
             longDistance = builder.defineInRange("longDistance", 100000, 0, Integer.MAX_VALUE);
             builder.comment("How many blocks are at least in a long distance deposit");
             leastLongDistance = builder.defineInRange("leastLongDistance", 10000, 0, Long.MAX_VALUE);
@@ -71,6 +75,14 @@ public class OreDeposConfig {
             mostLongDistance = builder.defineInRange("mostLongDistance", 20000, 0, Long.MAX_VALUE);
             builder.comment("If this setting is set long distance deposits increase in maximum size by most - least every 'longDistance' blocks");
             longDistanceIncreasesFurther = builder.define("longDistanceIncreasesFurther", true);
+            builder.pop();
+            builder.push("Machines");
+            builder.push("Crafter");
+            crafterDrain = builder.defineInRange("Drain per tick to craft items", 40, 0, Integer.MAX_VALUE);
+            builder.comment("Decides the FE cost per tick to craft an item");
+            blackListedItems = builder.defineList("Items to blacklist from crafting", new LinkedList<>(List.of()), item -> ForgeRegistries.ITEMS.containsKey(new ResourceLocation((String) item)));
+            builder.comment("Disables crafting of recipes resulting in items in this list");
+            builder.pop();
             builder.pop();
             builder.push("Ore Settings");
             coal = new OreConfig(builder, "coal", false, true, false, 1.0f, 17, -64, 128, 20);

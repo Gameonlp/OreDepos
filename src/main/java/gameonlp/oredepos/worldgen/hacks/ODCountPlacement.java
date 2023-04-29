@@ -4,14 +4,10 @@ import com.mojang.serialization.Codec;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.config.OreConfig;
 import gameonlp.oredepos.config.OreDeposConfig;
-import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
 import gameonlp.oredepos.util.Configurable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.ConstantFloat;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.FloatProvider;
-import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.placement.RepeatingPlacement;
 

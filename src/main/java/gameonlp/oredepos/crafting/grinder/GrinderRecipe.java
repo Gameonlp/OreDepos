@@ -1,15 +1,15 @@
-package gameonlp.oredepos.crafting;
+package gameonlp.oredepos.crafting.grinder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.crafting.FluidIngredient;
+import gameonlp.oredepos.crafting.IBaseRecipe;
+import gameonlp.oredepos.crafting.IFluidInventory;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -19,12 +19,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public class GrinderRecipe implements IBaseRecipe{
+public class GrinderRecipe implements IBaseRecipe {
     public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "grinder_recipe");
     private final ResourceLocation id;
     private final NonNullList<Ingredient> ingredients;

@@ -2,8 +2,7 @@ package gameonlp.oredepos.blocks.chemicalplant;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
-import gameonlp.oredepos.blocks.miner.MinerTile;
-import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
+import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import gameonlp.oredepos.crafting.FluidInventory;
 import gameonlp.oredepos.items.ModuleItem;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;

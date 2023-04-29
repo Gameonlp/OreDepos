@@ -3,7 +3,7 @@ package gameonlp.oredepos.blocks.grinder;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
 import gameonlp.oredepos.crafting.FluidInventory;
-import gameonlp.oredepos.crafting.GrinderRecipe;
+import gameonlp.oredepos.crafting.grinder.GrinderRecipe;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;

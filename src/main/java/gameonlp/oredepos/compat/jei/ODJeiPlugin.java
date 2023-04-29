@@ -3,18 +3,22 @@ package gameonlp.oredepos.compat.jei;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantScreen;
+import gameonlp.oredepos.blocks.crafter.CrafterManager;
+import gameonlp.oredepos.blocks.crafter.CrafterScreen;
 import gameonlp.oredepos.blocks.grinder.GrinderScreen;
 import gameonlp.oredepos.blocks.smelter.SmelterScreen;
 import gameonlp.oredepos.blocks.smelter.SmelterTile;
 import gameonlp.oredepos.compat.jei.machine.ChemicalPlantRecipeCategory;
+import gameonlp.oredepos.compat.jei.machine.CrafterRecipeCategory;
 import gameonlp.oredepos.compat.jei.machine.GrinderRecipeCategory;
 import gameonlp.oredepos.compat.jei.machine.SmelterRecipeCategory;
 import gameonlp.oredepos.compat.jei.util.EnergyHelper;
 import gameonlp.oredepos.compat.jei.util.EnergyRenderer;
 import gameonlp.oredepos.compat.jei.util.TotalEnergy;
-import gameonlp.oredepos.crafting.ChemicalPlantRecipe;
-import gameonlp.oredepos.crafting.GrinderRecipe;
-import gameonlp.oredepos.crafting.SmelterRecipe;
+import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
+import gameonlp.oredepos.crafting.crafter.CrafterRecipe;
+import gameonlp.oredepos.crafting.grinder.GrinderRecipe;
+import gameonlp.oredepos.crafting.smelter.SmelterRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -37,6 +41,7 @@ public class ODJeiPlugin implements IModPlugin {
     private final RecipeType<ChemicalPlantRecipe> CHEMICAL_PLANT_TYPE = new RecipeType<>(ChemicalPlantRecipe.TYPE, ChemicalPlantRecipe.class);
     private final RecipeType<GrinderRecipe> GRINDER_TYPE = new RecipeType<>(GrinderRecipe.TYPE, GrinderRecipe.class);
     private final RecipeType<SmelterRecipe> SMELTER_TYPE = new RecipeType<>(SmelterRecipe.TYPE, SmelterRecipe.class);
+    private final RecipeType<CrafterRecipe> CRAFTER_TYPE = new RecipeType<>(CrafterRecipe.TYPE, CrafterRecipe.class);
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
@@ -63,6 +68,9 @@ public class ODJeiPlugin implements IModPlugin {
                     smeltingRecipe.getCookingTime() * SmelterTile.getVanillaSpeedFactor()));
         }
         registration.addRecipes(SMELTER_TYPE, smelterRecipes);
+        CrafterManager crafterManager = new CrafterManager();
+        crafterManager.refresh(world);
+        registration.addRecipes(CRAFTER_TYPE, crafterManager.possibilities());
     }
 
     @Override
@@ -70,12 +78,14 @@ public class ODJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new ChemicalPlantRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new GrinderRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new SmelterRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new CrafterRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(ChemicalPlantScreen.class, 71, 33, 20, 14, CHEMICAL_PLANT_TYPE);
         registration.addRecipeClickArea(GrinderScreen.class, 51, 35, 20, 14, GRINDER_TYPE);
         registration.addRecipeClickArea(SmelterScreen.class, 51, 35, 20, 14, SMELTER_TYPE);
+        registration.addRecipeClickArea(CrafterScreen.class, 71, 35, 20, 14, CRAFTER_TYPE);
     }
 
         @Override
@@ -83,6 +93,11 @@ public class ODJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()), CHEMICAL_PLANT_TYPE);
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.GRINDER.get().asItem()), GRINDER_TYPE);
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.SMELTER.get().asItem()), SMELTER_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(RegistryManager.CRAFTER.get().asItem()), CRAFTER_TYPE);
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
     }
 
     @Override

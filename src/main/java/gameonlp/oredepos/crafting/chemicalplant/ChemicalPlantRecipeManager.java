@@ -1,4 +1,4 @@
-package gameonlp.oredepos.crafting;
+package gameonlp.oredepos.crafting.chemicalplant;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
@@ -10,6 +10,7 @@ import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.crafting.FluidIngredient;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
