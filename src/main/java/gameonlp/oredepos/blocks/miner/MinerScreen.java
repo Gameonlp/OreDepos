@@ -1,15 +1,14 @@
 package gameonlp.oredepos.blocks.miner;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.gui.FluidHelper;
 import gameonlp.oredepos.gui.RenderHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.Collections;
@@ -67,12 +66,12 @@ public class MinerScreen extends AbstractContainerScreen<MinerContainer> {
         }
         if (x >= i + 115 && x <= i + 133 && y >= j + 4 && y <= j + 49) {
             renderComponentTooltip(matrixStack,
-                    Collections.singletonList(tile.fluidTank.isEmpty() ? new TextComponent("Nothing") :
-                            new TextComponent(tile.fluidTank.getFluidAmount() + "/" + tile.fluidTank.getCapacity() + " ")
+                    Collections.singletonList(tile.fluidTank.isEmpty() ? Component.literal("Nothing") :
+                            Component.literal(tile.fluidTank.getFluidAmount() + "/" + tile.fluidTank.getCapacity() + " ")
                                     .append(tile.fluidTank.getFluid().getDisplayName())), x, y);
         }
         if (x >= i + 151 && x <= i + 169 && y >= j + 4 && y <= j + 49) {
-            renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.energyCell.getEnergyStored() + "/" + tile.energyCell.getMaxEnergyStored())), x, y);
+            renderComponentTooltip(matrixStack, Collections.singletonList(Component.literal(tile.energyCell.getEnergyStored() + "/" + tile.energyCell.getMaxEnergyStored())), x, y);
         }
     }
 }

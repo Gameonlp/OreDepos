@@ -3,27 +3,18 @@ package gameonlp.oredepos.blocks.crafter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
-import gameonlp.oredepos.blocks.crafter.CrafterContainer;
-import gameonlp.oredepos.blocks.crafter.CrafterTile;
 import gameonlp.oredepos.crafting.CountIngredient;
-import gameonlp.oredepos.crafting.crafter.CrafterRecipe;
 import gameonlp.oredepos.gui.RenderHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CrafterScreen extends AbstractContainerScreen<CrafterContainer> {
 
@@ -118,7 +109,7 @@ public class CrafterScreen extends AbstractContainerScreen<CrafterContainer> {
                             try {
                                 components.add(item.getTooltipLines(null, TooltipFlag.Default.NORMAL).get(0));
                             } catch (IndexOutOfBoundsException e) {
-                                components.add(new TextComponent("Missing Tooltip for " + item));
+                                components.add(Component.literal("Missing Tooltip for " + item));
                             }
                         }
                     } catch (IndexOutOfBoundsException ignored) {}
@@ -129,7 +120,7 @@ public class CrafterScreen extends AbstractContainerScreen<CrafterContainer> {
             }
         }
         if (x >= i + 151 && x <= i + 169 && y >= j + 4 && y <= j + 49) {
-            renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
+            renderComponentTooltip(matrixStack, Collections.singletonList(Component.literal(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
         }
     }
 

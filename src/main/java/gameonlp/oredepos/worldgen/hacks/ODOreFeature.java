@@ -2,10 +2,9 @@ package gameonlp.oredepos.worldgen.hacks;
 
 import com.mojang.serialization.Codec;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -18,7 +17,7 @@ public class ODOreFeature extends OreFeature {
     }
 
     public boolean place(FeaturePlaceContext<OreConfiguration> p_160177_) {
-        Random random = p_160177_.random();
+        RandomSource random = p_160177_.random();
         BlockPos blockpos = p_160177_.origin();
         WorldGenLevel worldgenlevel = p_160177_.level();
         ODOreConfiguration oreconfiguration = (ODOreConfiguration) p_160177_.config();
@@ -49,7 +48,7 @@ public class ODOreFeature extends OreFeature {
         return false;
     }
 
-    protected boolean doPlace(WorldGenLevel p_66533_, Random p_66534_, ODOreConfiguration p_66535_, double p_66536_, double p_66537_, double p_66538_, double p_66539_, double p_66540_, double p_66541_, int p_66542_, int p_66543_, int p_66544_, int p_66545_, int p_66546_) {
+    protected boolean doPlace(WorldGenLevel p_66533_, RandomSource p_66534_, ODOreConfiguration p_66535_, double p_66536_, double p_66537_, double p_66538_, double p_66539_, double p_66540_, double p_66541_, int p_66542_, int p_66543_, int p_66544_, int p_66545_, int p_66546_) {
         return super.doPlace(p_66533_, p_66534_, new OreConfiguration(p_66535_.targetStates, p_66535_.size, p_66535_.discardChanceOnAirExposure),p_66536_, p_66537_, p_66538_, p_66539_, p_66540_, p_66541_, p_66542_, p_66543_, p_66544_, p_66545_, p_66546_);
     }
 }

@@ -1,18 +1,14 @@
 {
-  "type": "forge:conditional",
-  "recipes": {
-    "recipe": {
-      "input": [
-        {
-          "tag": "minecraft:redstone_ores"
-        }
-      ],
-      "result": {
-        "item": "minecraft:redstone",
-        "count": 5
-      },
-      "energy": 40,
-      "ticks": 20
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "tag": "minecraft:redstone_ores"
     }
-  }
+  ],
+  "result": {
+    "count": 5,
+    "item": "minecraft:redstone"
+  },
+  "ticks": 20
 }

@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import net.minecraft.world.item.crafting.Ingredient.Value;
+
 public class CountIngredient extends Ingredient {
     private int count;
     private Ingredient wrapped;

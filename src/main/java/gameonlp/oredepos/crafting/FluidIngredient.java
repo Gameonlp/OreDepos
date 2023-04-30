@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 public class FluidIngredient implements Predicate<FluidStack> {
     private final @NotNull TagKey<Fluid> fluidTag;
-    public static final FluidIngredient EMPTY = new FluidIngredient(FluidTags.create(Fluids.EMPTY.getRegistryName()), 0,null);
+    public static final FluidIngredient EMPTY = new FluidIngredient(FluidTags.create(ForgeRegistries.FLUIDS.getKey(Fluids.EMPTY)), 0,null);
     private final int amount;
     //Users may want to only do something with nbt data, we should support that
     private final CompoundTag nbt;

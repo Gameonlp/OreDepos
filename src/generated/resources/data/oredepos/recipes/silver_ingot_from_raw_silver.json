@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.7,
   "ingredient": {
     "item": "oredepos:raw_silver"
   },
-  "result": "oredepos:silver_ingot",
-  "experience": 0.7,
-  "cookingtime": 200
+  "result": "oredepos:silver_ingot"
 }

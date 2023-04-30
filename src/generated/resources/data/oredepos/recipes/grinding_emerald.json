@@ -1,18 +1,14 @@
 {
-  "type": "forge:conditional",
-  "recipes": {
-    "recipe": {
-      "input": [
-        {
-          "tag": "minecraft:emerald_ores"
-        }
-      ],
-      "result": {
-        "item": "minecraft:emerald",
-        "count": 2
-      },
-      "energy": 40,
-      "ticks": 20
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "tag": "minecraft:emerald_ores"
     }
-  }
+  ],
+  "result": {
+    "count": 2,
+    "item": "minecraft:emerald"
+  },
+  "ticks": 20
 }

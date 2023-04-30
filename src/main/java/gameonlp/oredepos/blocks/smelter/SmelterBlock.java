@@ -2,12 +2,9 @@ package gameonlp.oredepos.blocks.smelter;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.Working;
-import gameonlp.oredepos.blocks.smelter.SmelterContainer;
-import gameonlp.oredepos.blocks.smelter.SmelterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -27,9 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -50,7 +44,7 @@ public class SmelterBlock extends BaseEntityBlock {
             if(tileEntity instanceof SmelterTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openGui(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -62,7 +56,7 @@ public class SmelterBlock extends BaseEntityBlock {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("screen.oredepos.smelter");
+                return Component.translatable("screen.oredepos.smelter");
             }
 
             @Nullable

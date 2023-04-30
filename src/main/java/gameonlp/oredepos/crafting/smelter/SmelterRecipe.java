@@ -16,9 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 public class SmelterRecipe implements IBaseRecipe {
     public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "smelter_recipe");
@@ -110,7 +110,7 @@ public class SmelterRecipe implements IBaseRecipe {
         }
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+    public static class Serializer
             implements RecipeSerializer<SmelterRecipe> {
 
         @Override

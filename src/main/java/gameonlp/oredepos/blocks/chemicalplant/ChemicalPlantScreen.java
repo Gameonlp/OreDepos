@@ -1,15 +1,14 @@
 package gameonlp.oredepos.blocks.chemicalplant;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.gui.FluidHelper;
 import gameonlp.oredepos.gui.RenderHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.Collections;
@@ -68,24 +67,24 @@ public class ChemicalPlantScreen extends AbstractContainerScreen<ChemicalPlantCo
         ChemicalPlantTile tile = (ChemicalPlantTile) menu.getTileEntity();
         if (x >= i + 10 && x <= i + 27 && y >= j + 18 && y <= j + 63) {
             renderComponentTooltip(matrixStack,
-                    Collections.singletonList(tile.primaryInputTank.isEmpty() ? new TextComponent("Nothing") :
-                            new TextComponent(tile.primaryInputTank.getFluidAmount() + "/" + tile.primaryInputTank.getCapacity() + " ")
+                    Collections.singletonList(tile.primaryInputTank.isEmpty() ? Component.literal("Nothing") :
+                            Component.literal(tile.primaryInputTank.getFluidAmount() + "/" + tile.primaryInputTank.getCapacity() + " ")
                                     .append(tile.primaryInputTank.getFluid().getDisplayName())), x, y);
         }
         if (x >= i + 28 && x <= i + 45 && y >= j + 18 && y <= j + 63) {
             renderComponentTooltip(matrixStack,
-                    Collections.singletonList(tile.secondaryInputTank.isEmpty() ? new TextComponent("Nothing") :
-                            new TextComponent(tile.secondaryInputTank.getFluidAmount() + "/" + tile.secondaryInputTank.getCapacity() + " ")
+                    Collections.singletonList(tile.secondaryInputTank.isEmpty() ? Component.literal("Nothing") :
+                            Component.literal(tile.secondaryInputTank.getFluidAmount() + "/" + tile.secondaryInputTank.getCapacity() + " ")
                                     .append(tile.secondaryInputTank.getFluid().getDisplayName())), x, y);
         }
         if (x >= i + 95 && x <= i + 112 && y >= j + 4 && y <= j + 49) {
             renderComponentTooltip(matrixStack,
-                    Collections.singletonList(tile.fluidTank.isEmpty() ? new TextComponent("Nothing") :
-                            new TextComponent(tile.fluidTank.getFluidAmount() + "/" + tile.fluidTank.getCapacity() + " ")
+                    Collections.singletonList(tile.fluidTank.isEmpty() ? Component.literal("Nothing") :
+                            Component.literal(tile.fluidTank.getFluidAmount() + "/" + tile.fluidTank.getCapacity() + " ")
                                     .append(tile.fluidTank.getFluid().getDisplayName())), x, y);
         }
         if (x >= i + 151 && x <= i + 169 && y >= j + 4 && y <= j + 49) {
-            renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
+            renderComponentTooltip(matrixStack, Collections.singletonList(Component.literal(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
         }
     }
 }

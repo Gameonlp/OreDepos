@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class CrafterManager {
         }
         wrappedRecipes.addAll(level.getRecipeManager().getAllRecipesFor(RegistryManager.CRAFTER_RECIPE_TYPE.get()));
         wrappedRecipes.removeIf(crafterRecipe -> crafterRecipe.getCountIngredients().isEmpty() || crafterRecipe.getResultItem().isEmpty());
-        wrappedRecipes.removeIf(crafterRecipe -> OreDeposConfig.Common.blackListedItems.get().contains(crafterRecipe.getResultItem().getItem().getRegistryName().toString()));
+        wrappedRecipes.removeIf(crafterRecipe -> OreDeposConfig.Common.blackListedItems.get().contains(ForgeRegistries.ITEMS.getKey(crafterRecipe.getResultItem().getItem()).toString()));
     }
 
     public List<CrafterRecipe> possibilities(FluidInventory inventory) {

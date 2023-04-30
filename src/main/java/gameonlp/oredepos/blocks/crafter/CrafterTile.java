@@ -18,20 +18,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import org.apache.commons.compress.changes.ChangeSet;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -83,13 +80,13 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (side == null && CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)){
+        if (side == null && ForgeCapabilities.ITEM_HANDLER.equals(cap)){
             return itemHandler.cast();
         }
-        if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)) {
+        if (ForgeCapabilities.ITEM_HANDLER.equals(cap)) {
             return machineItemHandler.cast();
         }
-        if (CapabilityEnergy.ENERGY.equals(cap)){
+        if (ForgeCapabilities.ENERGY.equals(cap)){
             return energyHandler.cast();
         }
         return super.getCapability(cap, side);

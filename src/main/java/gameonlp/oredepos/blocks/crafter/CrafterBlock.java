@@ -1,12 +1,9 @@
 package gameonlp.oredepos.blocks.crafter;
 
 import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.blocks.crafter.CrafterContainer;
-import gameonlp.oredepos.blocks.crafter.CrafterTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -43,7 +40,7 @@ public class CrafterBlock extends BaseEntityBlock {
             if(tileEntity instanceof CrafterTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openGui(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -55,7 +52,7 @@ public class CrafterBlock extends BaseEntityBlock {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("screen.oredepos.crafter");
+                return Component.translatable("screen.oredepos.crafter");
             }
 
             @Nullable

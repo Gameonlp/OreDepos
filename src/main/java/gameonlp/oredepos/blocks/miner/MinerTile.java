@@ -2,36 +2,33 @@ package gameonlp.oredepos.blocks.miner;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
+import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
+import gameonlp.oredepos.items.DrillHeadItem;
+import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
 import gameonlp.oredepos.net.PacketProgressSync;
 import gameonlp.oredepos.net.PacketTooltipSync;
-import gameonlp.oredepos.tile.ModuleAcceptorTile;
-import gameonlp.oredepos.util.CustomFluidTank;
-import gameonlp.oredepos.items.DrillHeadItem;
-import gameonlp.oredepos.items.ModuleItem;
-import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.FluidHandlerTile;
+import gameonlp.oredepos.tile.ModuleAcceptorTile;
+import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.util.EnergyCell;
 import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.ForgeTier;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -43,7 +40,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
 
 import javax.annotation.Nonnull;
@@ -167,7 +163,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
         }
         if (slots.getStackInSlot(6).equals(ItemStack.EMPTY)){
             if (!hadReason || level.getGameTime() % 20 == 0) {
-                this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.missing_drill"));
+                this.reason = Collections.singletonList(Component.translatable("tooltip.oredepos.missing_drill"));
                 hadReason = true;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
             }
@@ -177,7 +173,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
         for (int slot = 0; slot <= 5; slot++) {
             if (slots.getStackInSlot(slot).getCount() != 0){
                 if (!hadReason || level.getGameTime() % 20 == 0) {
-                    this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.output_full"));
+                    this.reason = Collections.singletonList(Component.translatable("tooltip.oredepos.output_full"));
                     hadReason = true;
                     PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
                 }
@@ -211,7 +207,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
                 return;
             }
             if (this.reason.size() == 0){
-                this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.no_deposits"));
+                this.reason = Collections.singletonList(Component.translatable("tooltip.oredepos.no_deposits"));
             }
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
             hadReason = true;
@@ -313,13 +309,13 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
                             } else if(depoBlock.is(BlockTags.create(new ResourceLocation("minecraft:mineable/hoe")))){
                                 correctTool += "Hoe";
                             }
-                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_tool").append(": ").append(correctTool));
+                            currentReason.add(Component.translatable("tooltip.oredepos.incorrect_tool").append(": ").append(correctTool));
                         }
                         if (!correctFluid) {
-                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid.getRandomElement(level.random).get(), 100).getDisplayName()));
+                            currentReason.add(Component.translatable("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid.getRandomElement(level.random).get(), 100).getDisplayName()));
                         }
                         if (!enoughFluid) {
-                            currentReason.add(new TranslatableComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
+                            currentReason.add(Component.translatable("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
                         }
                         reasons.add(currentReason);
                     }

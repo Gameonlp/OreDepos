@@ -6,6 +6,7 @@ import gameonlp.oredepos.config.OreConfig;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.util.Configurable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -30,7 +31,7 @@ public class ODCountPlacement extends RepeatingPlacement implements Configurable
     }
 
     @Override
-    protected int count(Random p_191913_, BlockPos p_191914_) {
+    protected int count(RandomSource p_191913_, BlockPos p_191914_) {
         float value = this.count.sample(p_191913_);
         if (value < 1.0){
             return value > p_191913_.nextFloat() ? 1 : 0;

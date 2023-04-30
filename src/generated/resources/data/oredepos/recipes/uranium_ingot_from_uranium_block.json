@@ -6,7 +6,7 @@
     }
   ],
   "result": {
-    "item": "oredepos:uranium_ingot",
-    "count": 9
+    "count": 9,
+    "item": "oredepos:uranium_ingot"
   }
 }

@@ -1,34 +1,29 @@
 package gameonlp.oredepos.blocks.miner;
 
 import gameonlp.oredepos.RegistryManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Containers;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraftforge.network.NetworkHooks;
 
 public class MinerBlock extends BaseEntityBlock {
 
@@ -45,7 +40,7 @@ public class MinerBlock extends BaseEntityBlock {
             if(tileEntity instanceof MinerTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openGui(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -57,7 +52,7 @@ public class MinerBlock extends BaseEntityBlock {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("screen.oredepos.miner");
+                return Component.translatable("screen.oredepos.miner");
             }
 
             @Nullable

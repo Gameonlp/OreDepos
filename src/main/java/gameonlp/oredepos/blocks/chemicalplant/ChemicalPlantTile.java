@@ -2,9 +2,9 @@ package gameonlp.oredepos.blocks.chemicalplant;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
-import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import gameonlp.oredepos.crafting.FluidInventory;
+import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
@@ -16,30 +16,29 @@ import gameonlp.oredepos.util.CustomFluidTank;
 import gameonlp.oredepos.util.EnergyCell;
 import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
     PlayerInOutStackHandler handler;
@@ -91,22 +90,22 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (side == null && CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)){
+        if (side == null && ForgeCapabilities.ITEM_HANDLER.equals(cap)){
             return itemHandler.cast();
         }
-        if (side == this.getBlockState().getValue(BlockStateProperties.FACING) && CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.equals(cap)){
+        if (side == this.getBlockState().getValue(BlockStateProperties.FACING) && ForgeCapabilities.FLUID_HANDLER.equals(cap)){
             return outputFluidHandler.cast();
         }
-        if (side == this.getBlockState().getValue(BlockStateProperties.FACING).getClockWise() && CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.equals(cap)){
+        if (side == this.getBlockState().getValue(BlockStateProperties.FACING).getClockWise() && ForgeCapabilities.FLUID_HANDLER.equals(cap)){
             return secondaryFluidHandler.cast();
         }
-        if (side == this.getBlockState().getValue(BlockStateProperties.FACING).getCounterClockWise() && CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.equals(cap)){
+        if (side == this.getBlockState().getValue(BlockStateProperties.FACING).getCounterClockWise() && ForgeCapabilities.FLUID_HANDLER.equals(cap)){
             return primaryFluidHandler.cast();
         }
-        if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)) {
+        if (ForgeCapabilities.ITEM_HANDLER.equals(cap)) {
             return machineItemHandler.cast();
         }
-        if (CapabilityEnergy.ENERGY.equals(cap)){
+        if (ForgeCapabilities.ENERGY.equals(cap)){
             return energyHandler.cast();
         }
         return super.getCapability(cap, side);
@@ -175,7 +174,7 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
         if (!fluidTank.isEmpty()){
             Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
             if(level.getBlockEntity(worldPosition.offset(facing.getNormal())) != null) {
-                LazyOptional<IFluidHandler> capability = level.getBlockEntity(worldPosition.offset(facing.getNormal())).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
+                LazyOptional<IFluidHandler> capability = level.getBlockEntity(worldPosition.offset(facing.getNormal())).getCapability(ForgeCapabilities.FLUID_HANDLER, facing.getOpposite());
                 capability.ifPresent(handler -> {
                     if (handler.fill(fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE) != 0) {
                         FluidStack toFill = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);

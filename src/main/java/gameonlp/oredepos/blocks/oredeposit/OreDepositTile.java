@@ -17,12 +17,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class OreDepositTile extends BlockEntity {
     private int cooldown;
     private long amount;
     private long maxAmount;
     private String fluid;
-    private double factor;
+    private Supplier<Double> factor;
 
     protected OreDepositTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
@@ -32,7 +34,7 @@ public class OreDepositTile extends BlockEntity {
         this(RegistryManager.ORE_DEPOSIT_TILE.get(), pos, state);
     }
 
-    public OreDepositTile(BlockPos pos, BlockState state, String fluid, double factor){
+    public OreDepositTile(BlockPos pos, BlockState state, String fluid, Supplier<Double> factor){
         this(pos, state);
         this.fluid = fluid;
         this.factor = factor;
@@ -50,18 +52,18 @@ public class OreDepositTile extends BlockEntity {
                     if (distance < OreDeposConfig.Common.shortDistance.get()) {
                         min = OreDeposConfig.Common.leastShortDistance.get();
                         max = OreDeposConfig.Common.mostShortDistance.get();
-                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.shortDistance.get() * factor), (level.getRandom().nextLong(max - min))));
-                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.shortDistance.get() * factor) * (level.getRandom().nextLong(max - min))));
+                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.shortDistance.get() * factor.get()), (randomLong(min, max))));
+                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.shortDistance.get() * factor.get()) * randomLong(min, max)));
                     } else if (distance < OreDeposConfig.Common.mediumDistance.get()) {
                         min = OreDeposConfig.Common.leastMediumDistance.get();
                         max = OreDeposConfig.Common.mostMediumDistance.get();
-                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.mediumDistance.get() * factor), (level.getRandom().nextLong(max - min))));
-                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.mediumDistance.get() * factor) * (level.getRandom().nextLong(max - min))));
+                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.mediumDistance.get() * factor.get()), (randomLong(min, max))));
+                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.mediumDistance.get() * factor.get()) * (randomLong(min, max))));
                     } else {
                         min = OreDeposConfig.Common.leastLongDistance.get();
                         max = OreDeposConfig.Common.mostLongDistance.get();
-                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.longDistance.get() * factor), (level.getRandom().nextLong(max - min))));
-                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.longDistance.get() * factor) * (level.getRandom().nextLong(max - min))));
+                        amount = Math.addExact(min, Math.multiplyExact((long) Math.ceil(distance / OreDeposConfig.Common.longDistance.get() * factor.get()), (randomLong(min, max))));
+                        amount = Math.addExact(min, (long) ((distance / OreDeposConfig.Common.longDistance.get() * factor.get()) * (randomLong(min, max))));
                         if (!OreDeposConfig.Common.longDistanceIncreasesFurther.get()) {
                             amount = Math.min(max, amount);
                         }
@@ -79,6 +81,10 @@ public class OreDepositTile extends BlockEntity {
             amount = Math.max(amount, 1);
             maxAmount = amount;
         }
+    }
+
+    private long randomLong(long min, long max) {
+        return ((long) level.getRandom().nextInt((int) (max - min >> 8)) << 8) + level.getRandom().nextInt((int) (max - min));
     }
 
     public @NotNull ITag<Fluid> fluidNeeded(){

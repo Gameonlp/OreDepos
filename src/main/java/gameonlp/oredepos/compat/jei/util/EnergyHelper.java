@@ -5,6 +5,7 @@ import gameonlp.oredepos.compat.jei.ODJeiPlugin;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class EnergyHelper implements IIngredientHelper<TotalEnergy> {
@@ -24,13 +25,8 @@ public class EnergyHelper implements IIngredientHelper<TotalEnergy> {
     }
 
     @Override
-    public String getModId(TotalEnergy ingredient) {
-        return OreDepos.MODID;
-    }
-
-    @Override
-    public String getResourceId(TotalEnergy ingredient) {
-        return "energy";
+    public ResourceLocation getResourceLocation(TotalEnergy ingredient) {
+        return new ResourceLocation(OreDepos.MODID, "energy");
     }
 
     @Override

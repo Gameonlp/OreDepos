@@ -15,6 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.rmi.registry.Registry;
@@ -34,11 +35,11 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
                 .save(consumer);
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(ores), item, 1.4f, 100)
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ores).build()))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, "blasting_" + item.getRegistryName().getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "blasting_" + ForgeRegistries.ITEMS.getKey(item).getPath()));
         ShapelessRecipeBuilder.shapeless(item, 9)
                 .requires(storage.asItem())
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(storage))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, item.getRegistryName().getPath() + "_from_" + storage.getRegistryName().getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, ForgeRegistries.ITEMS.getKey(item).getPath() + "_from_" + ForgeRegistries.BLOCKS.getKey(storage).getPath()));
         ShapedRecipeBuilder.shaped(storage)
                 .pattern("AAA")
                 .pattern("AAA")
@@ -48,14 +49,14 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
                 .save(consumer);
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(raw), item, 0.7f, 200)
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(raw))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, item.getRegistryName().getPath() + "_from_" + raw.getRegistryName().getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, ForgeRegistries.ITEMS.getKey(item).getPath() + "_from_" + ForgeRegistries.ITEMS.getKey(raw).getPath()));
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(raw), item, 0.7f, 100)
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(raw))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, "blasting_" + item.getRegistryName().getPath() + "_from_" + raw.getRegistryName().getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "blasting_" + ForgeRegistries.ITEMS.getKey(item).getPath() + "_from_" + ForgeRegistries.ITEMS.getKey(raw).getPath()));
         ShapelessRecipeBuilder.shapeless(raw, 9)
                 .requires(rawStorage.asItem())
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(rawStorage))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, raw.getRegistryName().getPath() + "_from_" + rawStorage.getRegistryName().getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, ForgeRegistries.ITEMS.getKey(raw).getPath() + "_from_" + ForgeRegistries.BLOCKS.getKey(rawStorage).getPath()));
         ShapedRecipeBuilder.shaped(rawStorage)
                 .pattern("AAA")
                 .pattern("AAA")
@@ -74,7 +75,7 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
             items[i] = stacks[i].getItem();
         }
         recipeBuilder.unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items).build()))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + recipeBuilder.getResult().getRegistryName().getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + ForgeRegistries.ITEMS.getKey(recipeBuilder.getResult()).getPath()));
     }
 
     protected void basicSmelterRecipe(Consumer<FinishedRecipe> consumer, SmelterRecipeBuilder recipeBuilder){
@@ -86,7 +87,7 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
             items[i] = stacks[i].getItem();
         }
         recipeBuilder.unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items).build()))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, "smelting_" + recipeBuilder.getResult().getRegistryName().getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "smelting_" + ForgeRegistries.ITEMS.getKey(recipeBuilder.getResult()).getPath()));
     }
 
     @Override

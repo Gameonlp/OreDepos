@@ -3,14 +3,14 @@ package gameonlp.oredepos.compat;
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.blocks.oredeposit.OreDepositTile;
 import mcjty.theoneprobe.api.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.tags.ITag;
 
@@ -44,7 +44,7 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
 
                 if (!tileEntityOre.fluidNeeded().isEmpty()) {
                     ITag<Fluid> fluid = tileEntityOre.fluidNeeded();
-                    probeInfo.text(new TranslatableComponent("tooltip." + OreDepos.MODID + ".requires_fluid")
+                    probeInfo.text(Component.translatable("tooltip." + OreDepos.MODID + ".requires_fluid")
                             .append(" ")
                             .append(new FluidStack(fluid.stream().toList().get(0), 100).getDisplayName())
                             .withStyle(ChatFormatting.GREEN));

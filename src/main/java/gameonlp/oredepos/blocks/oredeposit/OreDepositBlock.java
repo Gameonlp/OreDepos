@@ -4,32 +4,25 @@ import gameonlp.oredepos.RegistryManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.BlockGetter;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.function.Supplier;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class OreDepositBlock extends BaseEntityBlock {
     private final String fluid;
-    private final Double factor;
+    private final Supplier<Double> factor;
 
-    public OreDepositBlock(Properties properties, double factor) {
+    public OreDepositBlock(Properties properties, Supplier<Double> factor) {
         this(properties, "", factor);
     }
 
-    public OreDepositBlock(Properties properties, String fluid, double factor) {
+    public OreDepositBlock(Properties properties, String fluid, Supplier<Double> factor) {
         super(properties);
         this.fluid = fluid;
         this.factor = factor;

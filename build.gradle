@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.18.2-1.1.4'
+version = '1.19.2-1.1.4'
 group = 'gameonlp.oredepos' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'oredepos'
 
@@ -31,7 +31,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: '1.19.2'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -127,11 +127,20 @@ repositories {
     maven { // The One Probe
         url "https://maven.tterrag.com/"
     }
-    maven { // JEI
-        url 'https://dvs1.progwml6.com/files/maven'
+    maven {
+        // location of the maven that hosts JEI files before January 2023
+        name = "Progwml6's maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
-        url "https://maven.blamejared.com"
+        // location of the maven that hosts JEI files since January 2023
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
     }
 }
 
@@ -139,26 +148,29 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    def minecraftVersion= 'net.minecraftforge:forge:1.18.2-40.1.48'
+    def minecraftVersion= 'net.minecraftforge:forge:1.19.2-43.2.0'
     minecraft minecraftVersion
 
-    def ctDep = 'com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.197'
-    compileOnly(ctDep)
+    def ctDep = 'com.blamejared.crafttweaker:CraftTweaker-forge-1.19.2:10.1.41'
+    compileOnly(fg.deobf(ctDep))
     runtimeOnly(fg.deobf(ctDep))
 
-    def oneProbe = "curse.maven:theoneprobe-245211:3671753"
+    def oneProbe = "curse.maven:theoneprobe-245211:3965693"
     compileOnly fg.deobf(oneProbe)
     runtimeOnly fg.deobf(oneProbe)
 
-    def jei = "mezz.jei:jei-1.18.2:9.5.5.174"
-    compileOnly fg.deobf(jei + ":api")
-    runtimeOnly fg.deobf(jei)
+    def mc_version = "1.19.2"
+    def jei_version = "11.6.0.1015"
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    // at runtime, use the full JEI jar for Forge
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))    //runtimeOnly fg.deobf(jei)
 
-    runtimeOnly fg.deobf("curse.maven:cyclic-239286:3777095")
+    //runtimeOnly fg.deobf("curse.maven:cyclic-239286:3777095")
 
-    runtimeOnly fg.deobf("curse.maven:ie-231951:3901176")
+    //runtimeOnly fg.deobf("curse.maven:ie-231951:3901176")
 
-    annotationProcessor 'com.blamejared.crafttweaker:Crafttweaker_Annotation_Processors-1.18.1:2.0.0.59'
+    annotationProcessor 'com.blamejared.crafttweaker:Crafttweaker_Annotation_Processors:3.0.0.10'
     annotationProcessor minecraftVersion
     annotationProcessor ctDep
 

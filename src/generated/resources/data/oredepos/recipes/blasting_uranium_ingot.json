@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 1.4,
   "ingredient": {
     "tag": "forge:ores/uranium"
   },
-  "result": "oredepos:uranium_ingot",
-  "experience": 1.4,
-  "cookingtime": 100
+  "result": "oredepos:uranium_ingot"
 }

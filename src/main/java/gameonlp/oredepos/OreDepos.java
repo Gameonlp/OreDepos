@@ -9,8 +9,9 @@ import gameonlp.oredepos.compat.TOPCompat;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.data.DataGen;
 import gameonlp.oredepos.net.PacketManager;
-import gameonlp.oredepos.worldgen.OreGen;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -60,6 +61,8 @@ public class OreDepos {
                     SmelterScreen::new);
             MenuScreens.register(RegistryManager.CRAFTER_CONTAINER.get(),
                     CrafterScreen::new);
+            ItemBlockRenderTypes.setRenderLayer(RegistryManager.SULFURIC_ACID_FLUID.get(), RenderType.translucent());
+            ItemBlockRenderTypes.setRenderLayer(RegistryManager.SULFURIC_ACID_FLOWING.get(), RenderType.translucent());
         });
     }
     @SubscribeEvent
@@ -71,8 +74,8 @@ public class OreDepos {
 
     @SubscribeEvent
     public void setup(ModConfigEvent event) {
-        OreGen.Ore x = OreGen.Ore.EMERALD_DEPOSIT;
-        OreGen.NetherOre y = OreGen.NetherOre.ANCIENT_DEBRIS_DEPOSIT;
+        //OreGen.Ore x = OreGen.Ore.EMERALD_DEPOSIT;
+        //OreGen.NetherOre y = OreGen.NetherOre.ANCIENT_DEBRIS_DEPOSIT;
         OreDeposConfig.onConfigLoad();
     }
 }

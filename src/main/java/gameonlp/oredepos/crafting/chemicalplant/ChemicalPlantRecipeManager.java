@@ -7,18 +7,22 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.item.MCItemStack;
+import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @IRecipeHandler.For(ChemicalPlantRecipe.class)
 @ZenRegister
@@ -49,7 +53,7 @@ public class ChemicalPlantRecipeManager implements IRecipeManager<ChemicalPlantR
                                 .map(i -> i.asVanillaIngredient())
                                 .toArray(Ingredient[]::new)),
                         NonNullList.of(FluidIngredient.EMPTY, Arrays.stream(fluidInputs).map(
-                                i -> new FluidIngredient(ForgeRegistries.FLUIDS.tags().createTagKey(i.getRegistryName()), i.getAmount(), i.getTag() != null ? i.getTag().getInternal() : null)
+                                i -> new FluidIngredient(ForgeRegistries.FLUIDS.tags().createTagKey(i.getRegistryName()), i.getAmount(), i.getTag() != null && i.getTag().getInternal() instanceof CompoundTag ? (CompoundTag) i.getTag().getInternal() : null)
                                 ).toArray(FluidIngredient[]::new)
                         ),
                         outItem.getInternal(),
@@ -58,5 +62,20 @@ public class ChemicalPlantRecipeManager implements IRecipeManager<ChemicalPlantR
                         ticks
                 )
         ));
+    }
+
+    @Override
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super ChemicalPlantRecipe> manager, ChemicalPlantRecipe firstRecipe, U secondRecipe) {
+        return false;
+    }
+
+    @Override
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalPlantRecipe> manager, ChemicalPlantRecipe recipe) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<ChemicalPlantRecipe> recompose(IRecipeManager<? super ChemicalPlantRecipe> manager, ResourceLocation name, IDecomposedRecipe recipe) {
+        return Optional.empty();
     }
 }

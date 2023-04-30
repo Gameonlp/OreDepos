@@ -1,4 +1,4 @@
-package gameonlp.oredepos.worldgen;
+package gameonlp.oredepos.worldgen.old;
 
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -23,17 +23,17 @@ public class MiningEventHandler {
 		boolean destroyed = !mainHand.isCorrectToolForDrops(state) || event.getPlayer().isCreative();
 
 		if (state.getBlock() instanceof OreDepositBlock) {
-			BlockEntity tileEntity = event.getWorld().getBlockEntity(event.getPos());
+			BlockEntity tileEntity = event.getLevel().getBlockEntity(event.getPos());
 			if (tileEntity instanceof OreDepositTile tileEntityOre) {
 
-				if (!event.getWorld().isClientSide() && !destroyed) {
-					Block.dropResources(state, (Level)event.getWorld(), event.getPos(), tileEntityOre, event.getPlayer(), event.getPlayer().getMainHandItem());
+				if (!event.getLevel().isClientSide() && !destroyed) {
+					Block.dropResources(state, (Level)event.getLevel(), event.getPos(), tileEntityOre, event.getPlayer(), event.getPlayer().getMainHandItem());
 					mainHand.hurtAndBreak(1, (ServerPlayer) event.getPlayer(), player -> {});
 				}
 				
 				if (destroyed || tileEntityOre.isZero()) {
 					tileEntityOre.setRemovable();
-					event.getWorld().removeBlock(event.getPos(), false);
+					event.getLevel().removeBlock(event.getPos(), false);
 				} else {
 					tileEntityOre.decrement();
 					event.setCanceled(true);

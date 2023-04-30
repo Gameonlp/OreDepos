@@ -16,7 +16,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -32,13 +31,8 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipe> {
 
     public SmelterRecipeCategory(IGuiHelper guiHelper) {
         this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 126, 55);
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.SMELTER.get().asItem()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(RegistryManager.SMELTER.get().asItem()));
         this.guiHelper = guiHelper;
-    }
-
-    @Override
-    public ResourceLocation getUid() {
-        return SmelterRecipe.TYPE;
     }
 
     @Override
@@ -47,13 +41,8 @@ public class SmelterRecipeCategory implements IRecipeCategory<SmelterRecipe> {
     }
 
     @Override
-    public Class<? extends SmelterRecipe> getRecipeClass() {
-        return SmelterRecipe.class;
-    }
-
-    @Override
     public Component getTitle() {
-        return new TextComponent(RegistryManager.SMELTER.get().getName().getString());
+        return Component.literal(RegistryManager.SMELTER.get().getName().getString());
     }
 
     @Override

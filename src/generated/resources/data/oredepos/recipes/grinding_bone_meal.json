@@ -1,18 +1,14 @@
 {
-  "type": "forge:conditional",
-  "recipes": {
-    "recipe": {
-      "input": [
-        {
-          "item": "minecraft:bone"
-        }
-      ],
-      "result": {
-        "item": "minecraft:bone_meal",
-        "count": 4
-      },
-      "energy": 40,
-      "ticks": 20
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "item": "minecraft:bone"
     }
-  }
+  ],
+  "result": {
+    "count": 4,
+    "item": "minecraft:bone_meal"
+  },
+  "ticks": 20
 }

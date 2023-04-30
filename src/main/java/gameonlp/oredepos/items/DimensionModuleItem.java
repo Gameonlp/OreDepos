@@ -2,8 +2,6 @@ package gameonlp.oredepos.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -49,16 +47,16 @@ public class DimensionModuleItem extends ModuleItem{
     public void appendHoverText(ItemStack p_77624_1_, @Nullable Level p_77624_2_, List<Component> tooltip, TooltipFlag p_77624_4_) {
         super.appendHoverText(p_77624_1_, p_77624_2_, tooltip, p_77624_4_);
         if(width != 0) {
-            tooltip.add(new TranslatableComponent("tooltip.oredepos.width").append(" +" + width).withStyle(width > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
+            tooltip.add(Component.translatable("tooltip.oredepos.width").append(" +" + width).withStyle(width > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         if(length != 0) {
-            tooltip.add(new TranslatableComponent("tooltip.oredepos.length").append(" +" + length).withStyle(length > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
+            tooltip.add(Component.translatable("tooltip.oredepos.length").append(" +" + length).withStyle(length > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         if(depth != 0) {
-            tooltip.add(new TranslatableComponent("tooltip.oredepos.depth").append(" +" + depth).withStyle(depth > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
+            tooltip.add(Component.translatable("tooltip.oredepos.depth").append(" +" + depth).withStyle(depth > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         if (inversion){
-            tooltip.add(new TranslatableComponent("tooltip.oredepos.inversion").withStyle(ChatFormatting.GREEN));
+            tooltip.add(Component.translatable("tooltip.oredepos.inversion").withStyle(ChatFormatting.GREEN));
         }
     }
 }

@@ -3,14 +3,11 @@ package gameonlp.oredepos.blocks.grinder;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
-import gameonlp.oredepos.gui.FluidHelper;
 import gameonlp.oredepos.gui.RenderHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.Collections;
 
@@ -55,7 +52,7 @@ public class GrinderScreen extends AbstractContainerScreen<GrinderContainer> {
         int j = this.topPos;
         GrinderTile tile = (GrinderTile) menu.getTileEntity();
         if (x >= i + 151 && x <= i + 169 && y >= j + 4 && y <= j + 49) {
-            renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
+            renderComponentTooltip(matrixStack, Collections.singletonList(Component.literal(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
         }
     }
 }

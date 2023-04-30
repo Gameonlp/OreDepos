@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 1.4,
   "ingredient": {
     "tag": "forge:ores/cobalt"
   },
-  "result": "oredepos:cobalt_ingot",
-  "experience": 1.4,
-  "cookingtime": 200
+  "result": "oredepos:cobalt_ingot"
 }

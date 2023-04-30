@@ -20,7 +20,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
@@ -134,7 +133,7 @@ public class CrafterRecipe implements IBaseRecipe {
         }
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+    public static class Serializer
             implements RecipeSerializer<CrafterRecipe> {
 
         @Override

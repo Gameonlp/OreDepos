@@ -1,4 +1,4 @@
-package gameonlp.oredepos.worldgen;
+package gameonlp.oredepos.worldgen.old;
 
 import gameonlp.oredepos.config.OreConfig;
 import gameonlp.oredepos.config.OreDeposConfig;

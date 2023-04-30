@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 1.4,
   "ingredient": {
     "tag": "forge:ores/aluminum"
   },
-  "result": "oredepos:aluminum_ingot",
-  "experience": 1.4,
-  "cookingtime": 100
+  "result": "oredepos:aluminum_ingot"
 }

@@ -9,6 +9,7 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModelProviders {
     public static class OreDepositsBlockStateProvider extends BlockStateProvider {
@@ -21,7 +22,7 @@ public class ModelProviders {
 
         private void simpleBlockAndItem(Block block) {
             simpleBlock(block);
-            simpleBlockItem(block, new ModelFile.ExistingModelFile(new ResourceLocation(block.getRegistryName().toString().replace(":", ":block/")), exFileHelper));
+            simpleBlockItem(block, new ModelFile.ExistingModelFile(new ResourceLocation(ForgeRegistries.BLOCKS.getKey(block).toString().replace(":", ":block/")), exFileHelper));
         }
 
         @Override

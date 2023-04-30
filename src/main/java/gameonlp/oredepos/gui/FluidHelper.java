@@ -1,26 +1,19 @@
 package gameonlp.oredepos.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FluidHelper {
-    public static TextureAtlasSprite getStillFluidSprite(FluidStack fluidStack) {
-        Fluid fluid = fluidStack.getFluid();
-        FluidAttributes attributes = fluid.getAttributes();
-        ResourceLocation fluidStill = attributes.getStillTexture(fluidStack);
-        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
-    }
-
     /**
      * Renders the fluid in the tank as 16 * 16 blocks.
      *
@@ -33,14 +26,17 @@ public class FluidHelper {
      */
     public static void render(PoseStack matrixStack, int x, int y, int size, IFluidTank tank) {
         int filled;
-        int fluidColor = tank.getFluid().getFluid().getAttributes().getColor();
+        Fluid fluid = tank.getFluid().getFluid();
+        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
+        TextureAtlasSprite fluidSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(renderProperties.getStillTexture());
+
+        int fluidColor = renderProperties.getTintColor(tank.getFluid());
         float a = (fluidColor >> 24 & 0xFF) / 255.0f;
         float r = (fluidColor >> 16 & 0xFF) / 255.0f;
         float g = (fluidColor >> 8 & 0xFF) / 255.0f;
         float b = (fluidColor & 0xFF) / 255.0f;
         //noinspection deprecation
         RenderSystem.setShaderColor(r, g, b, a);
-        TextureAtlasSprite fluidSprite = FluidHelper.getStillFluidSprite(tank.getFluid());
         RenderSystem.setShaderTexture(0, fluidSprite.atlas().location());
         float current = tank.getFluid().getAmount();
         int capacity = tank.getCapacity();

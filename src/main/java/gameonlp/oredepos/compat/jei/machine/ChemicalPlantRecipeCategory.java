@@ -2,12 +2,13 @@ package gameonlp.oredepos.compat.jei.machine;
 
 import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.compat.jei.util.EnergyRenderer;
 import gameonlp.oredepos.compat.jei.ODJeiPlugin;
+import gameonlp.oredepos.compat.jei.util.EnergyRenderer;
 import gameonlp.oredepos.compat.jei.util.TotalEnergy;
-import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
+import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -18,10 +19,9 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -39,16 +39,11 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
 
     public ChemicalPlantRecipeCategory(IGuiHelper guiHelper) {
         this.bg = guiHelper.createDrawable(TEXTURE, 0, 0, 176, 76);
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(RegistryManager.CHEMICAL_PLANT.get().asItem()));
         this.overlay = guiHelper.createDrawable(TEXTURE, 176, 0, 18, 45);
         this.energyBG = guiHelper.createDrawable(TEXTURE, 212, 0, 18, 45);
         this.energyOverlay = guiHelper.createDrawable(TEXTURE, 230, 0, 18, 45);
         this.guiHelper = guiHelper;
-    }
-
-    @Override
-    public ResourceLocation getUid() {
-        return ChemicalPlantRecipe.TYPE;
     }
 
     @Override
@@ -57,13 +52,8 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
     }
 
     @Override
-    public Class<? extends ChemicalPlantRecipe> getRecipeClass() {
-        return ChemicalPlantRecipe.class;
-    }
-
-    @Override
     public Component getTitle() {
-        return new TextComponent(RegistryManager.CHEMICAL_PLANT.get().getName().getString());
+        return Component.literal(RegistryManager.CHEMICAL_PLANT.get().getName().getString());
     }
 
     @Override
@@ -86,7 +76,7 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
         for (int i = 0; i < fluidInputs.size(); i++) {
             builder.addSlot(RecipeIngredientRole.INPUT, 33 + i * 18, 18)
                     .setFluidRenderer(1000, false, 18, 45)
-                    .setOverlay(overlay, 0, 0).addIngredient(VanillaTypes.FLUID, new FluidStack(ForgeRegistries.FLUIDS.tags().getTag(fluidInputs.get(i).getFluidTag()).iterator().next(), 100));
+                    .setOverlay(overlay, 0, 0).addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(ForgeRegistries.FLUIDS.tags().getTag(fluidInputs.get(i).getFluidTag()).iterator().next(), 100));
         }
         int filled = Math.max(0, 45 - (int)(45 * (1 - (recipe.getEnergy() / 400f))));
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 136, 4)
@@ -96,6 +86,6 @@ public class ChemicalPlantRecipeCategory implements IRecipeCategory<ChemicalPlan
         builder.addSlot(RecipeIngredientRole.OUTPUT, 118, 4)
                 .setFluidRenderer(1000, false, 18, 45)
                 .setOverlay(overlay, 0, 0)
-                .addIngredient(VanillaTypes.FLUID, recipe.getResultFluid());
+                .addIngredient(ForgeTypes.FLUID_STACK, recipe.getResultFluid());
     }
 }

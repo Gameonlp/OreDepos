@@ -2,7 +2,6 @@ package gameonlp.oredepos.blocks.crafter;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicContainer;
-import gameonlp.oredepos.blocks.crafter.CrafterTile;
 import gameonlp.oredepos.net.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -10,15 +9,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.network.PacketDistributor;
 
 public class CrafterContainer extends BasicContainer {
     public IEnergyStorage getEnergy(){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY).orElse(null);
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
     }
 
     @Override
@@ -39,7 +37,7 @@ public class CrafterContainer extends BasicContainer {
 
     @Override
     protected void setUpSlots() {
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new SlotItemHandler(h, 0, 95, 34));
             addSlot(new SlotItemHandler(h, 1, 8, 73));
             addSlot(new SlotItemHandler(h, 2, 26, 73));

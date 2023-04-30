@@ -7,7 +7,6 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -59,7 +58,7 @@ public class EnergyRenderer implements IIngredientRenderer<TotalEnergy> {
 
     @Override
     public List<Component> getTooltip(TotalEnergy ingredient, TooltipFlag tooltipFlag) {
-        return Collections.singletonList(new TextComponent(ingredient.energy() * ingredient.ticks() + "FE over " + String.format("%.2f", ingredient.ticks() / 20f) + "s (" + ingredient.energy() + "FE/t)"));
+        return Collections.singletonList(Component.literal(ingredient.energy() * ingredient.ticks() + "FE over " + String.format("%.2f", ingredient.ticks() / 20f) + "s (" + ingredient.energy() + "FE/t)"));
     }
 
     @Override

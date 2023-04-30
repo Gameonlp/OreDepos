@@ -6,8 +6,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 
+import java.util.function.Supplier;
+
 public class RedstoneOreDepositBlock extends OreDepositBlock{
-    public RedstoneOreDepositBlock(Properties properties, String needed, double factor) {
+    public RedstoneOreDepositBlock(Properties properties, String needed, Supplier<Double> factor) {
         super(properties, needed, factor);
     }
 

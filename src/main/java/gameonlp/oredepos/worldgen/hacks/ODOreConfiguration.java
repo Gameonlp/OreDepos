@@ -9,6 +9,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.List;
 
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
+
 public class ODOreConfiguration extends OreConfiguration implements Configurable {
     public int size;
     private final OreConfig config;

@@ -6,6 +6,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class DrillHeadItem extends Item {
     private final Item corresponding;
     public DrillHeadItem(Properties p_i48487_1_, Item corresponding) {
