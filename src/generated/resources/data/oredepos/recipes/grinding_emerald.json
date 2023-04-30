@@ -4,12 +4,12 @@
     "recipe": {
       "input": [
         {
-          "item": "minecraft:blaze_rod"
+          "tag": "minecraft:emerald_ores"
         }
       ],
       "result": {
-        "item": "minecraft:blaze_powder",
-        "count": 4
+        "item": "minecraft:emerald",
+        "count": 2
       },
       "energy": 40,
       "ticks": 20

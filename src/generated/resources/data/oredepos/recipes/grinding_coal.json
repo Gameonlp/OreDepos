@@ -4,12 +4,12 @@
     "recipe": {
       "input": [
         {
-          "item": "minecraft:blaze_rod"
+          "tag": "minecraft:coal_ores"
         }
       ],
       "result": {
-        "item": "minecraft:blaze_powder",
-        "count": 4
+        "item": "minecraft:coal",
+        "count": 3
       },
       "energy": 40,
       "ticks": 20

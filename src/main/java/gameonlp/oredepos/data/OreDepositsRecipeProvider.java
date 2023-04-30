@@ -115,5 +115,12 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
         basicGrinderRecipe(consumer,
                 GrinderRecipeBuilder.grinder(Ingredient.of(Items.BLAZE_ROD), Items.BLAZE_POWDER)
                         .count(4));
+        basicGrinderRecipe(consumer,
+                GrinderRecipeBuilder.grinder(Ingredient.of(ItemTags.EMERALD_ORES), Items.EMERALD));
+        basicGrinderRecipe(consumer,
+                GrinderRecipeBuilder.grinder(Ingredient.of(ItemTags.DIAMOND_ORES), Items.DIAMOND));
+        basicGrinderRecipe(consumer,
+                GrinderRecipeBuilder.grinder(Ingredient.of(ItemTags.COAL_ORES), Items.COAL)
+                        .count(3));
     }
 }

@@ -108,22 +108,25 @@ public class CrafterScreen extends AbstractContainerScreen<CrafterContainer> {
         int i = this.leftPos;
         int j = this.topPos;
         CrafterTile tile = (CrafterTile) menu.getTileEntity();
-        if (x >= i + 13 && x <= i + 67 && y >= j + 15 && y <= j + 69) {
-            List<Component> components = new ArrayList<>();
-            if (tile.currentRecipe != null) {
-                try {
-                    CountIngredient countIngredient = tile.currentRecipe.getCountIngredients().get((x - (i + 13)) / 18 + 3 * ((y - (j + 15)) / 18));
-                    for (int index = 0; index < countIngredient.getItems().length; index++) {
-                        ItemStack item = countIngredient.getItems()[(index + (frame / CYCLE)) % countIngredient.getItems().length];
-                        try {
-                            components.add(item.getTooltipLines(null, TooltipFlag.Default.NORMAL).get(0));
-                        } catch (IndexOutOfBoundsException e) {
-                            components.add(new TextComponent("Missing Tooltip for " + item));
+        if (tile.currentRecipe != null) {
+            if (x >= i + 13 && x <= i + 67 && y >= j + 15 && y <= j + 69) {
+                List<Component> components = new ArrayList<>();
+                    try {
+                        CountIngredient countIngredient = tile.currentRecipe.getCountIngredients().get((x - (i + 13)) / 18 + 3 * ((y - (j + 15)) / 18));
+                        for (int index = 0; index < countIngredient.getItems().length; index++) {
+                            ItemStack item = countIngredient.getItems()[(index + (frame / CYCLE)) % countIngredient.getItems().length];
+                            try {
+                                components.add(item.getTooltipLines(null, TooltipFlag.Default.NORMAL).get(0));
+                            } catch (IndexOutOfBoundsException e) {
+                                components.add(new TextComponent("Missing Tooltip for " + item));
+                            }
                         }
-                    }
-                } catch (IndexOutOfBoundsException ignored) {}
+                    } catch (IndexOutOfBoundsException ignored) {}
+                renderComponentTooltip(matrixStack, components, x, y);
             }
-            renderComponentTooltip(matrixStack, components, x, y);
+            if (x >= i + 95 && x <= i + 113 && y >= j + 34 && y <= j + 52) {
+                renderComponentTooltip(matrixStack, tile.currentRecipe.getResultItem().getTooltipLines(null, TooltipFlag.Default.NORMAL), x, y);
+            }
         }
         if (x >= i + 151 && x <= i + 169 && y >= j + 4 && y <= j + 49) {
             renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
