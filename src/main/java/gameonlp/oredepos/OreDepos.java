@@ -1,5 +1,6 @@
 package gameonlp.oredepos;
 
+import gameonlp.oredepos.blocks.beacon.BeaconScreen;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantScreen;
 import gameonlp.oredepos.blocks.crafter.CrafterScreen;
 import gameonlp.oredepos.blocks.grinder.GrinderScreen;
@@ -60,6 +61,8 @@ public class OreDepos {
                     SmelterScreen::new);
             MenuScreens.register(RegistryManager.CRAFTER_CONTAINER.get(),
                     CrafterScreen::new);
+            MenuScreens.register(RegistryManager.BEACON_CONTAINER.get(),
+                    BeaconScreen::new);
         });
     }
     @SubscribeEvent

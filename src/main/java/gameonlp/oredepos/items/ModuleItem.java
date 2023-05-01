@@ -26,7 +26,7 @@ public class ModuleItem extends Item {
     }
 
     public float getEnergyConsumption(float energyDrain) {
-        return (1.0f + energyConsumptionIncrease) * energyDrain;
+        return energyConsumptionIncrease + energyDrain;
     }
 
     public float getProgress(float progress){

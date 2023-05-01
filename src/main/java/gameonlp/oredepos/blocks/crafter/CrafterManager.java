@@ -26,23 +26,48 @@ public class CrafterManager {
     }
 
     public void refresh(Level level) {
+        if (level == null)
+            return;
         List<CraftingRecipe> allRecipesFor = level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
         if (!allRecipesFor.equals(craftingRecipes)) {
             cache = new HashMap<>();
             craftingRecipes = allRecipesFor;
             wrappedRecipes = new LinkedList<>(craftingRecipes.stream().map(r ->
-                    new CrafterRecipe(
-                            new ResourceLocation("oredepos", "wrapped_" + r.getId().getPath() + "_for_crafter"),
-                            deduplicate(r.getIngredients()),
-                            r.getResultItem().copy(),
-                            OreDeposConfig.Common.crafterDrain.get(),
-                            getVanillaTicks()
-                    )
+                    {
+                        NonNullList<CountIngredient> deduplicate = deduplicate(r.getIngredients());
+                        return new CrafterRecipe(
+                                new ResourceLocation("oredepos", "wrapped_" + r.getId().getPath() + "_for_crafter_" + layout(deduplicate)),
+                                deduplicate,
+                                r.getResultItem().copy(),
+                                OreDeposConfig.Common.crafterDrain.get(),
+                                getVanillaTicks()
+                        );
+                    }
             ).toList());
         }
         wrappedRecipes.addAll(level.getRecipeManager().getAllRecipesFor(RegistryManager.CRAFTER_RECIPE_TYPE.get()));
         wrappedRecipes.removeIf(crafterRecipe -> crafterRecipe.getCountIngredients().isEmpty() || crafterRecipe.getResultItem().isEmpty());
         wrappedRecipes.removeIf(crafterRecipe -> OreDeposConfig.Common.blackListedItems.get().contains(crafterRecipe.getResultItem().getItem().getRegistryName().toString()));
+    }
+
+    private String layout(NonNullList<CountIngredient> deduplicate) {
+        StringBuilder name = new StringBuilder();
+        for (int j = 0; j < deduplicate.size(); j++) {
+            CountIngredient countIngredient = deduplicate.get(j);
+            name.append(countIngredient.getCount()).append("_");
+            ItemStack[] items = countIngredient.getItems();
+            for (int i = 0; i < items.length; i++) {
+                ItemStack item = items[i];
+                name.append(item.getItem().getRegistryName().getPath());
+                if (i < items.length - 1) {
+                    name.append("_");
+                }
+            }
+            if (j < deduplicate.size() - 1) {
+                name.append("_");
+            }
+        }
+        return name.toString();
     }
 
     public List<CrafterRecipe> possibilities(FluidInventory inventory) {

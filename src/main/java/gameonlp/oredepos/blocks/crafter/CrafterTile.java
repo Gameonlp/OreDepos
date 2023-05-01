@@ -50,6 +50,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
     boolean locked = false;
     public final CrafterManager crafterManager = new CrafterManager();
     private int index;
+    private String recipe;
 
     protected CrafterTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
@@ -121,10 +122,8 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
         progress = p_230337_2_.getFloat("progress");
         productivity = p_230337_2_.getFloat("productivity");
         locked = p_230337_2_.getBoolean("locked");
-        String recipe = p_230337_2_.getString("recipe");
-        if (!recipe.equals("")) {
-            currentRecipe = crafterManager.getRecipe(new ResourceLocation(recipe));
-        }
+        crafterManager.refresh(level);
+        recipe = p_230337_2_.getString("recipe");
         slots.deserializeNBT(p_230337_2_.getCompound("slots"));
     }
 
@@ -138,6 +137,11 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
     private void tick() {
         if (level == null || level.isClientSide()){
             return;
+        }
+        if (recipe != null) {
+            crafterManager.refresh(level);
+            currentRecipe = crafterManager.getRecipe(new ResourceLocation(recipe));
+            recipe = null;
         }
         FluidInventory fluidInventory = new FluidInventory(9, 0);
         for (int i = 0; i < 9; i++) {
@@ -239,6 +243,9 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
     }
 
     public void changeRecipe(int change) {
+        if (locked) {
+            return;
+        }
         FluidInventory fluidInventory = new FluidInventory(9, 0);
         for (int i = 0; i < 9; i++) {
             fluidInventory.setItem(i, slots.getStackInSlot(i + 1));
