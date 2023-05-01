@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.19.2-1.1.4'
+version = '1.19.2-1.1.5'
 group = 'gameonlp.oredepos' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'oredepos'
 
@@ -168,7 +168,7 @@ dependencies {
 
     //runtimeOnly fg.deobf("curse.maven:cyclic-239286:3777095")
 
-    //runtimeOnly fg.deobf("curse.maven:ie-231951:3901176")
+    runtimeOnly fg.deobf("curse.maven:ie-231951:4478894")
 
     annotationProcessor 'com.blamejared.crafttweaker:Crafttweaker_Annotation_Processors:3.0.0.10'
     annotationProcessor minecraftVersion
