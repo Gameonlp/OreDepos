@@ -1,5 +1,6 @@
 package gameonlp.oredepos.config;
 
+import gameonlp.oredepos.data.condition.And;
 import gameonlp.oredepos.util.Configurable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -53,6 +54,7 @@ public class OreDeposConfig {
         public static OreConfig platinum;
         public static ForgeConfigSpec.IntValue crafterDrain;
         public static ForgeConfigSpec.ConfigValue<List<? extends String>> blackListedItems;
+        public static ForgeConfigSpec.IntValue beaconDrain;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -88,6 +90,10 @@ public class OreDeposConfig {
             builder.comment("Decides the FE cost per tick to craft an item");
             blackListedItems = builder.defineList("Items to blacklist from crafting", new LinkedList<>(List.of()), item -> ForgeRegistries.ITEMS.containsKey(new ResourceLocation((String) item)));
             builder.comment("Disables crafting of recipes resulting in items in this list");
+            builder.pop();
+            builder.push("Crafter");
+            beaconDrain = builder.defineInRange("Drain per tick to support", 120, 0, Integer.MAX_VALUE);
+            builder.comment("Decides the FE cost per tick to supply module bonuses");
             builder.pop();
             builder.pop();
             builder.push("Ore Settings");

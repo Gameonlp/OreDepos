@@ -19,7 +19,7 @@ public class SpeedModuleItem extends ModuleItem{
 
     @Override
     public float getProgress(float progress) {
-        return (1.0f + speedIncrease) * progress;
+        return speedIncrease + progress;
     }
 
     @Override

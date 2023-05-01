@@ -320,6 +320,7 @@ public class TagProvider {
                     RegistryManager.GRINDER.get(),
                     RegistryManager.SMELTER.get(),
                     RegistryManager.CRAFTER.get(),
+                    RegistryManager.BEACON.get(),
                     RegistryManager.CHEMICAL_PLANT.get()
             );
 

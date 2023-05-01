@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class CrafterRecipe implements IBaseRecipe {
     public static final ResourceLocation TYPE = new ResourceLocation(OreDepos.MODID, "crafter_recipe");
@@ -113,6 +114,19 @@ public class CrafterRecipe implements IBaseRecipe {
 
     public int getTicks() {
         return ticks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CrafterRecipe that = (CrafterRecipe) o;
+        return energy == that.energy && ticks == that.ticks && Objects.equals(id, that.id) && Objects.equals(ingredients, that.ingredients) && Objects.equals(outItem, that.outItem);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, ingredients, outItem, energy, ticks);
     }
 
     @Override

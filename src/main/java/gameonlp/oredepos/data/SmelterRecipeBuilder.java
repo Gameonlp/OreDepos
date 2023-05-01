@@ -110,6 +110,7 @@ public class SmelterRecipeBuilder implements RecipeBuilder {
             if (!this.group.isEmpty()) {
                 p_126230_.addProperty("group", this.group);
             }
+            p_126230_.addProperty("type", OreDepos.MODID + ":smelter_recipe");
 
             JsonArray jsonarray = new JsonArray();
 

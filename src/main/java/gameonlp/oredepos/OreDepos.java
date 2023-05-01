@@ -1,5 +1,6 @@
 package gameonlp.oredepos;
 
+import gameonlp.oredepos.blocks.beacon.BeaconScreen;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantScreen;
 import gameonlp.oredepos.blocks.crafter.CrafterScreen;
 import gameonlp.oredepos.blocks.grinder.GrinderScreen;
@@ -63,6 +64,8 @@ public class OreDepos {
                     CrafterScreen::new);
             ItemBlockRenderTypes.setRenderLayer(RegistryManager.SULFURIC_ACID_FLUID.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(RegistryManager.SULFURIC_ACID_FLOWING.get(), RenderType.translucent());
+            MenuScreens.register(RegistryManager.BEACON_CONTAINER.get(),
+                    BeaconScreen::new);
         });
     }
     @SubscribeEvent

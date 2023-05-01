@@ -1,5 +1,8 @@
 package gameonlp.oredepos;
 
+import gameonlp.oredepos.blocks.beacon.BeaconBlock;
+import gameonlp.oredepos.blocks.beacon.BeaconContainer;
+import gameonlp.oredepos.blocks.beacon.BeaconTile;
 import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantBlock;
@@ -107,7 +110,8 @@ public class RegistryManager {
             ChemicalPlantTile.getName(),
             GrinderTile.getName(),
             SmelterTile.getName(),
-            CrafterTile.getName()
+            CrafterTile.getName(),
+            BeaconTile.getName()
     );
 
 
@@ -201,6 +205,7 @@ public class RegistryManager {
     public static RegistryObject<Block> GRINDER;
     public static RegistryObject<Block> SMELTER;
     public static RegistryObject<Block> CRAFTER;
+    public static RegistryObject<Block> BEACON;
     public static final RegistryObject<LiquidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
             () -> new LiquidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f)));
@@ -428,6 +433,7 @@ public class RegistryManager {
     public static RegistryObject<BlockEntityType<GrinderTile>> GRINDER_TILE;
     public static RegistryObject<BlockEntityType<SmelterTile>> SMELTER_TILE;
     public static RegistryObject<BlockEntityType<CrafterTile>> CRAFTER_TILE;
+    public static RegistryObject<BlockEntityType<BeaconTile>> BEACON_TILE;
 
     //Containers
     public static RegistryObject<MenuType<MinerContainer>> MINER_CONTAINER = CONTAINERS.register("miner_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
@@ -457,6 +463,12 @@ public class RegistryManager {
         BlockPos pos = data.readBlockPos();
         Level world = inv.player.getCommandSenderWorld();
         return new CrafterContainer(windowId, world, pos, inv, inv.player);
+    })));
+
+    public static RegistryObject<MenuType<BeaconContainer>> BEACON_CONTAINER = CONTAINERS.register("beacon_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
+        BlockPos pos = data.readBlockPos();
+        Level world = inv.player.getCommandSenderWorld();
+        return new BeaconContainer(windowId, world, pos, inv, inv.player);
     })));
 
 
@@ -671,6 +683,9 @@ public class RegistryManager {
         CRAFTER = registerBlock("crafter", () -> new CrafterBlock(BlockBehaviour.Properties.of(Material.METAL)
                 .strength(3, 10)
                 .requiresCorrectToolForDrops()));
+        BEACON = registerBlock("beacon", () -> new BeaconBlock(BlockBehaviour.Properties.of(Material.METAL)
+                .strength(3, 10)
+                .requiresCorrectToolForDrops()));
     }
 
     private void registerItems(){
@@ -721,6 +736,7 @@ public class RegistryManager {
         GRINDER_TILE = TILE_ENTITIES.register("grinder_tile", () -> BlockEntityType.Builder.of(GrinderTile::new, GRINDER.get()).build(null));
         SMELTER_TILE = TILE_ENTITIES.register("smelter_tile", () -> BlockEntityType.Builder.of(SmelterTile::new, SMELTER.get()).build(null));
         CRAFTER_TILE = TILE_ENTITIES.register("crafter_tile", () -> BlockEntityType.Builder.of(CrafterTile::new, CRAFTER.get()).build(null));
+        BEACON_TILE = TILE_ENTITIES.register("beacon_tile", () -> BlockEntityType.Builder.of(BeaconTile::new, BEACON.get()).build(null));
         ORE_DEPOSIT_TILE = TILE_ENTITIES.register("ore_deposit_tile", () -> BlockEntityType.Builder.of(OreDepositTile::new, deposits.stream().map(Supplier::get).toList().toArray(new Block[0])).build(null));
     }
 

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures":
+  {
+    "particle": "oredepos:block/beacon",
+    "up": "oredepos:block/beacon_up",
+    "down": "oredepos:block/beacon",
+    "north": "oredepos:block/beacon_side",
+    "south": "oredepos:block/beacon_side",
+    "east": "oredepos:block/beacon_side",
+    "west": "oredepos:block/beacon_side"
+  }
+}
