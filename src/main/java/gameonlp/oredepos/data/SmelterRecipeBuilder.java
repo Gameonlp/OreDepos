@@ -3,6 +3,7 @@ package gameonlp.oredepos.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -108,6 +109,7 @@ public class SmelterRecipeBuilder implements RecipeBuilder {
             if (!this.group.isEmpty()) {
                 p_126230_.addProperty("group", this.group);
             }
+            p_126230_.addProperty("type", OreDepos.MODID + ":smelter_recipe");
 
             JsonArray jsonarray = new JsonArray();
 

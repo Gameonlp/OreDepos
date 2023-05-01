@@ -3,6 +3,7 @@ package gameonlp.oredepos.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import gameonlp.oredepos.OreDepos;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.data.condition.Condition;
 import gameonlp.oredepos.data.condition.True;
@@ -126,16 +127,21 @@ public class GrinderRecipeBuilder implements RecipeBuilder {
                 p_126230_.addProperty("group", this.group);
             }
             p_126230_.addProperty("type", "forge:conditional");
-            JsonObject recipes = new JsonObject();
+            JsonArray recipes = new JsonArray();
             p_126230_.add("recipes", recipes);
+            JsonObject holder = new JsonObject();
+            recipes.add(holder);
 
             JsonArray conditions = new JsonArray();
             conditions.add(new True().get());
             if (condition != null) {
                 conditions.add(condition.get());
             }
+            holder.add("conditions", conditions);
 
             JsonObject recipe = new JsonObject();
+            recipe.addProperty("type", OreDepos.MODID + ":grinder_recipe");
+
             JsonArray jsonarray = new JsonArray();
             jsonarray.add(ingredient.toJson());
 
@@ -147,7 +153,7 @@ public class GrinderRecipeBuilder implements RecipeBuilder {
             recipe.add("result", jsonobject);
             recipe.add("energy", new JsonPrimitive(energy));
             recipe.add("ticks", new JsonPrimitive(ticks));
-            recipes.add("recipe", recipe);
+            holder.add("recipe", recipe);
         }
 
         public RecipeSerializer<?> getType() {

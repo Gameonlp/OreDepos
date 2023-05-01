@@ -1,18 +1,26 @@
 {
   "type": "forge:conditional",
-  "recipes": {
-    "recipe": {
-      "input": [
+  "recipes": [
+    {
+      "conditions": [
         {
-          "tag": "minecraft:diamond_ores"
+          "type": "forge:true"
         }
       ],
-      "result": {
-        "item": "minecraft:diamond",
-        "count": 2
-      },
-      "energy": 40,
-      "ticks": 20
+      "recipe": {
+        "type": "oredepos:grinder_recipe",
+        "input": [
+          {
+            "tag": "minecraft:diamond_ores"
+          }
+        ],
+        "result": {
+          "item": "minecraft:diamond",
+          "count": 2
+        },
+        "energy": 40,
+        "ticks": 20
+      }
     }
-  }
+  ]
 }

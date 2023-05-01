@@ -1,18 +1,26 @@
 {
   "type": "forge:conditional",
-  "recipes": {
-    "recipe": {
-      "input": [
+  "recipes": [
+    {
+      "conditions": [
         {
-          "item": "minecraft:blaze_rod"
+          "type": "forge:true"
         }
       ],
-      "result": {
-        "item": "minecraft:blaze_powder",
-        "count": 4
-      },
-      "energy": 40,
-      "ticks": 20
+      "recipe": {
+        "type": "oredepos:grinder_recipe",
+        "input": [
+          {
+            "item": "minecraft:blaze_rod"
+          }
+        ],
+        "result": {
+          "item": "minecraft:blaze_powder",
+          "count": 4
+        },
+        "energy": 40,
+        "ticks": 20
+      }
     }
-  }
+  ]
 }
