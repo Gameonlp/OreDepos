@@ -30,14 +30,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.tags.ITag;
@@ -101,18 +99,18 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (side == null){
-            if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)) {
+            if (ForgeCapabilities.ITEM_HANDLER.equals(cap)) {
                 return itemHandler.cast();
             }
         }
         if (side != Direction.DOWN) {
-            if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)) {
+            if (ForgeCapabilities.ITEM_HANDLER.equals(cap)) {
                 return outputHandler.cast();
             }
-            if (CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.equals(cap)){
+            if (ForgeCapabilities.FLUID_HANDLER.equals(cap)){
                 return fluidHandler.cast();
             }
-            if (CapabilityEnergy.ENERGY.equals(cap)){
+            if (ForgeCapabilities.ENERGY.equals(cap)){
                 return energyHandler.cast();
             }
         }

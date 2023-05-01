@@ -3,12 +3,8 @@ package gameonlp.oredepos.blocks.beacon;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
-import gameonlp.oredepos.blocks.beacon.BeaconContainer;
-import gameonlp.oredepos.blocks.beacon.BeaconTile;
-import gameonlp.oredepos.gui.RenderHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -53,7 +49,7 @@ public class BeaconScreen extends AbstractContainerScreen<BeaconContainer> {
         int j = this.topPos;
         BeaconTile tile = (BeaconTile) menu.getTileEntity();
         if (x >= i + 115 && x <= i + 133 && y >= j + 21 && y <= j + 66) {
-            renderComponentTooltip(matrixStack, Collections.singletonList(new TextComponent(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
+            renderComponentTooltip(matrixStack, Collections.singletonList(Component.literal(tile.getEnergyCell().getEnergyStored() + "/" + tile.getEnergyCell().getMaxEnergyStored())), x, y);
         }
     }
 }

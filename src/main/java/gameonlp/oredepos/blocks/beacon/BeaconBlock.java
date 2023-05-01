@@ -4,7 +4,6 @@ import gameonlp.oredepos.RegistryManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -41,7 +40,7 @@ public class BeaconBlock extends BaseEntityBlock {
             if(tileEntity instanceof BeaconTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openGui(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -53,7 +52,7 @@ public class BeaconBlock extends BaseEntityBlock {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("screen.oredepos.beacon");
+                return Component.translatable("screen.oredepos.beacon");
             }
 
             @Nullable

@@ -1,6 +1,5 @@
 package gameonlp.oredepos.config;
 
-import gameonlp.oredepos.data.condition.And;
 import gameonlp.oredepos.util.Configurable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;

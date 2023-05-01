@@ -7,7 +7,6 @@ import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
 import gameonlp.oredepos.util.EnergyCell;
-import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,10 +16,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,10 +65,10 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.equals(cap)){
+        if (ForgeCapabilities.ITEM_HANDLER.equals(cap)){
             return itemHandler.cast();
         }
-        if (CapabilityEnergy.ENERGY.equals(cap)){
+        if (ForgeCapabilities.ENERGY.equals(cap)){
             return energyHandler.cast();
         }
         return super.getCapability(cap, side);

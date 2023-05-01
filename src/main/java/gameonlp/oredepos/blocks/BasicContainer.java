@@ -1,7 +1,5 @@
 package gameonlp.oredepos.blocks;
 
-import gameonlp.oredepos.RegistryManager;
-import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantContainer;
 import gameonlp.oredepos.items.ModuleItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,7 +10,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -26,7 +24,7 @@ public abstract class BasicContainer extends AbstractContainerMenu {
     private int moduleOffset;
 
     public IEnergyStorage getEnergy(){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY).orElse(null);
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
     }
 
     public BasicContainer(int windowId, Level world, BlockPos pos,

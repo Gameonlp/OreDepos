@@ -59,7 +59,7 @@ public class CrafterManager {
             ItemStack[] items = countIngredient.getItems();
             for (int i = 0; i < items.length; i++) {
                 ItemStack item = items[i];
-                name.append(item.getItem().getRegistryName().getPath());
+                name.append(ForgeRegistries.ITEMS.getKey(item.getItem()).getPath());
                 if (i < items.length - 1) {
                     name.append("_");
                 }
