@@ -84,7 +84,10 @@ public class OreDepositTile extends BlockEntity {
     }
 
     private long randomLong(long min, long max) {
-        return ((long) level.getRandom().nextInt((int) (max - min >> 8)) << 8) + level.getRandom().nextInt((int) (max - min));
+        if (max - min <= 0) {
+            return 0;
+        }
+        return ((long) (max - min >> 8 <= 0 ? 0 : level.getRandom().nextInt((int) (max - min >> 8)) << 8) + level.getRandom().nextInt((int) (max - min)));
     }
 
     public @NotNull ITag<Fluid> fluidNeeded(){

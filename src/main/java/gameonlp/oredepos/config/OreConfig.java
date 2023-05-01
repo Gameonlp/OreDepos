@@ -38,4 +38,8 @@ public class OreConfig {
         builder.pop();
 
     }
+
+    public String getName() {
+        return name;
+    }
 }

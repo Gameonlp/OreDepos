@@ -10,6 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class OreDeposConfig {
+    private static boolean done;
+
+    public static boolean isDone() {
+        return done;
+    }
+
     public static class Common {
         public static ForgeConfigSpec.IntValue shortDistance;
         public static ForgeConfigSpec.IntValue mediumDistance;
@@ -129,6 +135,7 @@ public class OreDeposConfig {
     }
 
     public static void onConfigLoad() {
+        done = true;
         for (Configurable configurable : configurables) {
             configurable.done();
         }

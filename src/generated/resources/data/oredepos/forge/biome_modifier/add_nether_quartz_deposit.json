@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_nether",
+  "features": "oredepos:nether_quartz_deposit_placed",
+  "step": "underground_ores"
+}

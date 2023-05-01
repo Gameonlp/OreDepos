@@ -26,7 +26,7 @@ public class ODCountPlacement extends RepeatingPlacement implements Configurable
     }
     public ODCountPlacement(OreConfig config){
         this.config = config;
-        this.count = ConstantFloat.of(config.count.get().floatValue());
+        this.count = ConstantFloat.of(0);
         OreDeposConfig.register(this);
     }
 

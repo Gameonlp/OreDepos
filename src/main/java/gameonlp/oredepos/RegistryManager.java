@@ -1,6 +1,7 @@
 package gameonlp.oredepos;
 
 import com.mojang.math.Vector3f;
+import com.mojang.serialization.Codec;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantBlock;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantContainer;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantTile;
@@ -26,7 +27,10 @@ import gameonlp.oredepos.crafting.smelter.SmelterRecipe;
 import gameonlp.oredepos.fluid.BaseFluidType;
 import gameonlp.oredepos.items.*;
 import gameonlp.oredepos.worldgen.hacks.ODCountPlacement;
+import gameonlp.oredepos.worldgen.hacks.ODOreConfiguration;
 import gameonlp.oredepos.worldgen.hacks.ODOreFeature;
+import gameonlp.oredepos.worldgen.hacks.ODTrapezoidHeight;
+import gameonlp.oredepos.worldgen.old.OreGen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -42,8 +46,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -114,6 +122,9 @@ public class RegistryManager {
     private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, OreDepos.MODID);
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registry.RECIPE_TYPE_REGISTRY, OreDepos.MODID);
     private static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER_TYPE = DeferredRegister.create(Registry.PLACEMENT_MODIFIER_REGISTRY, OreDepos.MODID);
+    private static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, OreDepos.MODID);
+    private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, OreDepos.MODID);
+    private static final DeferredRegister<HeightProviderType<?>> HEIGHT_PROVIDER_TYPES = DeferredRegister.create(Registry.HEIGHT_PROVIDER_TYPE_REGISTRY, OreDepos.MODID);
 
     //Resource Locations
     public static final ResourceLocation WATER_STILL_RL = new ResourceLocation("block/water_still");
@@ -478,11 +489,13 @@ public class RegistryManager {
     public static final RegistryObject<CrafterRecipe.CrafterRecipeType> CRAFTER_RECIPE_TYPE = RECIPE_TYPES.register("crafter_recipe_type", CrafterRecipe.CrafterRecipeType::new);
 
     //Features
-    public static final RegistryObject<ODOreFeature> ORE = FEATURES.register("od_ore", () -> new ODOreFeature(OreConfiguration.CODEC));
+    public static final RegistryObject<ODOreFeature> ORE = FEATURES.register("od_ore", () -> new ODOreFeature(ODOreConfiguration.CODEC));
 
     // Placement Modifiers
     public static final RegistryObject<PlacementModifierType<ODCountPlacement>> COUNT = PLACEMENT_MODIFIER_TYPE.register("count_placement", ODCountPlacement.ODCountPlacementType::new);
 
+    //Height Providers
+    public static final RegistryObject<HeightProviderType<?>> TRAPEZOID = HEIGHT_PROVIDER_TYPES.register("trapezoid", () -> (HeightProviderType<ODTrapezoidHeight>) () -> ODTrapezoidHeight.CODEC);
 
     // Other data
     List<Supplier<Block>> deposits;
@@ -729,12 +742,17 @@ public class RegistryManager {
         TILE_ENTITIES.register(eventBus);
         CONTAINERS.register(eventBus);
         FEATURES.register(eventBus);
+        OreGen.registerConf(CONFIGURED_FEATURES);
+        CONFIGURED_FEATURES.register(eventBus);
 
         FLUID_TYPES.register(eventBus);
         FLUIDS.register(eventBus);
         registerSerializers();
         RECIPE_SERIALIZERS.register(eventBus);
         RECIPE_TYPES.register(eventBus);
+        HEIGHT_PROVIDER_TYPES.register(eventBus);
         PLACEMENT_MODIFIER_TYPE.register(eventBus);
+        OreGen.registerPlaced(PLACED_FEATURES);
+        PLACED_FEATURES.register(eventBus);
     }
 }

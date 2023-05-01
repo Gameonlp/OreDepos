@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 public class OreDepos {
     public static final String MODID = "oredepos";
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public OreDepos() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
