@@ -25,7 +25,9 @@ public abstract class BasicMachineTile extends BlockEntity implements ModuleAcce
     protected EnergyCell energyCell;
     protected ItemStackHandler slots;
     protected float progress;
-    private List<BeaconTile> beacons;
+    protected List<BeaconTile> beacons;
+    private List<BeaconTile> toAdd;
+    private List<BeaconTile> toRemove;
 
     public float getProductivity() {
         return productivity;
@@ -50,6 +52,8 @@ public abstract class BasicMachineTile extends BlockEntity implements ModuleAcce
     protected BasicMachineTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         beacons = new LinkedList<>();
+        toAdd = new LinkedList<>();
+        toRemove = new LinkedList<>();
     }
 
     public ItemStackHandler getSlots() {
@@ -57,7 +61,7 @@ public abstract class BasicMachineTile extends BlockEntity implements ModuleAcce
     }
 
     @NotNull
-    protected List<ModuleItem> getModuleItems(int moduleOffset) {
+    public List<ModuleItem> getModuleItems(int moduleOffset) {
         List<ModuleItem> modules = new LinkedList<>();
         for (int i = moduleOffset; i < slots.getSlots(); i++) {
             ItemStack moduleStack = slots.getStackInSlot(i);
@@ -142,15 +146,22 @@ public abstract class BasicMachineTile extends BlockEntity implements ModuleAcce
         this.productivity = productivity;
     }
 
+    public void update() {
+        beacons.addAll(toAdd);
+        beacons.removeAll(toRemove);
+        toAdd.clear();
+        toRemove.clear();
+    }
+
     @Override
     public void addBeacon(BeaconTile beacon) {
-        if (!beacons.contains(beacon)) {
-            beacons.add(beacon);
+        if (!beacons.contains(beacon) && !toAdd.contains(beacon)) {
+            toAdd.add(beacon);
         }
     }
 
     @Override
     public void removeBeacon(BeaconTile beacon) {
-        beacons.remove(beacon);
+        toRemove.add(beacon);
     }
 }

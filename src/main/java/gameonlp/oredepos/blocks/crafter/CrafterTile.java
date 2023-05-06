@@ -18,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,7 +30,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import org.apache.commons.compress.changes.ChangeSet;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -52,15 +50,26 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
     private int index;
     private String recipe;
 
+    public int getGridSize() {
+        return gridSize;
+    }
+
+    private int gridSize;
+
     protected CrafterTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
-        handler = new PlayerInOutStackHandler(this, slots, 1);
+        handler = new PlayerInOutStackHandler(this, slots, 1, 12);
         energyCell = new EnergyCell(this, false, true, 16000);
     }
 
     public CrafterTile(BlockPos pos, BlockState state) {
+        this(pos, state, 0);
+    }
+
+    public CrafterTile(BlockPos pos, BlockState state, int gridSize) {
         this(RegistryManager.CRAFTER_TILE.get(), pos, state);
+        this.gridSize = gridSize;
     }
 
     private ItemStackHandler createItemHandler() {
@@ -108,6 +117,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
     public void saveAdditional(@NotNull CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("energy", energyCell.getEnergyStored());
+        tag.putInt("gridSize", gridSize);
         tag.putFloat("progress", progress);
         tag.putFloat("productivity", productivity);
         tag.putBoolean("locked", locked);
@@ -119,6 +129,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
     public void load(@NotNull CompoundTag p_230337_2_) {
         super.load(p_230337_2_);
         energyCell.setEnergy(p_230337_2_.getInt("energy"));
+        gridSize = p_230337_2_.getInt("gridSize");
         progress = p_230337_2_.getFloat("progress");
         productivity = p_230337_2_.getFloat("productivity");
         locked = p_230337_2_.getBoolean("locked");
@@ -138,6 +149,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
         if (level == null || level.isClientSide()){
             return;
         }
+        update();
         if (recipe != null) {
             crafterManager.refresh(level);
             currentRecipe = crafterManager.getRecipe(new ResourceLocation(recipe));
@@ -149,7 +161,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
         }
         if (!locked) {
             crafterManager.refresh(level);
-            List<CrafterRecipe> possibilities = crafterManager.possibilities(fluidInventory);
+            List<CrafterRecipe> possibilities = crafterManager.possibilities(fluidInventory, gridSize);
             if (!possibilities.contains(currentRecipe)) {
                 progress = 0;
                 if (possibilities.size() > 0) {
@@ -174,7 +186,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
             List<ModuleItem> modules = getModuleItems(2);
             float drain = getDrain(modules, (float) currentRecipe.getEnergy());
             increaseProgress(modules, drain, currentRecipe.getTicks());
-            if (progress >= maxProgress) {
+            if (progress >= maxProgress - 0.0001f) {
                 progress = 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 NonNullList<CountIngredient> ingredients = currentRecipe.getCountIngredients();
@@ -250,7 +262,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
         for (int i = 0; i < 9; i++) {
             fluidInventory.setItem(i, slots.getStackInSlot(i + 1));
         }
-        List<CrafterRecipe> possibilities = crafterManager.possibilities(fluidInventory);
+        List<CrafterRecipe> possibilities = crafterManager.possibilities(fluidInventory, gridSize);
         if (currentRecipe != null && possibilities.size() > 0) {
             currentRecipe = possibilities.get(Math.floorMod(possibilities.indexOf(currentRecipe) + change, possibilities.size()));
         } else if (possibilities.size() > 0){

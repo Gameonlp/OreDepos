@@ -61,7 +61,7 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
     protected ChemicalPlantTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
-        handler = new PlayerInOutStackHandler(this, slots, 1);
+        handler = new PlayerInOutStackHandler(this, slots, 1, 5);
         energyCell = new EnergyCell(this, false, true, 16000);
         maxProgress = 30;
     }
@@ -172,6 +172,7 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
         if (level.isClientSide()){
             return;
         }
+        update();
         if (!fluidTank.isEmpty()){
             Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
             if(level.getBlockEntity(worldPosition.offset(facing.getNormal())) != null) {
@@ -211,7 +212,7 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
             List<ModuleItem> modules = getModuleItems(3);
             float drain = getDrain(modules, (float) currentRecipe.getEnergy());
             increaseProgress(modules, drain, currentRecipe.getTicks());
-            if (progress >= maxProgress) {
+            if (progress >= maxProgress - 0.0001f) {
                 progress -= 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 NonNullList<Ingredient> ingredients = currentRecipe.getIngredients();

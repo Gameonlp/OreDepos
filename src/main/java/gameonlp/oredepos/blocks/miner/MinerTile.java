@@ -73,7 +73,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
     protected MinerTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
-        handler = new PlayerInOutStackHandler(this, slots, 6);
+        handler = new PlayerInOutStackHandler(this, slots, 6, 3);
     }
 
     public MinerTile(BlockPos pos, BlockState state) {
@@ -165,6 +165,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
         if (level == null){
             return;
         }
+        update();
         if (slots.getStackInSlot(6).equals(ItemStack.EMPTY)){
             if (!hadReason || level.getGameTime() % 20 == 0) {
                 this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.missing_drill"));
@@ -224,7 +225,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             this.setChanged();
         }
-        if (progress >= maxProgress) {
+        if (progress >= maxProgress - 0.0001f) {
             progress = 0;
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
             OreDepositTile depo = deposits.get(level.getRandom().nextInt(deposits.size()));

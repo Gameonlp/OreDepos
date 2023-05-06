@@ -70,41 +70,6 @@ public class CrafterManager {
         return name.toString();
     }
 
-    public List<CrafterRecipe> possibilities(FluidInventory inventory) {
-        Set<ItemStack> itemStacks = new HashSet<>();
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack itemStack = inventory.getItem(i).copy();
-            if (!itemStack.isEmpty()) {
-                itemStack.setCount(1);
-                itemStacks.add(itemStack);
-            }
-        }
-        if (cache.containsKey(itemStacks)) {
-            return cache.get(itemStacks);
-        }
-        List<CrafterRecipe> possible = new LinkedList<>();
-        for (CrafterRecipe wrappedRecipe : wrappedRecipes) {
-            boolean invalid = false;
-            for (ItemStack itemStack : itemStacks) {
-                invalid = true;
-                for (CountIngredient ingredient : wrappedRecipe.getCountIngredients()) {
-                    if (ingredient.test(itemStack)) {
-                        invalid = false;
-                        break;
-                    }
-                }
-                if (invalid) {
-                    break;
-                }
-            }
-            if (!invalid) {
-                possible.add(wrappedRecipe);
-            }
-        }
-        cache.put(itemStacks, possible);
-        return possible;
-    }
-
     private static NonNullList<CountIngredient> deduplicate(NonNullList<Ingredient> ingredients) {
         Map<Ingredient, Integer> counts = new HashMap<>();
         for (Ingredient ingredient : ingredients) {
@@ -136,5 +101,42 @@ public class CrafterManager {
 
     public List<CrafterRecipe> possibilities() {
         return wrappedRecipes;
+    }
+
+    public List<CrafterRecipe> possibilities(FluidInventory inventory, int gridSize) {
+        Set<ItemStack> itemStacks = new HashSet<>();
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack itemStack = inventory.getItem(i).copy();
+            if (!itemStack.isEmpty()) {
+                itemStack.setCount(1);
+                itemStacks.add(itemStack);
+            }
+        }
+        List<CrafterRecipe> possible = new LinkedList<>();
+        if (cache.containsKey(itemStacks)) {
+            possible = new LinkedList<>(cache.get(itemStacks));
+        } else {
+            for (CrafterRecipe wrappedRecipe : wrappedRecipes) {
+                boolean invalid = false;
+                for (ItemStack itemStack : itemStacks) {
+                    invalid = true;
+                    for (CountIngredient ingredient : wrappedRecipe.getCountIngredients()) {
+                        if (ingredient.test(itemStack)) {
+                            invalid = false;
+                            break;
+                        }
+                    }
+                    if (invalid) {
+                        break;
+                    }
+                }
+                if (!invalid) {
+                    possible.add(wrappedRecipe);
+                }
+            }
+            cache.put(itemStacks, possible);
+        }
+        possible.removeIf(k -> k.getCountIngredients().size() > gridSize);
+        return possible;
     }
 }

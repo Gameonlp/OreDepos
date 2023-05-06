@@ -49,7 +49,7 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
     protected SmelterTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
-        handler = new PlayerInOutStackHandler(this, slots, 1);
+        handler = new PlayerInOutStackHandler(this, slots, 1, 4);
         energyCell = new EnergyCell(this, false, true, 16000);
         maxProgress = 30;
     }
@@ -129,6 +129,7 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
         if (level == null || level.isClientSide()){
             return;
         }
+        update();
         if (currentRecipe == null && vanillaRecipe == null && !getBlockState().getValue(Working.WORKING).equals(Working.INACTIVE)) {
             level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
         }
@@ -165,7 +166,7 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
             List<ModuleItem> modules = getModuleItems(2);
             float drain = getDrain(modules, currentRecipe != null ? (float) currentRecipe.getEnergy() : getVanillaDrain());
             increaseProgress(modules, drain, (currentRecipe != null ? currentRecipe.getTicks() : vanillaRecipe.getCookingTime() * getVanillaSpeedFactor()));
-            if (progress >= maxProgress) {
+            if (progress >= maxProgress - 0.0001f) {
                 progress = 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 NonNullList<Ingredient> ingredients = currentRecipe != null ? currentRecipe.getIngredients() : vanillaRecipe.getIngredients();

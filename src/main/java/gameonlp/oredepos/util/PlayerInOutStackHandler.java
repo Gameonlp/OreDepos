@@ -13,16 +13,18 @@ public class PlayerInOutStackHandler {
     private ItemStackHandler machineAccessible;
 
     private final int outputRange;
+    private int inputRange;
 
-    public PlayerInOutStackHandler(BlockEntity tile, ItemStackHandler handler, int outputRange){
+    public PlayerInOutStackHandler(BlockEntity tile, ItemStackHandler handler, int outputRange, int inputRange){
         this.tile = tile;
         this.handler = handler;
         this.outputRange = outputRange;
+        this.inputRange = inputRange;
         setupHandlers();
     }
 
     private void setupHandlers() {
-        machineAccessible = new ItemStackHandler(outputRange - 1) {
+        machineAccessible = new ItemStackHandler(outputRange + inputRange) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return handler.isItemValid(slot, stack);
@@ -54,7 +56,11 @@ public class PlayerInOutStackHandler {
 
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                return handler.extractItem(slot, amount, simulate);
+                if (slot < outputRange) {
+                    return handler.extractItem(slot, amount, simulate);
+                } else {
+                    return ItemStack.EMPTY;
+                }
             }
         };
         playerAccessible = new ItemStackHandler(handler.getSlots()) {

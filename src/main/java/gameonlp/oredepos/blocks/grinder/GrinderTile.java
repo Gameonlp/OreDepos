@@ -48,7 +48,7 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
     protected GrinderTile(BlockEntityType<?> p_i48289_1_, BlockPos pos, BlockState state) {
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
-        handler = new PlayerInOutStackHandler(this, slots, 1);
+        handler = new PlayerInOutStackHandler(this, slots, 1, 4);
         energyCell = new EnergyCell(this, false, true, 16000);
     }
 
@@ -122,6 +122,7 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
         if (level == null || level.isClientSide()){
             return;
         }
+        update();
         FluidInventory fluidInventory = new FluidInventory(1, 0);
         fluidInventory.setItem(0, slots.getStackInSlot(1));
         if (currentRecipe == null) {
@@ -141,7 +142,7 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
             List<ModuleItem> modules = getModuleItems(2);
             float drain = getDrain(modules, (float) currentRecipe.getEnergy());
             increaseProgress(modules, drain, currentRecipe.getTicks());
-            if (progress >= maxProgress) {
+            if (progress >= maxProgress - 0.0001f) {
                 progress = 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 NonNullList<Ingredient> ingredients = currentRecipe.getIngredients();

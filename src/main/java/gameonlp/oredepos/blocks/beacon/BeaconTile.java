@@ -104,6 +104,7 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
         if (level == null || level.isClientSide()){
             return;
         }
+        update();
         int width = 1, depth = 1, length = 1;
         List<ModuleItem> moduleItems = getModuleItems(0);
         float beaconDrain = OreDeposConfig.Common.beaconDrain.get();
@@ -134,8 +135,8 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
         } else {
             for (ModuleAcceptorTile moduleAcceptorTile : boosted) {
                 moduleAcceptorTile.removeBeacon(this);
-                boosted.remove(moduleAcceptorTile);
             }
+            boosted.clear();
         }
     }
 

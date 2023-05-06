@@ -49,6 +49,8 @@ public class OreDeposConfig {
         public static ForgeConfigSpec.IntValue crafterDrain;
         public static ForgeConfigSpec.ConfigValue<List<? extends String>> blackListedItems;
         public static ForgeConfigSpec.IntValue beaconDrain;
+        public static ForgeConfigSpec.IntValue generartorTransferCap;
+        public static ForgeConfigSpec.IntValue generartorEnergyRate;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("Deposits");
@@ -88,6 +90,12 @@ public class OreDeposConfig {
             builder.push("Crafter");
             beaconDrain = builder.defineInRange("Drain per tick to support", 120, 0, Integer.MAX_VALUE);
             builder.comment("Decides the FE cost per tick to supply module bonuses");
+            builder.pop();
+            builder.push("Generator");
+            generartorTransferCap = builder.defineInRange("Energy transfer per tick", 120, 0, Integer.MAX_VALUE);
+            builder.comment("Decides how much FE generators can transfer per tick");
+            generartorEnergyRate = builder.defineInRange("Energy generation per tick", 40, 0, Integer.MAX_VALUE);
+            builder.comment("Decides how much FE generators can generate per tick as a base");
             builder.pop();
             builder.pop();
             builder.push("Ore Settings");

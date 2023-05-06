@@ -1,6 +1,8 @@
-package gameonlp.oredepos.blocks.crafter;
+package gameonlp.oredepos.blocks.generator;
 
 import gameonlp.oredepos.RegistryManager;
+import gameonlp.oredepos.blocks.generator.GeneratorContainer;
+import gameonlp.oredepos.blocks.generator.GeneratorTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -26,15 +28,10 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class CrafterBlock extends BaseEntityBlock {
+public class GeneratorBlock extends BaseEntityBlock {
 
-    private int gridSize;
-    private String name;
-
-    public CrafterBlock(Properties properties, int gridSize, String name) {
+    public GeneratorBlock(Properties properties) {
         super(properties);
-        this.gridSize = gridSize;
-        this.name = name;
     }
 
     @SuppressWarnings("deprecation")
@@ -43,7 +40,7 @@ public class CrafterBlock extends BaseEntityBlock {
                                 Player player, InteractionHand handIn, BlockHitResult hit) {
         if(!worldIn.isClientSide()) {
             BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if(tileEntity instanceof CrafterTile) {
+            if(tileEntity instanceof GeneratorTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
                 NetworkHooks.openGui(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
@@ -58,13 +55,13 @@ public class CrafterBlock extends BaseEntityBlock {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("screen.oredepos." + name);
+                return new TranslatableComponent("screen.oredepos.generator");
             }
 
             @Nullable
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
-                return new CrafterContainer(i, worldIn, pos, playerInventory, playerEntity);
+                return new GeneratorContainer(i, worldIn, pos, playerInventory, playerEntity);
             }
         };
     }
@@ -72,7 +69,7 @@ public class CrafterBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CrafterTile(pos, state, gridSize);
+        return new GeneratorTile(pos, state);
     }
 
     @Override
@@ -85,10 +82,10 @@ public class CrafterBlock extends BaseEntityBlock {
     public void onRemove(BlockState p_196243_1_, Level world, BlockPos blockPos, BlockState p_196243_4_, boolean dropContents) {
         if (!dropContents){
             BlockEntity tile = world.getBlockEntity(blockPos);
-            if (tile instanceof CrafterTile crafterTile){
+            if (tile instanceof GeneratorTile generatorTile){
                 NonNullList<ItemStack> contents = NonNullList.create();
-                for (int i = 0; i < crafterTile.getSlots().getSlots(); i++) {
-                    contents.add(crafterTile.getSlots().extractItem(i, Integer.MAX_VALUE, false));
+                for (int i = 0; i < generatorTile.getSlots().getSlots(); i++) {
+                    contents.add(generatorTile.getSlots().extractItem(i, Integer.MAX_VALUE, false));
                 }
                 Containers.dropContents(world, blockPos, contents);
             }
@@ -99,6 +96,6 @@ public class CrafterBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide() ? createTickerHelper(type, RegistryManager.CRAFTER_TILE.get(), CrafterTile::clientTick) : createTickerHelper(type, RegistryManager.CRAFTER_TILE.get(), CrafterTile::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(type, RegistryManager.GENERATOR_TILE.get(), GeneratorTile::serverTick);
     }
 }

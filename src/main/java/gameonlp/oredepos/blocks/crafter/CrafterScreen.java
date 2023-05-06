@@ -3,43 +3,42 @@ package gameonlp.oredepos.blocks.crafter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import gameonlp.oredepos.OreDepos;
-import gameonlp.oredepos.blocks.crafter.CrafterContainer;
-import gameonlp.oredepos.blocks.crafter.CrafterTile;
 import gameonlp.oredepos.crafting.CountIngredient;
-import gameonlp.oredepos.crafting.crafter.CrafterRecipe;
+import gameonlp.oredepos.gui.FakeItemWidget;
 import gameonlp.oredepos.gui.RenderHelper;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class CrafterScreen extends AbstractContainerScreen<CrafterContainer> {
 
     private static final ResourceLocation GUI = new ResourceLocation(OreDepos.MODID,
             "textures/gui/crafter_gui.png");
-    private final int CYCLE = 60;
-    private int frame;
+    private int gridSize;
+    private List<FakeItemWidget> fakeItemWidgets;
 
     public CrafterScreen(CrafterContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        frame = 0;
+        CrafterTile tile = (CrafterTile)menu.getTileEntity();
+        gridSize = tile.getGridSize();
+        fakeItemWidgets = new LinkedList<>();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        layoutFakeSlots(this.leftPos, this.topPos);
     }
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        frame++;
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
@@ -65,19 +64,36 @@ public class CrafterScreen extends AbstractContainerScreen<CrafterContainer> {
             this.blit(matrixStack, i + 133, j + 4, 176, 45, 18, 18);
         }
         if (tile.currentRecipe != null) {
-            int x_ = 0, y_ = 0;
-            for (CountIngredient countIngredient : tile.currentRecipe.getCountIngredients()) {
-                this.itemRenderer.renderAndDecorateFakeItem(countIngredient.getItems()[(frame / CYCLE) % countIngredient.getItems().length], i + 14 + x_ * 18, j + 16 + y_ * 18);
-                this.itemRenderer.renderGuiItemDecorations(font, countIngredient.getItems()[(frame / CYCLE) % countIngredient.getItems().length], i + 14 + x_ * 18, j + 16 + y_ * 18, String.valueOf(countIngredient.getCount()));
-                x_++;
-                if (x_ == 3) {
-                    y_++;
-                    x_ = 0;
+            List<CountIngredient> countIngredients = new LinkedList<>(tile.currentRecipe.getCountIngredients());
+            for (int k = countIngredients.size(); k < 9; k++) {
+                countIngredients.add(CountIngredient.of(Ingredient.EMPTY, 0));
+            }
+            for (Widget renderable : renderables) {
+                if (renderable instanceof FakeItemWidget fakeItemWidget) {
+                    if (fakeItemWidget.isEnabled() && countIngredients.size() > 0) {
+                        fakeItemWidget.setCountIngredient(countIngredients.remove(0));
+                    }
                 }
             }
-            this.itemRenderer.renderAndDecorateFakeItem(tile.currentRecipe.getResultItem(), i + 95, j + 34);
             if (tile.handler.getPlayerAccessible().getStackInSlot(0).isEmpty()) {
+                this.itemRenderer.renderAndDecorateFakeItem(tile.currentRecipe.getResultItem(), i + 95, j + 34);
                 this.itemRenderer.renderGuiItemDecorations(font, tile.currentRecipe.getResultItem(), i + 95, j + 34, String.valueOf(tile.currentRecipe.getResultItem().getCount()));
+            }
+        }
+    }
+
+    private void layoutFakeSlots(int i, int j) {
+        List<List<Boolean>> enabledSlots = switch (gridSize) {
+            case 1 -> List.of(List.of(false, false, false), List.of(false, true, false), List.of(false, false, false));
+            case 3 -> List.of(List.of(false, false, false), List.of(true, true, true), List.of(false, false, false));
+            case 5 -> List.of(List.of(false, true, false), List.of(true, true, true), List.of(false, true, false));
+            case 7 -> List.of(List.of(true, true, true), List.of(false, true, false), List.of(true, true, true));
+            case 9 -> List.of(List.of(true, true, true), List.of(true, true, true), List.of(true, true, true));
+            default -> throw new IllegalStateException("Unexpected value: " + gridSize);
+        };
+        for (int k = 0; k < 3; k++) {
+            for (int l = 0; l < 3; l++) {
+                fakeItemWidgets.add(addRenderableWidget(new FakeItemWidget(this, this.itemRenderer, this.font, i + 14 + l * 18, j + 16 + k * 18, enabledSlots.get(k).get(l))));
             }
         }
     }
@@ -109,22 +125,12 @@ public class CrafterScreen extends AbstractContainerScreen<CrafterContainer> {
         int j = this.topPos;
         CrafterTile tile = (CrafterTile) menu.getTileEntity();
         if (tile.currentRecipe != null) {
-            if (x >= i + 13 && x <= i + 67 && y >= j + 15 && y <= j + 69) {
-                List<Component> components = new ArrayList<>();
-                    try {
-                        CountIngredient countIngredient = tile.currentRecipe.getCountIngredients().get((x - (i + 13)) / 18 + 3 * ((y - (j + 15)) / 18));
-                        for (int index = 0; index < countIngredient.getItems().length; index++) {
-                            ItemStack item = countIngredient.getItems()[(index + (frame / CYCLE)) % countIngredient.getItems().length];
-                            try {
-                                components.add(item.getTooltipLines(null, TooltipFlag.Default.NORMAL).get(0));
-                            } catch (IndexOutOfBoundsException e) {
-                                components.add(new TextComponent("Missing Tooltip for " + item));
-                            }
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {}
-                renderComponentTooltip(matrixStack, components, x, y);
+            for (FakeItemWidget fakeItemWidget : fakeItemWidgets) {
+                if (fakeItemWidget.isMouseOver(x, y)) {
+                    renderComponentTooltip(matrixStack, fakeItemWidget.getTooltip(), x, y);
+                }
             }
-            if (x >= i + 95 && x <= i + 113 && y >= j + 34 && y <= j + 52) {
+            if (x >= i + 95 && x <= i + 113 && y >= j + 34 && y <= j + 52 && tile.handler.getPlayerAccessible().getStackInSlot(0).isEmpty()) {
                 renderComponentTooltip(matrixStack, tile.currentRecipe.getResultItem().getTooltipLines(null, TooltipFlag.Default.NORMAL), x, y);
             }
         }

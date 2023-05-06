@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures":
+  {
+    "particle": "oredepos:block/generator",
+    "up": "oredepos:block/generator_up",
+    "down": "oredepos:block/generator",
+    "north": "oredepos:block/generator_side",
+    "south": "oredepos:block/generator_side",
+    "east": "oredepos:block/generator_side",
+    "west": "oredepos:block/generator_side"
+  }
+}
