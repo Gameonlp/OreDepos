@@ -9,6 +9,9 @@ import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantTile;
 import gameonlp.oredepos.blocks.crafter.CrafterBlock;
 import gameonlp.oredepos.blocks.crafter.CrafterContainer;
 import gameonlp.oredepos.blocks.crafter.CrafterTile;
+import gameonlp.oredepos.blocks.cutter.CutterBlock;
+import gameonlp.oredepos.blocks.cutter.CutterContainer;
+import gameonlp.oredepos.blocks.cutter.CutterTile;
 import gameonlp.oredepos.blocks.generator.GeneratorBlock;
 import gameonlp.oredepos.blocks.generator.GeneratorContainer;
 import gameonlp.oredepos.blocks.generator.GeneratorTile;
@@ -24,6 +27,7 @@ import gameonlp.oredepos.blocks.smelter.SmelterTile;
 import gameonlp.oredepos.config.OreDeposConfig;
 import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.crafter.CrafterRecipe;
+import gameonlp.oredepos.crafting.cutter.CutterRecipe;
 import gameonlp.oredepos.crafting.grinder.GrinderRecipe;
 import gameonlp.oredepos.crafting.smelter.SmelterRecipe;
 import gameonlp.oredepos.items.*;
@@ -105,7 +109,8 @@ public class RegistryManager {
             SmelterTile.getName(),
             CrafterTile.getName(),
             GeneratorTile.getName(),
-            BeaconTile.getName()
+            BeaconTile.getName(),
+            CutterTile.getName()
     );
 
 
@@ -135,49 +140,71 @@ public class RegistryManager {
     public static final Item TIN_INGOT = null;
     @ObjectHolder("oredepos:raw_tin")
     public static final Item RAW_TIN = null;
+	@ObjectHolder("oredepos:tin_dust")
+	public static final Item TIN_DUST = null;
     @ObjectHolder("oredepos:lead_ingot")
     public static final Item LEAD_INGOT = null;
     @ObjectHolder("oredepos:raw_lead")
     public static final Item RAW_LEAD = null;
+	@ObjectHolder("oredepos:lead_dust")
+	public static final Item LEAD_DUST = null;
     @ObjectHolder("oredepos:silver_ingot")
     public static final Item SILVER_INGOT = null;
     @ObjectHolder("oredepos:raw_silver")
     public static final Item RAW_SILVER = null;
+	@ObjectHolder("oredepos:silver_dust")
+	public static final Item SILVER_DUST = null;
     @ObjectHolder("oredepos:aluminum_ingot")
     public static final Item ALUMINUM_INGOT = null;
     @ObjectHolder("oredepos:raw_aluminum")
     public static final Item RAW_ALUMINUM = null;
+	@ObjectHolder("oredepos:aluminum_dust")
+	public static final Item ALUMINUM_DUST = null;
     @ObjectHolder("oredepos:uranium_ingot")
     public static final Item URANIUM_INGOT = null;
     @ObjectHolder("oredepos:raw_uranium")
     public static final Item RAW_URANIUM = null;
+	@ObjectHolder("oredepos:uranium_dust")
+	public static final Item URANIUM_DUST = null;
     @ObjectHolder("oredepos:nickel_ingot")
     public static final Item NICKEL_INGOT = null;
     @ObjectHolder("oredepos:raw_nickel")
     public static final Item RAW_NICKEL = null;
+	@ObjectHolder("oredepos:nickel_dust")
+	public static final Item NICKEL_DUST = null;
     @ObjectHolder("oredepos:zinc_ingot")
     public static final Item ZINC_INGOT = null;
     @ObjectHolder("oredepos:raw_zinc")
     public static final Item RAW_ZINC = null;
+	@ObjectHolder("oredepos:zinc_dust")
+	public static final Item ZINC_DUST = null;
     @ObjectHolder("oredepos:osmium_ingot")
     public static final Item OSMIUM_INGOT = null;
     @ObjectHolder("oredepos:raw_osmium")
     public static final Item RAW_OSMIUM = null;
+	@ObjectHolder("oredepos:osmium_dust")
+	public static final Item OSMIUM_DUST = null;
     @ObjectHolder("oredepos:ardite_ingot")
     public static final Item ARDITE_INGOT = null;
     @ObjectHolder("oredepos:raw_ardite")
     public static final Item RAW_ARDITE = null;
+	@ObjectHolder("oredepos:ardite_dust")
+	public static final Item ARDITE_DUST = null;
     @ObjectHolder("oredepos:cobalt_ingot")
     public static final Item COBALT_INGOT = null;
     @ObjectHolder("oredepos:raw_cobalt")
     public static final Item RAW_COBALT = null;
+	@ObjectHolder("oredepos:cobalt_dust")
+	public static final Item COBALT_DUST = null;
     @ObjectHolder("oredepos:platinum_ingot")
     public static final Item PLATINUM_INGOT = null;
     @ObjectHolder("oredepos:raw_platinum")
     public static final Item RAW_PLATINUM = null;
+	@ObjectHolder("oredepos:platinum_dust")
+	public static final Item PLATINUM_DUST = null;
     @ObjectHolder("oredepos:certus_quartz")
     public static final Item CERTUS_QUARTZ = null;
-    @ObjectHolder("oredepos:sulfur")
+    @ObjectHolder("oredepos:sulfur_dust")
     public static final Item SULFUR = null;
 
     @ObjectHolder("oredepos:length_module_1")
@@ -201,6 +228,7 @@ public class RegistryManager {
     public static RegistryObject<Block> FULL_CRAFTER;
     public static RegistryObject<Block> BEACON;
     public static RegistryObject<Block> GENERATOR;
+    public static RegistryObject<Block> CUTTER;
     public static final RegistryObject<LiquidBlock> SULFURIC_ACID_BLOCK = RegistryManager.BLOCKS.register("sulfuric_acid",
             () -> new LiquidBlock(() -> RegistryManager.SULFURIC_ACID_FLUID.get(), BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
@@ -430,6 +458,7 @@ public class RegistryManager {
     public static RegistryObject<BlockEntityType<CrafterTile>> CRAFTER_TILE;
     public static RegistryObject<BlockEntityType<BeaconTile>> BEACON_TILE;
     public static RegistryObject<BlockEntityType<GeneratorTile>> GENERATOR_TILE;
+    public static RegistryObject<BlockEntityType<CutterTile>> CUTTER_TILE;
 
     //Containers
     public static RegistryObject<MenuType<MinerContainer>> MINER_CONTAINER = CONTAINERS.register("miner_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
@@ -473,6 +502,12 @@ public class RegistryManager {
         return new GeneratorContainer(windowId, world, pos, inv, inv.player);
     })));
 
+    public static RegistryObject<MenuType<CutterContainer>> CUTTER_CONTAINER = CONTAINERS.register("cutter_container", () -> IForgeMenuType.create(((windowId, inv, data) -> {
+        BlockPos pos = data.readBlockPos();
+        Level world = inv.player.getCommandSenderWorld();
+        return new CutterContainer(windowId, world, pos, inv, inv.player);
+    })));
+
 
     //Fluids
     public static final RegistryObject<FlowingFluid> SULFURIC_ACID_FLUID
@@ -502,6 +537,10 @@ public class RegistryManager {
     public static final RecipeSerializer<CrafterRecipe> CRAFTER_RECIPE_SERIALIZER = null;
     public static final RegistryObject<CrafterRecipe.CrafterRecipeType> CRAFTER_RECIPE_TYPE = RECIPE_TYPES.register("crafter_recipe_type", CrafterRecipe.CrafterRecipeType::new);
 
+    @ObjectHolder("oredepos:cutter_recipe")
+    public static final RecipeSerializer<CutterRecipe> CUTTER_RECIPE_SERIALIZER = null;
+    public static final RegistryObject<CutterRecipe.CutterRecipeType> CUTTER_RECIPE_TYPE = RECIPE_TYPES.register("cutter_recipe_type", CutterRecipe.CutterRecipeType::new);
+
     //Features
     public static final RegistryObject<ODOreFeature> ORE = FEATURES.register("od_ore", () -> new ODOreFeature(OreConfiguration.CODEC));
 
@@ -514,14 +553,14 @@ public class RegistryManager {
 
 
     private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance){
-        return prepareDeposit(name, material, hardness,resistance, true,true);
+        return prepareDeposit(name, material, hardness,resistance, true,true, true);
     }
 
-    private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance, boolean hasIngot, boolean hasBlock){
-        return prepareDeposit(name, material, hardness,resistance,hardness, resistance, hasIngot, hasBlock);
+    private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance, boolean hasIngot, boolean hasBlock, boolean hasDust){
+        return prepareDeposit(name, material, hardness,resistance,hardness, resistance, hasIngot, hasBlock, hasDust);
     }
 
-    private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance, float blockHardness, float blockResistance, boolean hasIngot, boolean hasBlock){
+    private Supplier<Block> prepareDeposit(String name, Material material, float hardness, float resistance, float blockHardness, float blockResistance, boolean hasIngot, boolean hasBlock, boolean hasDust){
         Supplier<Block> oreBlock = () -> new Block(BlockBehaviour.Properties.of(material)
                 .strength(hardness, resistance)
                 .requiresCorrectToolForDrops());
@@ -533,18 +572,21 @@ public class RegistryManager {
         if (hasIngot) {
             ITEMS.register(name + "_ingot", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
         }
+        if (hasDust) {
+            makeDust(name);
+        }
         return registerBlock(name + "_ore", oreBlock);
     }
 
     private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance){
-        return prepareDeepslateDeposit(name, material, hardness,resistance, true,true);
+        return prepareDeepslateDeposit(name, material, hardness,resistance, true,true, false);
     }
 
-    private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance, boolean hasChunk, boolean hasBlock){
-        return prepareDeepslateDeposit(name, material, hardness,resistance,hardness, resistance, hasChunk, hasBlock);
+    private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance, boolean hasChunk, boolean hasBlock, boolean hasDust){
+        return prepareDeepslateDeposit(name, material, hardness,resistance,hardness, resistance, hasChunk, hasBlock, hasDust);
     }
 
-    private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance, float blockHardness, float blockResistance, boolean hasChunk, boolean hasBlock){
+    private Supplier<Block> prepareDeepslateDeposit(String name, Material material, float hardness, float resistance, float blockHardness, float blockResistance, boolean hasChunk, boolean hasBlock, boolean hasDust){
         Supplier<Block> oreBlock = () -> new Block(BlockBehaviour.Properties.of(material)
                 .strength(hardness, resistance)
                 .requiresCorrectToolForDrops());
@@ -554,7 +596,14 @@ public class RegistryManager {
         if (hasChunk) {
             makeChunk(name);
         }
+        if (hasDust) {
+            makeDust(name);
+        }
         return registerBlock("deepslate_" + name + "_ore", oreBlock);
+    }
+
+    private static RegistryObject<Item> makeDust(String name) {
+        return ITEMS.register(name + "_dust", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
 
     private void makeRaws(String name, float blockHardness, float blockResistance){
@@ -587,9 +636,9 @@ public class RegistryManager {
         Supplier<Block> deepslateNickelOreBlock = prepareDeepslateDeposit("nickel", Material.STONE, 3, 5);
         Supplier<Block> zincOreBlock = prepareDeposit("zinc", Material.STONE, 2, 5);
         Supplier<Block> deepslateZincOreBlock = prepareDeepslateDeposit("zinc", Material.STONE, 2, 5);
-        Supplier<Block> certusQuartzOreBlock = prepareDeposit("certus_quartz", Material.STONE, 3, 15, false, true);
-        Supplier<Block> deepslateCertusQuartzOreBlock = prepareDeepslateDeposit("certus_quartz", Material.STONE, 3, 15, false, false);
-        Supplier<Block> sulfurOreBlock = prepareDeposit("sulfur", Material.STONE, 2.5f, 5, false, true);
+        Supplier<Block> certusQuartzOreBlock = prepareDeposit("certus_quartz", Material.STONE, 3, 15, false, true, true);
+        Supplier<Block> deepslateCertusQuartzOreBlock = prepareDeepslateDeposit("certus_quartz", Material.STONE, 3, 15, false, false, false);
+        Supplier<Block> sulfurOreBlock = prepareDeposit("sulfur", Material.STONE, 2.5f, 5, false, true, true);
         Supplier<Block> osmiumOreBlock = prepareDeposit("osmium", Material.STONE, 2.5f, 5);
         Supplier<Block> deepslateOsmiumOreBlock = prepareDeepslateDeposit("osmium", Material.STONE, 2.5f, 5);
         Supplier<Block> arditeOreBlock = prepareDeposit("ardite", Material.STONE, 4, 5);
@@ -701,6 +750,9 @@ public class RegistryManager {
         GENERATOR = registerBlock("generator", () -> new GeneratorBlock(BlockBehaviour.Properties.of(Material.METAL)
                 .strength(3, 10)
                 .requiresCorrectToolForDrops()));
+        CUTTER = registerBlock("cutter", () -> new CutterBlock(BlockBehaviour.Properties.of(Material.METAL)
+                .strength(3, 10)
+                .requiresCorrectToolForDrops()));
     }
 
     private void registerItems(){
@@ -742,7 +794,6 @@ public class RegistryManager {
         ITEMS.register("inversion_module", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.2f, 0, 0, 0, true)
                 .accept(MinerTile.getName()));
         ITEMS.register("certus_quartz", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
-        ITEMS.register("sulfur", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));
     }
 
     private void registerTileEntities(){
@@ -753,7 +804,8 @@ public class RegistryManager {
         CRAFTER_TILE = TILE_ENTITIES.register("crafter_tile", () -> BlockEntityType.Builder.of(CrafterTile::new, CRAFTER.get(), SIMPLE_CRAFTER.get(), RUDIMENTARY_CRAFTER.get(), TINY_CRAFTER.get(), FULL_CRAFTER.get()).build(null));
         BEACON_TILE = TILE_ENTITIES.register("beacon_tile", () -> BlockEntityType.Builder.of(BeaconTile::new, BEACON.get()).build(null));
         ORE_DEPOSIT_TILE = TILE_ENTITIES.register("ore_deposit_tile", () -> BlockEntityType.Builder.of(OreDepositTile::new, deposits.stream().map(Supplier::get).toList().toArray(new Block[0])).build(null));
-        GENERATOR_TILE = TILE_ENTITIES.register("generator_tile", () -> BlockEntityType.Builder.of((pos, state) -> new GeneratorTile(pos, state), GENERATOR.get()).build(null));
+        GENERATOR_TILE = TILE_ENTITIES.register("generator_tile", () -> BlockEntityType.Builder.of(GeneratorTile::new, GENERATOR.get()).build(null));
+        CUTTER_TILE = TILE_ENTITIES.register("cutter_tile", () -> BlockEntityType.Builder.of(CutterTile::new, CUTTER.get()).build(null));
     }
 
     private void registerSerializers(){
@@ -761,6 +813,7 @@ public class RegistryManager {
         RECIPE_SERIALIZERS.register("grinder_recipe", GrinderRecipe.Serializer::new);
         RECIPE_SERIALIZERS.register("smelter_recipe", SmelterRecipe.Serializer::new);
         RECIPE_SERIALIZERS.register("crafter_recipe", CrafterRecipe.Serializer::new);
+        RECIPE_SERIALIZERS.register("cutter_recipe", CutterRecipe.Serializer::new);
     }
 
     public void register(IEventBus eventBus){

@@ -11,7 +11,7 @@
       "item": "minecraft:iron_ingot"
     },
     {
-      "item": "oredepos:sulfur"
+      "tag": "forge:dusts/sulfur"
     }
   ],
   "fluid_inputs": [

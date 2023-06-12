@@ -321,6 +321,7 @@ public class TagProvider {
                     RegistryManager.SMELTER.get(),
                     RegistryManager.CRAFTER.get(),
                     RegistryManager.BEACON.get(),
+                    RegistryManager.CUTTER.get(),
                     RegistryManager.CHEMICAL_PLANT.get()
             );
 
