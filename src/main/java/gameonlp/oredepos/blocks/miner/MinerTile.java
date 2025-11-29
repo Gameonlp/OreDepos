@@ -18,7 +18,6 @@ import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,7 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -43,16 +41,14 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, FluidHandlerTile, ModuleAcceptorTile {
-
-    final EnergyCell energyCell = new EnergyCell(this, false, true, 16000);
 
     PlayerInOutStackHandler handler;
     int fluidCapacity = 4000;
@@ -63,9 +59,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
     LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> fluidTank);
     LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energyCell);
 
-    float progress;
     float maxProgress = 30;
-    float productivity;
 
     List<Component> reason = Collections.emptyList();
     boolean hadReason;
@@ -74,6 +68,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
         super(p_i48289_1_, pos, state);
         slots = createItemHandler();
         handler = new PlayerInOutStackHandler(this, slots, 6, 3);
+        energyCell = new EnergyCell(this, false, true, 16000);
     }
 
     public MinerTile(BlockPos pos, BlockState state) {
@@ -132,7 +127,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("energy", energyCell.getEnergyStored());
         tag.putFloat("progress", progress);
@@ -142,7 +137,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
     }
 
     @Override
-    public void load(CompoundTag p_230337_2_) {
+    public void load(@NotNull CompoundTag p_230337_2_) {
         super.load(p_230337_2_);
         energyCell.setEnergy(p_230337_2_.getInt("energy"));
         progress = p_230337_2_.getFloat("progress");
@@ -155,7 +150,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
         slots.deserializeNBT(p_230337_2_.getCompound("slots"));
     }
 
-    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, MinerTile e) {
+    public static void serverTick(Level ignoredLevel, BlockPos ignoredBlockPos, BlockState ignoredBlockState, MinerTile e) {
         e.tick();
     }
 
@@ -194,24 +189,18 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
         int width = 0;
         int depth = 0;
         boolean inversion = false;
-        float drain = energyDrain;
-        float progressIncrease = 1.0f;
-        float productivityIncrease = 0.0f;
         for (ModuleItem module : modules){
             length = module.getLength(length);
             width = module.getWidth(width);
             depth = module.getDepth(depth);
             inversion = module.getInversion(inversion);
-            drain = module.getEnergyConsumption(drain);
-            progressIncrease = module.getProgress(progressIncrease);
-            productivityIncrease = module.getProductivity(productivityIncrease);
         }
         this.reason = findSuitableTiles(fluidDrain, deposits, width, length, depth, inversion);
         if (deposits.isEmpty()) {
             if (hadReason && lengthPriorReason == this.reason.size() && level.getGameTime() % 20 != 0){
                 return;
             }
-            if (this.reason.size() == 0){
+            if (this.reason.isEmpty()){
                 this.reason = Collections.singletonList(new TranslatableComponent("tooltip.oredepos.no_deposits"));
             }
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketTooltipSync(worldPosition, reason));
@@ -219,12 +208,8 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
             return;
         }
         clearReason();
-        if (energyCell.getEnergyStored() >= drain) {
-            energyCell.setEnergy((int) (energyCell.getEnergyStored() - drain));
-            progress += progressIncrease;
-            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
-            this.setChanged();
-        }
+        float drain = getDrain(modules, energyDrain);
+        increaseProgress(modules, drain, 150);
         if (progress >= maxProgress - 0.0001f) {
             progress = 0;
             PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
@@ -258,9 +243,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
                 fluidTank.drain(fluidDrain, IFluidHandler.FluidAction.EXECUTE);
             }
             depo.decrement();
-            productivity += productivityIncrease;
-            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-            this.setChanged();
+            increaseProductivity(modules);
         }
     }
 
@@ -317,7 +300,9 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
                             currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_tool").append(": ").append(correctTool));
                         }
                         if (!correctFluid) {
-                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(new FluidStack(fluid.getRandomElement(level.random).get(), 100).getDisplayName()));
+                            String name = "?";
+                            fluid.getRandomElement(level.random).ifPresent((f) -> new FluidStack(f, 100).getDisplayName().getString());
+                            currentReason.add(new TranslatableComponent("tooltip.oredepos.incorrect_fluid").append(": ").append(name));
                         }
                         if (!enoughFluid) {
                             currentReason.add(new TranslatableComponent("tooltip.oredepos.insufficient_fluid").append(": ").append(String.valueOf(fluidDrain)));
@@ -328,7 +313,7 @@ public class MinerTile extends BasicMachineTile implements EnergyHandlerTile, Fl
             }
         }
         reasons.sort(Comparator.comparingInt(List::size));
-        return reasons.size() > 0 ? reasons.get(0) : Collections.emptyList();
+        return !reasons.isEmpty() ? reasons.get(0) : Collections.emptyList();
     }
 
     @Override
