@@ -52,7 +52,7 @@ public class MinerScreen extends AbstractContainerScreen<MinerContainer> {
             RenderSystem.setShaderTexture(0, GUI);
             this.blit(matrixStack, i + 115, j + 4, 176, 0, 18, 45);
         }
-        RenderHelper.renderBar(matrixStack, i + 53, j + 21, 6, 43, tile.getProgress() / tile.maxProgress, 0xFF29D825);
+        RenderHelper.renderBar(matrixStack, i + 53, j + 21, 6, 43, tile.getProgress() / tile.getMaxProgress(), 0xFF29D825);
         RenderHelper.renderBar(matrixStack, i + 61, j + 21, 6, 43, tile.getProductivity(), 0xFFBB18BB);
     }
 
@@ -63,7 +63,7 @@ public class MinerScreen extends AbstractContainerScreen<MinerContainer> {
         int j = this.topPos;
         MinerTile tile = (MinerTile) menu.getTileEntity();
         if (x >= i + 53 && x <= i + 67 && y >= j + 24 && y <= j + 66) {
-            renderComponentTooltip(matrixStack, tile.reason, x, y);
+            renderComponentTooltip(matrixStack, tile.getReason(), x, y);
         }
         if (x >= i + 115 && x <= i + 133 && y >= j + 4 && y <= j + 49) {
             renderComponentTooltip(matrixStack,

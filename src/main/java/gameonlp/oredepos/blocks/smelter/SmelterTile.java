@@ -130,6 +130,12 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
             return;
         }
         update();
+        List<ModuleItem> modules = getModuleItems(2);
+        ModuleItem.ModuleBoosts moduleBoosts = new ModuleItem.ModuleBoosts();
+        getModuleBoosts(modules, moduleBoosts);
+        if (moduleBoosts.ejecting) {
+            eject(0, 0);
+        }
         if (currentRecipe == null && vanillaRecipe == null && !getBlockState().getValue(Working.WORKING).equals(Working.INACTIVE)) {
             level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
         }
@@ -155,7 +161,7 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
             if ((currentRecipe != null && !currentRecipe.matches(fluidInventory, level))
                     || (vanillaRecipe != null && !vanillaRecipe.matches(fluidInventory, level))
                     || resultItem.isEmpty()
-                    || slots.insertItem(0, resultItem, true) != ItemStack.EMPTY) {
+                    || isInventoryFull(modules, List.of(resultItem), 0, 0)) {
                 progress = 0;
                 currentRecipe = null;
                 vanillaRecipe = null;
@@ -163,7 +169,6 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
                 level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(Working.WORKING, Working.INACTIVE));
                 return;
             }
-            List<ModuleItem> modules = getModuleItems(2);
             float drain = getDrain(modules, currentRecipe != null ? (float) currentRecipe.getEnergy() : getVanillaDrain());
             increaseProgress(modules, drain, (currentRecipe != null ? currentRecipe.getTicks() : vanillaRecipe.getCookingTime() * getVanillaSpeedFactor()));
             if (progress >= maxProgress - 0.0001f) {
@@ -175,14 +180,7 @@ public class SmelterTile extends BasicMachineTile implements EnergyHandlerTile, 
                         slots.extractItem(1, 1, false);
                     }
                 }
-                ItemStack outStack = resultItem;
-                int count = outStack.getCount();
-                while (productivity >= 1){
-                    productivity -= 1;
-                    PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                    outStack.setCount(outStack.getCount() + count);
-                }
-                slots.insertItem(0, outStack, false);
+                handleOutputs(List.of(resultItem), 0, 0);
                 increaseProductivity(modules);
             }
         }

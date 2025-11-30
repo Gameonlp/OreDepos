@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -122,12 +123,12 @@ public class GeneratorTile extends BasicMachineTile implements EnergyHandlerTile
         }
         update();
         List<IEnergyStorage> neighbours = new LinkedList<>();
-        option(level.getBlockEntity(getBlockPos().offset(0, 1, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY).ifPresent(neighbours::add));
-        option(level.getBlockEntity(getBlockPos().offset(0, -1, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY).ifPresent(neighbours::add));
-        option(level.getBlockEntity(getBlockPos().offset(1, 0, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY).ifPresent(neighbours::add));
-        option(level.getBlockEntity(getBlockPos().offset(-1, 0, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY).ifPresent(neighbours::add));
-        option(level.getBlockEntity(getBlockPos().offset(0, 0, 1))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY).ifPresent(neighbours::add));
-        option(level.getBlockEntity(getBlockPos().offset(0, 0, -1))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY).ifPresent(neighbours::add));
+        option(level.getBlockEntity(getBlockPos().offset(0, 1, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY, Direction.DOWN).ifPresent(neighbours::add));
+        option(level.getBlockEntity(getBlockPos().offset(0, -1, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY, Direction.UP).ifPresent(neighbours::add));
+        option(level.getBlockEntity(getBlockPos().offset(1, 0, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY, Direction.WEST).ifPresent(neighbours::add));
+        option(level.getBlockEntity(getBlockPos().offset(-1, 0, 0))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY, Direction.EAST).ifPresent(neighbours::add));
+        option(level.getBlockEntity(getBlockPos().offset(0, 0, 1))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY, Direction.NORTH).ifPresent(neighbours::add));
+        option(level.getBlockEntity(getBlockPos().offset(0, 0, -1))).ifPresent(b -> b.getCapability(CapabilityEnergy.ENERGY, Direction.SOUTH).ifPresent(neighbours::add));
         for (IEnergyStorage neighbour : neighbours) {
             if (neighbour.canReceive()) {
                 int accepted = neighbour.receiveEnergy(Math.min(energyCell.getEnergyStored(), OreDeposConfig.Common.generartorTransferCap.get()), false);
@@ -164,14 +165,8 @@ public class GeneratorTile extends BasicMachineTile implements EnergyHandlerTile
         }
     }
 
-    @org.jetbrains.annotations.Nullable
-    private Integer getBurnTime() {
-        Integer integer;
-        integer = slots.getStackInSlot(0).getBurnTime(null);
-        if (integer == -1) {
-            integer = !slots.getStackInSlot(0).getItem().equals(Items.LAVA_BUCKET) ? FurnaceBlockEntity.getFuel().get(slots.getStackInSlot(0).getItem()) : Integer.valueOf(200);
-        }
-        return integer;
+    private @NotNull Integer getBurnTime() {
+        return ForgeHooks.getBurnTime(slots.getStackInSlot(0), null);
     }
 
     private boolean canConsumeFuel() {
@@ -188,26 +183,16 @@ public class GeneratorTile extends BasicMachineTile implements EnergyHandlerTile
     }
 
     protected void increaseProgress(List<ModuleItem> modules, float drain, float time) {
-        List<ModuleItem> beaconModules = new LinkedList<>();
-        for (BeaconTile beacon : beacons) {
-            beaconModules.addAll(beacon.getModuleItems(0));
-        }
-        float beaconBoost = 0f;
-        for (ModuleItem beaconModule : beaconModules) {
-            beaconBoost = beaconModule.getProgress(beaconBoost);
-        }
-        beaconBoost /= 2;
-        float progressIncrease = 1.0f;
-        for (ModuleItem module : modules){
-            progressIncrease = module.getProgress(progressIncrease);
-        }
-        progressIncrease += beaconBoost;
+        if (energyCell.getEnergyStored() < energyCell.getMaxEnergyStored()) {
+            ModuleItem.ModuleBoosts moduleBoosts = new ModuleItem.ModuleBoosts();
+            getModuleBoosts(modules, moduleBoosts);
 
-        float progressRatio = time / maxProgress;
-        energyCell.setEnergy(Math.min(energyCell.getMaxEnergyStored(), (int) (energyCell.getEnergyStored() + OreDeposConfig.Common.generartorEnergyRate.get() * progressIncrease)));
-        progress += (1 / progressRatio);
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
-        this.setChanged();
+            float progressRatio = time / maxProgress;
+            energyCell.setEnergy(Math.min(energyCell.getMaxEnergyStored(), (int) (energyCell.getEnergyStored() + OreDeposConfig.Common.generartorEnergyRate.get() * moduleBoosts.progress)));
+            progress += (1 / progressRatio);
+            PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
+            this.setChanged();
+        }
     }
 
     public static String getName() {

@@ -6,7 +6,6 @@ import gameonlp.oredepos.crafting.FluidInventory;
 import gameonlp.oredepos.crafting.grinder.GrinderRecipe;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
-import gameonlp.oredepos.net.PacketProductivitySync;
 import gameonlp.oredepos.net.PacketProgressSync;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
@@ -123,6 +122,12 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
             return;
         }
         update();
+        List<ModuleItem> modules = getModuleItems(2);
+        ModuleItem.ModuleBoosts moduleBoosts = new ModuleItem.ModuleBoosts();
+        getModuleBoosts(modules, moduleBoosts);
+        if (moduleBoosts.ejecting) {
+            eject(0, 0);
+        }
         FluidInventory fluidInventory = new FluidInventory(1, 0);
         fluidInventory.setItem(0, slots.getStackInSlot(1));
         if (currentRecipe == null) {
@@ -136,10 +141,9 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 return;
             }
-            if (slots.insertItem(0, currentRecipe.getResultItem(), true) != ItemStack.EMPTY){
+            if (isInventoryFull(modules, List.of(currentRecipe.getResultItem().copy()), 0, 0)){
                 return;
             }
-            List<ModuleItem> modules = getModuleItems(2);
             float drain = getDrain(modules, (float) currentRecipe.getEnergy());
             increaseProgress(modules, drain, currentRecipe.getTicks());
             if (progress >= maxProgress - 0.0001f) {
@@ -152,13 +156,7 @@ public class GrinderTile extends BasicMachineTile implements EnergyHandlerTile, 
                     }
                 }
                 ItemStack outStack = currentRecipe.getResultItem();
-                int count = outStack.getCount();
-                while (productivity >= 1){
-                    productivity -= 1;
-                    PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                    outStack.setCount(outStack.getCount() + count);
-                }
-                slots.insertItem(0, outStack, false);
+                handleOutputs(List.of(outStack), 0, 0);
                 increaseProductivity(modules);
             }
         }

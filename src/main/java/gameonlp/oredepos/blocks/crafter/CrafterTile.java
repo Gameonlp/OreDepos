@@ -150,6 +150,12 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
             return;
         }
         update();
+        List<ModuleItem> modules = getModuleItems(2);
+        ModuleItem.ModuleBoosts moduleBoosts = new ModuleItem.ModuleBoosts();
+        getModuleBoosts(modules, moduleBoosts);
+        if (moduleBoosts.ejecting) {
+            eject(0, 0);
+        }
         if (recipe != null) {
             crafterManager.refresh(level);
             currentRecipe = crafterManager.getRecipe(new ResourceLocation(recipe));
@@ -180,10 +186,9 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 return;
             }
-            if (slots.insertItem(0, currentRecipe.getResultItem(), true) != ItemStack.EMPTY){
+            if (isInventoryFull(modules, List.of(currentRecipe.getResultItem().copy()), 0, 0)){
                 return;
             }
-            List<ModuleItem> modules = getModuleItems(2);
             float drain = getDrain(modules, (float) currentRecipe.getEnergy());
             increaseProgress(modules, drain, currentRecipe.getTicks());
             if (progress >= maxProgress - 0.0001f) {
@@ -217,13 +222,7 @@ public class CrafterTile extends BasicMachineTile implements EnergyHandlerTile, 
                 }
                 Containers.dropContents(level, getBlockPos(), remainingRemainingItems);
                 ItemStack outStack = currentRecipe.getResultItem();
-                int count = outStack.getCount();
-                while (productivity >= 1){
-                    productivity -= 1;
-                    PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                    outStack.setCount(outStack.getCount() + count);
-                }
-                slots.insertItem(0, outStack, false);
+                handleOutputs(List.of(outStack), 0, 0);
                 increaseProductivity(modules);
             }
         }

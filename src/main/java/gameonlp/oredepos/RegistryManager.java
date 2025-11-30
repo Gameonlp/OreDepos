@@ -786,11 +786,11 @@ public class RegistryManager {
         ITEMS.register("productivity_module_3", () -> new ProductivityModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, -0.15f, 0.1f)
                 .acceptAll(moduleAcceptors));
         ITEMS.register("length_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 1, 0, 0, false)
-                .accept(MinerTile.getName()));
+                .acceptAll(List.of(MinerTile.getName(), BeaconTile.getName())));
         ITEMS.register("width_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 1, 0, false)
-                .accept(MinerTile.getName()));
+                .acceptAll(List.of(MinerTile.getName(), BeaconTile.getName())));
         ITEMS.register("depth_module_1", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.8f, 0, 0, 1, false)
-                .accept(MinerTile.getName()));
+                .acceptAll(List.of(MinerTile.getName(), BeaconTile.getName())));
         ITEMS.register("inversion_module", () -> new DimensionModuleItem(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB), 0.2f, 0, 0, 0, true)
                 .accept(MinerTile.getName()));
         ITEMS.register("certus_quartz", () -> new Item(new Item.Properties().tab(OreDeposTab.ORE_DEPOS_TAB)));

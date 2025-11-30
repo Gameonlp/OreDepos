@@ -26,23 +26,19 @@ public class DimensionModuleItem extends ModuleItem{
     }
 
     @Override
-    public boolean getInversion(boolean inversion) {
-        return inversion || this.inversion;
+    public void getBoosts(ModuleBoosts moduleBoosts, boolean beaconModule) {
+        if (!beaconModule) {
+            super.getBoosts(moduleBoosts);
+            moduleBoosts.inversion |= this.inversion;
+            moduleBoosts.width += this.width;
+            moduleBoosts.length += this.length;
+            moduleBoosts.depth += this.depth;
+        }
     }
 
     @Override
-    public int getLength(int length) {
-        return length + this.length;
-    }
-
-    @Override
-    public int getWidth(int width) {
-        return width + this.width;
-    }
-
-    @Override
-    public int getDepth(int depth) {
-        return depth + this.depth;
+    public void getBoosts(ModuleBoosts moduleBoosts) {
+        getBoosts(moduleBoosts, false);
     }
 
     @Override

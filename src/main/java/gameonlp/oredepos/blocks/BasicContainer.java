@@ -39,14 +39,14 @@ public abstract class BasicContainer extends AbstractContainerMenu {
         super(menuType, windowId);
         this.moduleOffset = moduleOffset;
         this.tileEntity = world.getBlockEntity(pos);
-        if (tileEntity.getLevel() != null && !tileEntity.getLevel().isClientSide() && correctTile()){
-            sendInitialSync();
-        }
         this.player = player;
         this.playerInventory = new InvWrapper(playerInventory);
         layoutPlayerInventorySlots(leftCol, topRow);
 
         if(tileEntity != null) {
+            if (tileEntity.getLevel() != null && !tileEntity.getLevel().isClientSide() && correctTile()){
+                sendInitialSync();
+            }
             setUpSlots();
         }
     }

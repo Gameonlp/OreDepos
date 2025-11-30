@@ -3,11 +3,11 @@ package gameonlp.oredepos.blocks.beacon;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
 import gameonlp.oredepos.config.OreDeposConfig;
+import gameonlp.oredepos.items.DimensionModuleItem;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
 import gameonlp.oredepos.util.EnergyCell;
-import gameonlp.oredepos.util.PlayerInOutStackHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -105,14 +105,12 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
             return;
         }
         update();
-        int width = 1, depth = 1, length = 1;
         List<ModuleItem> moduleItems = getModuleItems(0);
         float beaconDrain = OreDeposConfig.Common.beaconDrain.get();
-        for (ModuleItem moduleItem : moduleItems) {
-            width = moduleItem.getWidth(width);
-            depth = moduleItem.getDepth(depth);
-            length = moduleItem.getLength(length);
-        }
+        ModuleItem.ModuleBoosts moduleBoosts = new ModuleItem.ModuleBoosts();
+        getModuleBoosts(moduleItems.stream().filter((moduleItem -> moduleItem instanceof DimensionModuleItem)).toList(), moduleBoosts);
+        beaconDrain = beaconDrain * moduleBoosts.energy;
+        int width = 1 + moduleBoosts.width, depth = 1 + moduleBoosts.depth, length = 1 + moduleBoosts.length;
         if (energyCell.getEnergyStored() > beaconDrain) {
             energyCell.extractEnergy((int) beaconDrain, false);
             for (int x = -1 - width; x <= 1 + width; x++) {
@@ -122,7 +120,7 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
                             continue;
                         }
                         BlockEntity acceptor = level.getBlockEntity(worldPosition.offset(x, y, z));
-                        if (!(acceptor instanceof ModuleAcceptorTile moduleAcceptorTile)) {
+                        if (!(acceptor instanceof ModuleAcceptorTile moduleAcceptorTile) || moduleAcceptorTile instanceof BeaconTile) {
                             continue;
                         }
                         if (!boosted.contains(moduleAcceptorTile)) {
