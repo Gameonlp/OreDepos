@@ -45,7 +45,7 @@ public class TOPCompat implements Function<ITheOneProbe, Void> {
                 if (!tileEntityOre.fluidNeeded().isEmpty()) {
                     ITag<Fluid> fluid = tileEntityOre.fluidNeeded();
                     probeInfo.text(new TranslatableComponent("tooltip." + OreDepos.MODID + ".requires_fluid")
-                            .append(" ")
+                            .append(": ")
                             .append(new FluidStack(fluid.stream().toList().get(0), 100).getDisplayName())
                             .withStyle(ChatFormatting.GREEN));
                 }
