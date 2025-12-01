@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "tag": "forge:ingots/uranium"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "oredepos:uranium_dust"
+  },
+  "ticks": 20
+}

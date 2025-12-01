@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "item": "oredepos:raw_tin_block"
+    }
+  ],
+  "result": {
+    "count": 12,
+    "item": "oredepos:tin_dust"
+  },
+  "ticks": 20
+}

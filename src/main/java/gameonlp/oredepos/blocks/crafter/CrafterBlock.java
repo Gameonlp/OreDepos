@@ -27,8 +27,13 @@ import javax.annotation.Nullable;
 
 public class CrafterBlock extends BaseEntityBlock {
 
-    public CrafterBlock(Properties properties) {
+    private int gridSize;
+    private String name;
+
+    public CrafterBlock(Properties properties, int gridSize, String name) {
         super(properties);
+        this.gridSize = gridSize;
+        this.name = name;
     }
 
     @SuppressWarnings("deprecation")
@@ -52,7 +57,7 @@ public class CrafterBlock extends BaseEntityBlock {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return Component.translatable("screen.oredepos.crafter");
+                return Component.translatable("screen.oredepos." + name);
             }
 
             @Nullable
@@ -66,7 +71,7 @@ public class CrafterBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CrafterTile(pos, state);
+        return new CrafterTile(pos, state, gridSize);
     }
 
     @Override

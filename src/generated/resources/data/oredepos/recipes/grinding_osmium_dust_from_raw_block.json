@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "item": "oredepos:raw_osmium_block"
+    }
+  ],
+  "result": {
+    "count": 12,
+    "item": "oredepos:osmium_dust"
+  },
+  "ticks": 20
+}

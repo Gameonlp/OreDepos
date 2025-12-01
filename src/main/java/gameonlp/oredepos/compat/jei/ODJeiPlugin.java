@@ -5,18 +5,17 @@ import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.chemicalplant.ChemicalPlantScreen;
 import gameonlp.oredepos.blocks.crafter.CrafterManager;
 import gameonlp.oredepos.blocks.crafter.CrafterScreen;
+import gameonlp.oredepos.blocks.cutter.CutterScreen;
 import gameonlp.oredepos.blocks.grinder.GrinderScreen;
 import gameonlp.oredepos.blocks.smelter.SmelterScreen;
 import gameonlp.oredepos.blocks.smelter.SmelterTile;
-import gameonlp.oredepos.compat.jei.machine.ChemicalPlantRecipeCategory;
-import gameonlp.oredepos.compat.jei.machine.CrafterRecipeCategory;
-import gameonlp.oredepos.compat.jei.machine.GrinderRecipeCategory;
-import gameonlp.oredepos.compat.jei.machine.SmelterRecipeCategory;
+import gameonlp.oredepos.compat.jei.machine.*;
 import gameonlp.oredepos.compat.jei.util.EnergyHelper;
 import gameonlp.oredepos.compat.jei.util.EnergyRenderer;
 import gameonlp.oredepos.compat.jei.util.TotalEnergy;
 import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.crafter.CrafterRecipe;
+import gameonlp.oredepos.crafting.cutter.CutterRecipe;
 import gameonlp.oredepos.crafting.grinder.GrinderRecipe;
 import gameonlp.oredepos.crafting.smelter.SmelterRecipe;
 import mezz.jei.api.IModPlugin;
@@ -42,6 +41,7 @@ public class ODJeiPlugin implements IModPlugin {
     private final RecipeType<GrinderRecipe> GRINDER_TYPE = new RecipeType<>(GrinderRecipe.TYPE, GrinderRecipe.class);
     private final RecipeType<SmelterRecipe> SMELTER_TYPE = new RecipeType<>(SmelterRecipe.TYPE, SmelterRecipe.class);
     private final RecipeType<CrafterRecipe> CRAFTER_TYPE = new RecipeType<>(CrafterRecipe.TYPE, CrafterRecipe.class);
+    private final RecipeType<CutterRecipe> CUTTER_TYPE = new RecipeType<>(CutterRecipe.TYPE, CutterRecipe.class);
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
@@ -71,6 +71,7 @@ public class ODJeiPlugin implements IModPlugin {
         CrafterManager crafterManager = new CrafterManager();
         crafterManager.refresh(world);
         registration.addRecipes(CRAFTER_TYPE, crafterManager.possibilities());
+        registration.addRecipes(CUTTER_TYPE, recipeManager.getAllRecipesFor(RegistryManager.CUTTER_RECIPE_TYPE.get()));
     }
 
     @Override
@@ -79,6 +80,7 @@ public class ODJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new GrinderRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new SmelterRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new CrafterRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new CutterRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
@@ -86,6 +88,7 @@ public class ODJeiPlugin implements IModPlugin {
         registration.addRecipeClickArea(GrinderScreen.class, 51, 35, 20, 14, GRINDER_TYPE);
         registration.addRecipeClickArea(SmelterScreen.class, 51, 35, 20, 14, SMELTER_TYPE);
         registration.addRecipeClickArea(CrafterScreen.class, 71, 35, 20, 14, CRAFTER_TYPE);
+        registration.addRecipeClickArea(CutterScreen.class, 51, 35, 20, 14, CUTTER_TYPE);
     }
 
         @Override
@@ -94,6 +97,7 @@ public class ODJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.GRINDER.get().asItem()), GRINDER_TYPE);
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.SMELTER.get().asItem()), SMELTER_TYPE);
         registration.addRecipeCatalyst(new ItemStack(RegistryManager.CRAFTER.get().asItem()), CRAFTER_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(RegistryManager.CUTTER.get().asItem()), CUTTER_TYPE);
     }
 
     @Override

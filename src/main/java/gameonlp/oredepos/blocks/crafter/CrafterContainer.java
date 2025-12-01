@@ -60,7 +60,12 @@ public class CrafterContainer extends BasicContainer {
     }
     @Override
     public boolean stillValid(Player p_75145_1_) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.CRAFTER.get());
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, tileEntity.getBlockState().getBlock()) &&
+                tileEntity.getLevel().getBlockState(tileEntity.getBlockPos()).is(RegistryManager.RUDIMENTARY_CRAFTER.get()) ||
+                tileEntity.getLevel().getBlockState(tileEntity.getBlockPos()).is(RegistryManager.TINY_CRAFTER.get()) ||
+                tileEntity.getLevel().getBlockState(tileEntity.getBlockPos()).is(RegistryManager.SIMPLE_CRAFTER.get()) ||
+                tileEntity.getLevel().getBlockState(tileEntity.getBlockPos()).is(RegistryManager.CRAFTER.get()) ||
+                tileEntity.getLevel().getBlockState(tileEntity.getBlockPos()).is(RegistryManager.FULL_CRAFTER.get());
     }
 
     public BlockEntity getTileEntity() {

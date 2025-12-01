@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "item": "oredepos:raw_nickel_block"
+    }
+  ],
+  "result": {
+    "count": 12,
+    "item": "oredepos:nickel_dust"
+  },
+  "ticks": 20
+}

@@ -3,6 +3,7 @@ package gameonlp.oredepos.blocks.beacon;
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
 import gameonlp.oredepos.config.OreDeposConfig;
+import gameonlp.oredepos.items.DimensionModuleItem;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.tile.EnergyHandlerTile;
 import gameonlp.oredepos.tile.ModuleAcceptorTile;
@@ -102,14 +103,13 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
         if (level == null || level.isClientSide()){
             return;
         }
-        int width = 1, depth = 1, length = 1;
+        update();
         List<ModuleItem> moduleItems = getModuleItems(0);
         float beaconDrain = OreDeposConfig.Common.beaconDrain.get();
-        for (ModuleItem moduleItem : moduleItems) {
-            width = moduleItem.getWidth(width);
-            depth = moduleItem.getDepth(depth);
-            length = moduleItem.getLength(length);
-        }
+        ModuleItem.ModuleBoosts moduleBoosts = new ModuleItem.ModuleBoosts();
+        getModuleBoosts(moduleItems.stream().filter((moduleItem -> moduleItem instanceof DimensionModuleItem)).toList(), moduleBoosts);
+        beaconDrain = beaconDrain * moduleBoosts.energy;
+        int width = 1 + moduleBoosts.width, depth = 1 + moduleBoosts.depth, length = 1 + moduleBoosts.length;
         if (energyCell.getEnergyStored() > beaconDrain) {
             energyCell.extractEnergy((int) beaconDrain, false);
             for (int x = -1 - width; x <= 1 + width; x++) {
@@ -119,7 +119,7 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
                             continue;
                         }
                         BlockEntity acceptor = level.getBlockEntity(worldPosition.offset(x, y, z));
-                        if (!(acceptor instanceof ModuleAcceptorTile moduleAcceptorTile)) {
+                        if (!(acceptor instanceof ModuleAcceptorTile moduleAcceptorTile) || moduleAcceptorTile instanceof BeaconTile) {
                             continue;
                         }
                         if (!boosted.contains(moduleAcceptorTile)) {
@@ -132,8 +132,8 @@ public class BeaconTile extends BasicMachineTile implements EnergyHandlerTile, M
         } else {
             for (ModuleAcceptorTile moduleAcceptorTile : boosted) {
                 moduleAcceptorTile.removeBeacon(this);
-                boosted.remove(moduleAcceptorTile);
             }
+            boosted.clear();
         }
     }
 

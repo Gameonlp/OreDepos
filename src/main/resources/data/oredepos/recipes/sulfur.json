@@ -3,7 +3,7 @@
   "ingredient": {
     "item": "oredepos:sulfur_ore"
   },
-  "result": "oredepos:sulfur",
+  "result": "oredepos:sulfur_dust",
   "experience": 0.7,
   "cookingtime": 200
 }

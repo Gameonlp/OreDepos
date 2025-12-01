@@ -18,13 +18,24 @@ public class SpeedModuleItem extends ModuleItem{
     }
 
     @Override
-    public float getProgress(float progress) {
-        return speedIncrease + progress;
+    public void getBoosts(ModuleBoosts moduleBoosts, boolean beaconModule) {
+        super.getBoosts(moduleBoosts, beaconModule);
+        if (beaconModule) {
+            moduleBoosts.progress *= 1 + (speedIncrease / 2);
+        }
+        else {
+            moduleBoosts.progress *= 1 + speedIncrease;
+        }
+    }
+
+    @Override
+    public void getBoosts(ModuleBoosts moduleBoosts) {
+        getBoosts(moduleBoosts, false);
     }
 
     @Override
     public void appendHoverText(ItemStack p_77624_1_, @Nullable Level p_77624_2_, List<Component> tooltip, TooltipFlag p_77624_4_) {
         super.appendHoverText(p_77624_1_, p_77624_2_, tooltip, p_77624_4_);
-        tooltip.add(Component.translatable("tooltip.oredepos.speed").append(" x" + (1.0f + speedIncrease)).withStyle(speedIncrease > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
+        tooltip.add(Component.translatable("tooltip.oredepos.speed").append(" x" + (1 + speedIncrease)).withStyle(speedIncrease > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
     }
 }

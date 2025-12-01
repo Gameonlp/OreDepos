@@ -18,10 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 
 public class OreDepositsRecipeProvider extends RecipeProvider {
@@ -29,7 +27,7 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
         super(p_i48262_1_);
     }
 
-    private void depositRecipes(Consumer<FinishedRecipe> consumer, Item item, Block storage, TagKey<Item> tag, TagKey<Item> ores, Item raw, Block rawStorage, TagKey<Item> deepslateTag){
+    private void depositRecipes(Consumer<FinishedRecipe> consumer, Item item, Block storage, TagKey<Item> tag, TagKey<Item> ores, Item raw, Block rawStorage, TagKey<Item> deepslateTag, Item dust){
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ores), item, 1.4f, 200)
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ores).build()))
                 .save(consumer);
@@ -64,9 +62,29 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
                 .define('A', Ingredient.of(deepslateTag))
                 .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(deepslateTag).build()))
                 .save(consumer);
+        basicGrinderRecipe(consumer, GrinderRecipeBuilder.grinder(Ingredient.of(rawStorage), dust)
+                .count(12), "_from_raw_block");
+        basicGrinderRecipe(consumer, GrinderRecipeBuilder.grinder(Ingredient.of(raw), dust)
+                .count(1), "_from_raw");
+        basicGrinderRecipe(consumer, GrinderRecipeBuilder.grinder(Ingredient.of(tag), dust)
+                .count(1), "_from_ingots");
+        basicGrinderRecipe(consumer, GrinderRecipeBuilder.grinder(Ingredient.of(ores), dust)
+                .count(1), "_from_ores");
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(dust), item, 0.7f, 100)
+                .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(dust))
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "smelting_" + ForgeRegistries.ITEMS.getKey(item).getPath() + "_from_" + ForgeRegistries.ITEMS.getKey(dust).getPath()));
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(dust), item, 0.7f, 50)
+                .unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(dust))
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "blasting_" + ForgeRegistries.ITEMS.getKey(item).getPath() + "_from_" + ForgeRegistries.ITEMS.getKey(dust).getPath()));
+//        basicGrinderRecipe(consumer, GrinderRecipeBuilder.grinder(Ingredient.of(deepslateTag), dust)
+//                .count(1), "_from_");
     }
 
-    protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, GrinderRecipeBuilder recipeBuilder){
+    protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, GrinderRecipeBuilder recipeBuilder) {
+        basicGrinderRecipe(consumer, recipeBuilder, "");
+    }
+
+    protected void basicGrinderRecipe(Consumer<FinishedRecipe> consumer, GrinderRecipeBuilder recipeBuilder, String suffix){
         ItemStack[] stacks = recipeBuilder
                 .getInput()
                 .getItems();
@@ -75,7 +93,7 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
             items[i] = stacks[i].getItem();
         }
         recipeBuilder.unlockedBy("has_items", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items).build()))
-                .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + ForgeRegistries.ITEMS.getKey(recipeBuilder.getResult()).getPath()));
+                .save(consumer, new ResourceLocation(OreDepos.MODID, "grinding_" + ForgeRegistries.ITEMS.getKey(recipeBuilder.getResult()).getPath() + suffix));
     }
 
     protected void basicSmelterRecipe(Consumer<FinishedRecipe> consumer, SmelterRecipeBuilder recipeBuilder){
@@ -92,17 +110,17 @@ public class OreDepositsRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        depositRecipes(consumer, RegistryManager.ZINC_INGOT, RegistryManager.ZINC_BLOCK, TagProvider.INGOTS_ZINC, TagProvider.ORE_ZINC_ITEM, RegistryManager.RAW_ZINC, RegistryManager.RAW_ZINC_BLOCK, TagProvider.RAW_ZINC);
-        depositRecipes(consumer, RegistryManager.SILVER_INGOT, RegistryManager.SILVER_BLOCK, TagProvider.INGOTS_SILVER, TagProvider.ORE_SILVER_ITEM, RegistryManager.RAW_SILVER, RegistryManager.RAW_SILVER_BLOCK, TagProvider.RAW_SILVER);
-        depositRecipes(consumer, RegistryManager.LEAD_INGOT, RegistryManager.LEAD_BLOCK, TagProvider.INGOTS_LEAD, TagProvider.ORE_LEAD_ITEM, RegistryManager.RAW_LEAD, RegistryManager.RAW_LEAD_BLOCK, TagProvider.RAW_LEAD);
-        depositRecipes(consumer, RegistryManager.URANIUM_INGOT, RegistryManager.URANIUM_BLOCK, TagProvider.INGOTS_URANIUM, TagProvider.ORE_URANIUM_ITEM, RegistryManager.RAW_URANIUM, RegistryManager.RAW_URANIUM_BLOCK, TagProvider.RAW_URANIUM);
-        depositRecipes(consumer, RegistryManager.TIN_INGOT, RegistryManager.TIN_BLOCK, TagProvider.INGOTS_TIN, TagProvider.ORE_TIN_ITEM, RegistryManager.RAW_TIN, RegistryManager.RAW_TIN_BLOCK, TagProvider.RAW_TIN);
-        depositRecipes(consumer, RegistryManager.NICKEL_INGOT, RegistryManager.NICKEL_BLOCK, TagProvider.INGOTS_NICKEL, TagProvider.ORE_NICKEL_ITEM, RegistryManager.RAW_NICKEL, RegistryManager.RAW_NICKEL_BLOCK, TagProvider.RAW_NICKEL);
-        depositRecipes(consumer, RegistryManager.ALUMINUM_INGOT, RegistryManager.ALUMINUM_BLOCK, TagProvider.INGOTS_ALUMINUM, TagProvider.ORE_ALUMINUM_ITEM, RegistryManager.RAW_ALUMINUM, RegistryManager.RAW_ALUMINUM_BLOCK, TagProvider.RAW_ALUMINUM);
-        depositRecipes(consumer, RegistryManager.OSMIUM_INGOT, RegistryManager.OSMIUM_BLOCK, TagProvider.INGOTS_OSMIUM, TagProvider.ORE_OSMIUM_ITEM, RegistryManager.RAW_OSMIUM, RegistryManager.RAW_OSMIUM_BLOCK, TagProvider.RAW_OSMIUM);
-        depositRecipes(consumer, RegistryManager.ARDITE_INGOT, RegistryManager.ARDITE_BLOCK, TagProvider.INGOTS_ARDITE, TagProvider.ORE_ARDITE_ITEM, RegistryManager.RAW_ARDITE, RegistryManager.RAW_ARDITE_BLOCK, TagProvider.RAW_ARDITE);
-        depositRecipes(consumer, RegistryManager.COBALT_INGOT, RegistryManager.COBALT_BLOCK, TagProvider.INGOTS_COBALT, TagProvider.ORE_COBALT_ITEM, RegistryManager.RAW_COBALT, RegistryManager.RAW_COBALT_BLOCK, TagProvider.RAW_COBALT);
-        depositRecipes(consumer, RegistryManager.PLATINUM_INGOT, RegistryManager.PLATINUM_BLOCK, TagProvider.INGOTS_PLATINUM, TagProvider.ORE_PLATINUM_ITEM, RegistryManager.RAW_PLATINUM, RegistryManager.RAW_PLATINUM_BLOCK, TagProvider.RAW_PLATINUM);
+        depositRecipes(consumer, RegistryManager.ZINC_INGOT, RegistryManager.ZINC_BLOCK, TagProvider.INGOTS_ZINC, TagProvider.ORE_ZINC_ITEM, RegistryManager.RAW_ZINC, RegistryManager.RAW_ZINC_BLOCK, TagProvider.RAW_ZINC, RegistryManager.ZINC_DUST);
+        depositRecipes(consumer, RegistryManager.SILVER_INGOT, RegistryManager.SILVER_BLOCK, TagProvider.INGOTS_SILVER, TagProvider.ORE_SILVER_ITEM, RegistryManager.RAW_SILVER, RegistryManager.RAW_SILVER_BLOCK, TagProvider.RAW_SILVER, RegistryManager.SILVER_DUST);
+        depositRecipes(consumer, RegistryManager.LEAD_INGOT, RegistryManager.LEAD_BLOCK, TagProvider.INGOTS_LEAD, TagProvider.ORE_LEAD_ITEM, RegistryManager.RAW_LEAD, RegistryManager.RAW_LEAD_BLOCK, TagProvider.RAW_LEAD, RegistryManager.LEAD_DUST);
+        depositRecipes(consumer, RegistryManager.URANIUM_INGOT, RegistryManager.URANIUM_BLOCK, TagProvider.INGOTS_URANIUM, TagProvider.ORE_URANIUM_ITEM, RegistryManager.RAW_URANIUM, RegistryManager.RAW_URANIUM_BLOCK, TagProvider.RAW_URANIUM, RegistryManager.URANIUM_DUST);
+        depositRecipes(consumer, RegistryManager.TIN_INGOT, RegistryManager.TIN_BLOCK, TagProvider.INGOTS_TIN, TagProvider.ORE_TIN_ITEM, RegistryManager.RAW_TIN, RegistryManager.RAW_TIN_BLOCK, TagProvider.RAW_TIN, RegistryManager.TIN_DUST);
+        depositRecipes(consumer, RegistryManager.NICKEL_INGOT, RegistryManager.NICKEL_BLOCK, TagProvider.INGOTS_NICKEL, TagProvider.ORE_NICKEL_ITEM, RegistryManager.RAW_NICKEL, RegistryManager.RAW_NICKEL_BLOCK, TagProvider.RAW_NICKEL, RegistryManager.NICKEL_DUST);
+        depositRecipes(consumer, RegistryManager.ALUMINUM_INGOT, RegistryManager.ALUMINUM_BLOCK, TagProvider.INGOTS_ALUMINUM, TagProvider.ORE_ALUMINUM_ITEM, RegistryManager.RAW_ALUMINUM, RegistryManager.RAW_ALUMINUM_BLOCK, TagProvider.RAW_ALUMINUM, RegistryManager.ALUMINUM_DUST);
+        depositRecipes(consumer, RegistryManager.OSMIUM_INGOT, RegistryManager.OSMIUM_BLOCK, TagProvider.INGOTS_OSMIUM, TagProvider.ORE_OSMIUM_ITEM, RegistryManager.RAW_OSMIUM, RegistryManager.RAW_OSMIUM_BLOCK, TagProvider.RAW_OSMIUM, RegistryManager.OSMIUM_DUST);
+        depositRecipes(consumer, RegistryManager.ARDITE_INGOT, RegistryManager.ARDITE_BLOCK, TagProvider.INGOTS_ARDITE, TagProvider.ORE_ARDITE_ITEM, RegistryManager.RAW_ARDITE, RegistryManager.RAW_ARDITE_BLOCK, TagProvider.RAW_ARDITE, RegistryManager.ARDITE_DUST);
+        depositRecipes(consumer, RegistryManager.COBALT_INGOT, RegistryManager.COBALT_BLOCK, TagProvider.INGOTS_COBALT, TagProvider.ORE_COBALT_ITEM, RegistryManager.RAW_COBALT, RegistryManager.RAW_COBALT_BLOCK, TagProvider.RAW_COBALT, RegistryManager.COBALT_DUST);
+        depositRecipes(consumer, RegistryManager.PLATINUM_INGOT, RegistryManager.PLATINUM_BLOCK, TagProvider.INGOTS_PLATINUM, TagProvider.ORE_PLATINUM_ITEM, RegistryManager.RAW_PLATINUM, RegistryManager.RAW_PLATINUM_BLOCK, TagProvider.RAW_PLATINUM, RegistryManager.PLATINUM_DUST);
 
         basicGrinderRecipe(consumer,
                 GrinderRecipeBuilder.grinder(Ingredient.of(Items.BONE), Items.BONE_MEAL)

@@ -13,6 +13,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ModuleItem extends Item {
+    public static class ModuleBoosts {
+        public float progress = 1;
+        public float energy = 1;
+        public float productivity = 0;
+        public int width = 0;
+        public int depth = 0;
+        public int length = 0;
+        public boolean inversion = false;
+        public boolean ejecting = false;
+        public boolean stacking = false;
+
+    }
     private final float energyConsumptionIncrease;
     private final List<String> accepted;
 
@@ -22,32 +34,17 @@ public class ModuleItem extends Item {
         accepted = new LinkedList<>();
     }
 
-    public float getEnergyConsumption(float energyDrain) {
-        return energyConsumptionIncrease + energyDrain;
+    public void getBoosts(ModuleBoosts moduleBoosts, boolean beaconModule) {
+        if (beaconModule) {
+            moduleBoosts.energy *= 1 + (energyConsumptionIncrease / 2);
+        }
+        else {
+            moduleBoosts.energy *= 1 + energyConsumptionIncrease;
+        }
     }
 
-    public float getProgress(float progress){
-        return progress;
-    }
-
-    public float getProductivity(float productivity){
-        return productivity;
-    }
-
-    public int getWidth(int width){
-        return width;
-    }
-
-    public int getLength(int length){
-        return length;
-    }
-
-    public int getDepth(int depth){
-        return depth;
-    }
-
-    public boolean getInversion(boolean inversion){
-        return inversion;
+    public void getBoosts(ModuleBoosts moduleBoosts) {
+        getBoosts(moduleBoosts, false);
     }
 
     public boolean isAccepted(String name) {
@@ -66,7 +63,7 @@ public class ModuleItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack p_77624_1_, @Nullable Level p_77624_2_, List<Component> tooltip, TooltipFlag p_77624_4_) {
-        tooltip.add(Component.translatable("tooltip.oredepos.energy").append(" x" + (1.0f + energyConsumptionIncrease)).withStyle(energyConsumptionIncrease < 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
+        tooltip.add(Component.translatable("tooltip.oredepos.energy").append(" x" + (1 + energyConsumptionIncrease)).withStyle(energyConsumptionIncrease < 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
         super.appendHoverText(p_77624_1_, p_77624_2_, tooltip, p_77624_4_);
     }
 }

@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "item": "oredepos:raw_ardite_block"
+    }
+  ],
+  "result": {
+    "count": 12,
+    "item": "oredepos:ardite_dust"
+  },
+  "ticks": 20
+}

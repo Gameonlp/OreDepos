@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures":
+  {
+    "particle": "oredepos:block/tiny_crafter",
+    "up": "oredepos:block/tiny_crafter_up",
+    "down": "oredepos:block/tiny_crafter",
+    "north": "oredepos:block/tiny_crafter_side",
+    "south": "oredepos:block/tiny_crafter_side",
+    "east": "oredepos:block/tiny_crafter_side",
+    "west": "oredepos:block/tiny_crafter_side"
+  }
+}

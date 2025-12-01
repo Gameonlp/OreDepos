@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "tag": "forge:ores/aluminum"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "oredepos:aluminum_dust"
+  },
+  "ticks": 20
+}

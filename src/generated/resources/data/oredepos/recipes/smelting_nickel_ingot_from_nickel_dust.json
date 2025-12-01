@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": {
+    "item": "oredepos:nickel_dust"
+  },
+  "result": "oredepos:nickel_ingot"
+}

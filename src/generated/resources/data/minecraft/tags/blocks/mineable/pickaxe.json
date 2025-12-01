@@ -94,6 +94,7 @@
     "oredepos:smelter",
     "oredepos:crafter",
     "oredepos:beacon",
+    "oredepos:cutter",
     "oredepos:chemical_plant"
   ]
 }

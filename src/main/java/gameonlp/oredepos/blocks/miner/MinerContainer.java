@@ -11,17 +11,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 public class MinerContainer extends BasicContainer {
-    public IEnergyStorage getEnergy(){
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
-    }
 
     @Override
     protected boolean correctTile() {
@@ -31,9 +31,9 @@ public class MinerContainer extends BasicContainer {
     @Override
     protected void sendInitialSync() {
         PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketFluidSync(tileEntity.getBlockPos(), ((MinerTile)tileEntity).fluidTank.getFluid(), 0));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((MinerTile)tileEntity).energyCell.getEnergyStored()));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).progress));
-        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).productivity));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketEnergySync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).getEnergyCell().getEnergyStored()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).getProgress()));
+        PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(tileEntity.getBlockPos(), ((MinerTile) tileEntity).getProductivity()));
     }
 
     @Override
@@ -57,19 +57,20 @@ public class MinerContainer extends BasicContainer {
         super(windowId, world, pos, playerInventory, player, 5, RegistryManager.MINER_CONTAINER.get());
     }
     @Override
-    public boolean stillValid(Player p_75145_1_) {
+    public boolean stillValid(@NotNull Player p_75145_1_) {
+        //noinspection DataFlowIssue
         return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), player, RegistryManager.MINER.get());
     }
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public @NotNull ItemStack quickMoveStack(Player playerIn, int index) {
         int playerStart = 0;
         int playerEnd = 36;
         int tileStart = playerEnd + 1;
         int tileEnd = playerEnd + 11;
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
             if (index < playerEnd) {
@@ -94,8 +95,5 @@ public class MinerContainer extends BasicContainer {
             slot.onTake(playerIn, stack);
         }
         return itemstack;
-    }
-    public BlockEntity getTileEntity() {
-        return tileEntity;
     }
 }

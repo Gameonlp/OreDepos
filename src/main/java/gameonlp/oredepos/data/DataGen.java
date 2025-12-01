@@ -18,6 +18,6 @@ public class DataGen {
         gen.addProvider(true, new ModelProviders.OreDepositsItemModelProvider(gen, OreDepos.MODID, event.getExistingFileHelper()));
         gen.addProvider(true, new ModelProviders.OreDepositsBlockStateProvider(gen, OreDepos.MODID, event.getExistingFileHelper()));
         gen.addProvider(true, new OreDepositsRecipeProvider(gen));
-        gen.addProvider(true, new BiomeModifiers(gen));
+        gen.addProvider(true, new OreGenProvider(gen));
     }
 }

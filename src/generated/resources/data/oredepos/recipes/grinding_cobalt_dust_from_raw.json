@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "item": "oredepos:raw_cobalt"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "oredepos:cobalt_dust"
+  },
+  "ticks": 20
+}

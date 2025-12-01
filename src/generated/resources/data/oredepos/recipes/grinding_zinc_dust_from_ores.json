@@ -1,0 +1,14 @@
+{
+  "type": "oredepos:grinder_recipe",
+  "energy": 40,
+  "input": [
+    {
+      "tag": "forge:ores/zinc"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "oredepos:zinc_dust"
+  },
+  "ticks": 20
+}

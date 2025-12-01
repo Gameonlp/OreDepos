@@ -2,9 +2,9 @@ package gameonlp.oredepos.blocks.chemicalplant;
 
 import gameonlp.oredepos.RegistryManager;
 import gameonlp.oredepos.blocks.BasicMachineTile;
+import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.crafting.FluidIngredient;
 import gameonlp.oredepos.crafting.FluidInventory;
-import gameonlp.oredepos.crafting.chemicalplant.ChemicalPlantRecipe;
 import gameonlp.oredepos.items.ModuleItem;
 import gameonlp.oredepos.net.PacketManager;
 import gameonlp.oredepos.net.PacketProductivitySync;
@@ -19,6 +19,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -171,18 +174,26 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
         if (level.isClientSide()){
             return;
         }
-        if (!fluidTank.isEmpty()){
-            Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
-            if(level.getBlockEntity(worldPosition.offset(facing.getNormal())) != null) {
-                LazyOptional<IFluidHandler> capability = level.getBlockEntity(worldPosition.offset(facing.getNormal())).getCapability(ForgeCapabilities.FLUID_HANDLER, facing.getOpposite());
-                capability.ifPresent(handler -> {
-                    if (handler.fill(fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE) != 0) {
-                        FluidStack toFill = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                        int accepted = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                        toFill.grow(-accepted);
-                        fluidTank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-                    }
-                });
+        update();
+        List<ModuleItem> modules = getModuleItems(3);
+        ModuleItem.ModuleBoosts moduleBoosts = new ModuleItem.ModuleBoosts();
+        getModuleBoosts(modules, moduleBoosts);
+        if (moduleBoosts.ejecting) {
+            eject(0, 0);
+            if (!fluidTank.isEmpty()){
+                Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
+                BlockEntity other = level.getBlockEntity(worldPosition.offset(facing.getNormal()));
+                if(other != null) {
+                    LazyOptional<IFluidHandler> capability = other.getCapability(ForgeCapabilities.FLUID_HANDLER, facing.getOpposite());
+                    capability.ifPresent(handler -> {
+                        if (handler.fill(fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE) != 0) {
+                            FluidStack toFill = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                            int accepted = handler.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+                            toFill.grow(-accepted);
+                            fluidTank.fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+                        }
+                    });
+                }
             }
         }
         FluidInventory fluidInventory = new FluidInventory(2, 2);
@@ -201,16 +212,14 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 return;
             }
-            if (slots.insertItem(0, currentRecipe.getResultItem(), true) != ItemStack.EMPTY){
+            ItemStack outStack = currentRecipe.getResultItem();
+            FluidStack outFluid = currentRecipe.getResultFluid();
+            if (isInventoryFull(modules, List.of(outStack), 0, 0, List.of(outFluid), List.of(fluidTank))){
                 return;
             }
-            if (fluidTank.fill(currentRecipe.getResultFluid(), IFluidHandler.FluidAction.SIMULATE) != currentRecipe.getResultFluid().getAmount()) {
-                return;
-            }
-            List<ModuleItem> modules = getModuleItems(3);
             float drain = getDrain(modules, (float) currentRecipe.getEnergy());
             increaseProgress(modules, drain, currentRecipe.getTicks());
-            if (progress >= maxProgress) {
+            if (progress >= maxProgress - 0.0001f) {
                 progress -= 0;
                 PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProgressSync(worldPosition, progress));
                 NonNullList<Ingredient> ingredients = currentRecipe.getIngredients();
@@ -232,18 +241,7 @@ public class ChemicalPlantTile extends BasicMachineTile implements EnergyHandler
                     primaryInputTank.drain(fluidIngredients.get(0).getAmount(), IFluidHandler.FluidAction.EXECUTE);
                     secondaryInputTank.drain(fluidIngredients.get(1).getAmount(), IFluidHandler.FluidAction.EXECUTE);
                 }
-                ItemStack outStack = currentRecipe.getResultItem();
-                FluidStack outFluid = currentRecipe.getResultFluid();
-                int stackCount = outStack.getCount();
-                int fluidAmount = outFluid.getAmount();
-                while (productivity >= 1){
-                    productivity -= 1;
-                    PacketManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new PacketProductivitySync(worldPosition, productivity));
-                    outStack.setCount(stackCount + outStack.getCount());
-                    outFluid.setAmount(fluidAmount + outFluid.getAmount());
-                }
-                fluidTank.fill(outFluid, IFluidHandler.FluidAction.EXECUTE);
-                slots.insertItem(0, outStack, false);
+                handleOutputs(List.of(outStack), 0, 0, List.of(outFluid), List.of(fluidTank));
                 increaseProductivity(modules);
             }
         }

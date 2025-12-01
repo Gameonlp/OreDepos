@@ -18,8 +18,19 @@ public class ProductivityModuleItem extends SpeedModuleItem{
     }
 
     @Override
-    public float getProductivity(float productivity) {
-        return productivityIncrease + productivity;
+    public void getBoosts(ModuleBoosts moduleBoosts, boolean beaconModule) {
+        super.getBoosts(moduleBoosts, beaconModule);
+        if (beaconModule) {
+            moduleBoosts.productivity *= 1 + (productivityIncrease / 2);
+        }
+        else {
+            moduleBoosts.productivity *= 1 + productivityIncrease;
+        }
+    }
+
+    @Override
+    public void getBoosts(ModuleBoosts moduleBoosts) {
+        getBoosts(moduleBoosts, false);
     }
 
     @Override
